@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pronúncia — Questions × Confirmation</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --ink:#0d1b2a;
+    --ink2:#132a40;
+    --cream:#f4efe3;
+    --gold:#e8c468;
+    --gold-deep:#c99a2e;
+    --teal:#3aa6a0;
+    --wrong:#e0665c;
+    --right:#6fbf7d;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--ink); color:var(--cream);
+    font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased;
+    padding-bottom:60px;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:0 20px;}
+
+  header{
+    padding:44px 20px 34px;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(232,196,104,0.10), transparent 45%),
+      linear-gradient(180deg,#0d1b2a 0%, #0a141f 100%);
+    border-bottom:1px solid rgba(232,196,104,0.25);
+  }
+  .eyebrow{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--teal); font-weight:600; margin:0 0 10px;}
+  h1{font-family:'Fraunces',serif; font-size:clamp(26px,7vw,38px); line-height:1.1; margin:0 0 12px; font-weight:700;}
+  h1 .x{color:var(--gold);}
+  header p.sub{margin:0; color:#c9c2b0; font-size:15px; max-width:56ch; line-height:1.5;}
+
+  .notice{
+    margin:20px 20px 0; background:#12314a; border:1px solid rgba(232,196,104,0.3);
+    border-radius:12px; padding:14px 16px; font-size:13px; color:#c9c2b0; line-height:1.5;
+  }
+  .notice b{color:var(--gold);}
+  #micWarning{
+    display:none; margin:14px 20px 0; background:rgba(224,102,92,0.14);
+    border:1px solid var(--wrong); border-radius:12px; padding:14px 16px; font-size:13px; color:#ffdcd8;
+  }
+
+  .controls-top{
+    margin:20px 20px 0; display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+  }
+  .rate-label{font-size:13px; color:#b7b0a0;}
+  select#rateSelect{
+    background:#0a141f; color:var(--cream); border:1px solid rgba(232,196,104,0.35);
+    border-radius:8px; padding:6px 10px; font-family:'Inter',sans-serif; font-size:13px;
+  }
+
+  section.card{
+    margin:20px 20px 0; background:var(--ink2); border:1px solid rgba(232,196,104,0.18);
+    border-radius:14px; padding:22px;
+  }
+  .tag{
+    display:inline-block; font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--ink); background:var(--gold); font-weight:700; padding:4px 10px; border-radius:99px; margin-bottom:12px;
+  }
+  .phrase-num{font-size:12px; color:#8f8a7c; margin-bottom:4px;}
+  .phrase{font-family:'Fraunces',serif; font-size:22px; font-weight:600; margin:0 0 14px; color:var(--cream);}
+  .word{transition:color .2s ease;}
+  .word.hit{color:var(--right);}
+  .word.miss{color:var(--wrong); text-decoration:underline wavy var(--wrong);}
+
+  .btn-row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;}
+  .btn{
+    border:none; border-radius:9px; padding:10px 16px; font-size:14px; font-weight:600;
+    cursor:pointer; font-family:'Inter',sans-serif; display:inline-flex; align-items:center; gap:6px;
+    transition:transform .1s ease;
+  }
+  .btn:active{transform:scale(0.97);}
+  .btn-listen{background:var(--teal); color:#06201d;}
+  .btn-listen:hover{background:#4bb8b1;}
+  .btn-record{background:var(--gold); color:var(--ink);}
+  .btn-record:hover{background:var(--gold-deep);}
+  .btn-record.recording{background:var(--wrong); color:#fff;}
+  .btn:disabled{opacity:.4; cursor:not-allowed;}
+
+  .heard-box{
+    background:#0a141f; border:1px solid rgba(255,255,255,0.12); border-radius:9px;
+    padding:10px 12px; font-size:14px; min-height:20px; color:#c9c2b0; margin-bottom:8px;
+  }
+  .heard-box .placeholder{color:#5c5748; font-style:italic;}
+
+  .result-line{display:flex; align-items:center; gap:10px; font-size:13px;}
+  .score-pill{
+    padding:3px 10px; border-radius:99px; font-weight:700; font-size:12px;
+  }
+  .score-pill.ok{background:rgba(111,191,125,0.2); color:var(--right);}
+  .score-pill.mid{background:rgba(232,196,104,0.2); color:var(--gold);}
+  .score-pill.no{background:rgba(224,102,92,0.2); color:var(--wrong);}
+
+  .score-banner{
+    margin:24px 20px 0; background:linear-gradient(135deg,#12314a,#0d1b2a);
+    border:1px solid rgba(232,196,104,0.4); border-radius:14px; padding:26px 22px; text-align:center;
+  }
+  .score-banner h2{font-family:'Fraunces',serif; font-size:22px; margin:0 0 6px;}
+  .score-num{font-family:'Fraunces',serif; font-size:44px; color:var(--gold); font-weight:700;}
+  .score-banner p{color:#c9c2b0; font-size:13px; margin:6px 0 0;}
+
+  footer{text-align:center; font-size:12px; color:#5c5748; margin-top:32px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="eyebrow">English Mindset · Prática de pronúncia</p>
+    <h1>Ouça <span class="x">×</span> Repita</h1>
+    <p class="sub">Clique em "Ouvir" para escutar a frase em inglês, depois em "Gravar" e fale a mesma frase. O sistema mostra o que ele entendeu e destaca palavras que precisam de mais atenção.</p>
+  </div>
+</header>
+
+<div class="notice">
+  <b>Como funciona:</b> este exercício usa o reconhecimento de voz do próprio navegador. Funciona melhor no <b>Google Chrome</b> (computador ou Android). Ao clicar em "Gravar" pela primeira vez, o navegador vai pedir permissão de microfone — é preciso permitir. Em iPhone (Safari), a gravação pode não funcionar; nesse caso, dá pra usar só o botão "Ouvir" para praticar a escuta e repetir em voz alta sem correção automática.
+</div>
+<div id="micWarning">
+  Este navegador não é compatível com reconhecimento de voz. Use o Google Chrome para ter a correção automática, ou use apenas o botão "Ouvir" para praticar.
+</div>
+
+<div class="controls-top">
+  <span class="rate-label">Velocidade do áudio:</span>
+  <select id="rateSelect">
+    <option value="0.7">Devagar</option>
+    <option value="1" selected>Normal</option>
+    <option value="1.15">Rápido</option>
+  </select>
+</div>
+
+<div id="cards"></div>
+
+<div class="score-banner">
+  <h2>Pontuação de pronúncia</h2>
+  <div class="score-num"><span id="scoreVal">0</span> / <span id="scoreTotal">0</span></div>
+  <p>Baseado nas frases gravadas com reconhecimento de voz (não conta as ouvidas sem gravar).</p>
+</div>
+
+<footer>Feito para praticar pronúncia de Questions × Confirmation — English Mindset</footer>
+
+<script>
+(function(){
+  const phrases = [
+    "Is she Brazilian?",
+    "She is Brazilian.",
+    "Are they engineers?",
+    "They are engineers.",
+    "What's your profession?",
+    "I'm a secretary.",
+    "Where are you from?",
+    "I'm from Spain.",
+    "Is your city Rio de Janeiro?",
+    "Is it green?",
+    "It is green.",
+    "When is your birthday?",
+    "My birthday is in June."
+  ];
+
+  const cardsEl = document.getElementById('cards');
+  const rateSelect = document.getElementById('rateSelect');
+  const micWarning = document.getElementById('micWarning');
+
+  let scored = 0;
+  let totalScored = 0;
+  let correctSum = 0;
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recognitionSupported = !!SpeechRecognition;
+  if(!recognitionSupported){
+    micWarning.style.display = 'block';
+  }
+
+  function normalize(s){
+    return s.toLowerCase().replace(/[^\w\s']/g, '').trim();
+  }
+
+  function scorePhrase(target, heard){
+    const targetWords = normalize(target).split(/\s+/).filter(Boolean);
+    const heardWords = normalize(heard).split(/\s+/).filter(Boolean);
+    const heardSet = new Set(heardWords);
+    let hits = 0;
+    const marks = targetWords.map(w => {
+      const ok = heardSet.has(w);
+      if(ok) hits++;
+      return {word: w, ok};
+    });
+    const pct = targetWords.length ? Math.round((hits / targetWords.length) * 100) : 0;
+    return {marks, pct};
+  }
+
+  function updateScoreBanner(){
+    document.getElementById('scoreVal').textContent = correctSum;
+    document.getElementById('scoreTotal').textContent = totalScored;
+  }
+
+  phrases.forEach((phrase, idx) => {
+    const card = document.createElement('section');
+    card.className = 'card';
+    card.innerHTML = `
+      <span class="tag">Frase ${idx + 1}</span>
+      <p class="phrase-num"></p>
+      <p class="phrase" id="phrase-${idx}">${phrase.split(' ').map((w,i) => `<span class="word" data-w="${i}">${w}</span>`).join(' ')}</p>
+      <div class="btn-row">
+        <button class="btn btn-listen" data-idx="${idx}">🔊 Ouvir</button>
+        <button class="btn btn-record" data-idx="${idx}" ${recognitionSupported ? '' : 'disabled'}>🎙️ Gravar</button>
+      </div>
+      <div class="heard-box" id="heard-${idx}"><span class="placeholder">O que você disse aparece aqui...</span></div>
+      <div class="result-line" id="result-${idx}"></div>
+    `;
+    cardsEl.appendChild(card);
+  });
+
+  cardsEl.addEventListener('click', (e) => {
+    const listenBtn = e.target.closest('.btn-listen');
+    const recordBtn = e.target.closest('.btn-record');
+
+    if(listenBtn){
+      const idx = listenBtn.dataset.idx;
+      speak(phrases[idx]);
+    }
+
+    if(recordBtn){
+      const idx = recordBtn.dataset.idx;
+      startRecording(idx, recordBtn);
+    }
+  });
+
+  function speak(text){
+    if(!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'en-US';
+    utter.rate = parseFloat(rateSelect.value);
+    const voices = window.speechSynthesis.getVoices();
+    const enVoice = voices.find(v => v.lang === 'en-US') || voices.find(v => v.lang && v.lang.startsWith('en'));
+    if(enVoice) utter.voice = enVoice;
+    window.speechSynthesis.speak(utter);
+  }
+  // Warm up voices list (some browsers load async)
+  if('speechSynthesis' in window){
+    window.speechSynthesis.onvoiceschanged = () => {};
+    window.speechSynthesis.getVoices();
+  }
+
+  function startRecording(idx, btn){
+    if(!recognitionSupported) return;
+    const heardBox = document.getElementById('heard-' + idx);
+    const resultLine = document.getElementById('result-' + idx);
+    const phraseEl = document.getElementById('phrase-' + idx);
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    btn.classList.add('recording');
+    btn.textContent = '● Ouvindo...';
+    btn.disabled = true;
+
+    recognition.onresult = (event) => {
+      const heard = event.results[0][0].transcript;
+      heardBox.innerHTML = '"' + heard + '"';
+
+      const {marks, pct} = scorePhrase(phrases[idx], heard);
+      phraseEl.querySelectorAll('.word').forEach((wEl, i) => {
+        wEl.classList.remove('hit','miss');
+        if(marks[i]){
+          wEl.classList.add(marks[i].ok ? 'hit' : 'miss');
+        }
+      });
+
+      let pillClass = 'no';
+      let label = 'Precisa praticar mais';
+      if(pct >= 85){ pillClass = 'ok'; label = 'Ótima pronúncia!'; }
+      else if(pct >= 50){ pillClass = 'mid'; label = 'Quase lá'; }
+
+      resultLine.innerHTML = `<span class="score-pill ${pillClass}">${pct}%</span> <span>${label}</span>`;
+
+      if(!card_scored_flags[idx]){
+        card_scored_flags[idx] = true;
+        totalScored++;
+        correctSum += pct;
+      } else {
+        // update running average by replacing previous contribution
+        correctSum = correctSum - card_last_pct[idx] + pct;
+      }
+      card_last_pct[idx] = pct;
+      updateScoreBanner();
+    };
+
+    recognition.onerror = (event) => {
+      resultLine.innerHTML = `<span class="score-pill no">Erro</span> <span>Não foi possível captar o áudio. Tente novamente.</span>`;
+    };
+
+    recognition.onend = () => {
+      btn.classList.remove('recording');
+      btn.textContent = '🎙️ Gravar';
+      btn.disabled = false;
+    };
+
+    try{
+      recognition.start();
+    } catch(err){
+      btn.classList.remove('recording');
+      btn.textContent = '🎙️ Gravar';
+      btn.disabled = false;
+    }
+  }
+
+  const card_scored_flags = {};
+  const card_last_pct = {};
+
+})();
+</script>
+
+</body>
+</html>
