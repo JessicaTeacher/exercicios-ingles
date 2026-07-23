@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quem é da Família?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Caveat:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #F3EAD8;
+    --paper-deep: #E9DCC2;
+    --ink: #3A2E28;
+    --ink-soft: #6B5D52;
+    --rose: #C1666B;
+    --rose-deep: #A44F54;
+    --sage: #6E8B74;
+    --sage-deep: #56705D;
+    --mustard: #D9A441;
+    --card-front-1: #E7C7A5;
+    --card-front-2: #D8B6A4;
+    --card-front-3: #CBD3B6;
+    --card-back: #FFFDF6;
+    --line: rgba(58,46,40,0.14);
+    --shadow: 0 10px 24px rgba(58,46,40,0.16);
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse at top left, #FBF3E4 0%, var(--paper) 55%),
+      var(--paper);
+    font-family:'Inter', sans-serif;
+    color:var(--ink);
+    padding:36px 20px 60px;
+  }
+
+  .wrap{max-width:1080px; margin:0 auto;}
+
+  /* header */
+  header{text-align:center; margin-bottom:8px;}
+  .eyebrow{
+    font-family:'Caveat', cursive;
+    font-size:22px;
+    color:var(--rose-deep);
+    transform:rotate(-2deg);
+    display:inline-block;
+    margin-bottom:2px;
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:clamp(32px, 5vw, 52px);
+    margin:0 0 10px;
+    letter-spacing:-0.01em;
+  }
+  .subtitle{
+    max-width:620px;
+    margin:0 auto 6px;
+    font-size:15px;
+    line-height:1.6;
+    color:var(--ink-soft);
+  }
+  .subtitle strong{color:var(--ink);}
+
+  .controls{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    margin:22px 0 8px;
+    flex-wrap:wrap;
+  }
+  .counter{
+    font-family:'Inter';
+    font-weight:600;
+    font-size:13px;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    background:var(--card-back);
+    border:1px solid var(--line);
+    padding:8px 16px;
+    border-radius:100px;
+    box-shadow:var(--shadow);
+  }
+  .counter span{color:var(--sage-deep); font-weight:700;}
+  button.shuffle{
+    font-family:'Inter';
+    font-weight:600;
+    font-size:13px;
+    letter-spacing:0.02em;
+    background:var(--ink);
+    color:var(--paper);
+    border:none;
+    padding:9px 18px;
+    border-radius:100px;
+    cursor:pointer;
+    transition:transform .15s ease, background .2s ease;
+  }
+  button.shuffle:hover{background:var(--rose-deep); transform:translateY(-1px);}
+  button.shuffle:active{transform:translateY(0);}
+
+  /* clothesline */
+  .line-holder{
+    position:relative;
+    height:26px;
+    max-width:920px;
+    margin:34px auto 0;
+  }
+  .line-holder::before{
+    content:'';
+    position:absolute;
+    left:0; right:0; top:50%;
+    height:2px;
+    background:repeating-linear-gradient(90deg, var(--ink-soft) 0 10px, transparent 10px 16px);
+    opacity:0.55;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
+    gap:34px 24px;
+    max-width:960px;
+    margin:0 auto;
+    padding-top:6px;
+  }
+
+  .slot{ perspective:1400px; }
+
+  .pin{
+    width:14px; height:14px;
+    background:var(--rose);
+    border:2px solid var(--ink);
+    border-radius:3px;
+    margin:0 auto -8px;
+    position:relative;
+    z-index:3;
+    box-shadow:0 2px 3px rgba(0,0,0,0.25);
+  }
+
+  .card{
+    position:relative;
+    width:100%;
+    aspect-ratio:3/4;
+    transform-style:preserve-3d;
+    transition:transform .7s cubic-bezier(.4,.2,.2,1);
+    cursor:pointer;
+  }
+  .slot.flipped .card{transform:rotateY(180deg);}
+
+  .face{
+    position:absolute; inset:0;
+    -webkit-backface-visibility:hidden;
+    backface-visibility:hidden;
+    border-radius:6px;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+
+  /* front face = polaroid mystery photo */
+  .front{
+    background:var(--card-back);
+    padding:10px 10px 26px;
+    box-shadow:var(--shadow);
+    border:1px solid rgba(58,46,40,0.08);
+    transform:rotate(var(--tilt, -1deg));
+  }
+  .front .photo{
+    flex:1;
+    border-radius:2px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .front .photo::after{
+    content:'';
+    position:absolute; inset:0;
+    background:repeating-linear-gradient(135deg, rgba(255,255,255,0.10) 0 3px, transparent 3px 9px);
+  }
+  .front .num{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:56px;
+    color:rgba(58,46,40,0.85);
+    z-index:1;
+    text-shadow:0 2px 0 rgba(255,255,255,0.25);
+  }
+  .front .tag{
+    text-align:center;
+    font-family:'Caveat', cursive;
+    font-size:19px;
+    color:var(--ink-soft);
+    padding-top:8px;
+  }
+
+  /* back face = profile card */
+  .back{
+    background:var(--card-back);
+    background-image:repeating-linear-gradient(var(--card-back) 0 30px, var(--line) 30px 31px);
+    background-position:0 46px;
+    transform:rotateY(180deg);
+    box-shadow:var(--shadow);
+    border:1px solid rgba(58,46,40,0.08);
+    padding:14px 16px 14px;
+  }
+  .back .stamp{
+    align-self:flex-start;
+    font-family:'Inter';
+    font-weight:700;
+    font-size:11px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--sage-deep);
+    border:2px solid var(--sage-deep);
+    border-radius:5px;
+    padding:3px 9px;
+    transform:rotate(-4deg);
+    margin-bottom:8px;
+  }
+
+  .back .top-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    margin-bottom:8px;
+  }
+  .back .top-row .stamp{margin-bottom:0;}
+
+  .audio-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:30px; height:30px;
+    flex:none;
+    border-radius:50%;
+    border:2px solid var(--rose-deep);
+    background:var(--card-back);
+    color:var(--rose-deep);
+    cursor:pointer;
+    font-size:14px;
+    transition:transform .15s ease, background .2s ease, color .2s ease;
+  }
+  .audio-btn:hover{transform:translateY(-1px) scale(1.05);}
+  .audio-btn.speaking{
+    background:var(--rose-deep);
+    color:var(--card-back);
+    animation:pulse 1s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{box-shadow:0 0 0 0 rgba(193,102,107,0.35);}
+    50%{box-shadow:0 0 0 6px rgba(193,102,107,0);}
+  }
+  .back .clues{
+    flex:1;
+    list-style:none;
+    margin:0;
+    padding:0;
+    font-family:'Caveat', cursive;
+    font-size:19px;
+    line-height:1.42;
+    color:var(--ink);
+  }
+  .back .clues li{
+    position:relative;
+    padding-left:20px;
+    margin-bottom:2px;
+  }
+  .back .clues li::before{
+    content:'✎';
+    position:absolute;
+    left:0; top:0;
+    color:var(--rose-deep);
+    font-size:14px;
+  }
+
+  .back .answer-zone{
+    margin-top:auto;
+    padding-top:8px;
+    border-top:1px dashed var(--line);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+  }
+  .reveal-btn{
+    font-family:'Inter';
+    font-weight:600;
+    font-size:12px;
+    letter-spacing:0.03em;
+    background:var(--mustard);
+    color:var(--ink);
+    border:none;
+    padding:6px 14px;
+    border-radius:100px;
+    cursor:pointer;
+    transition:transform .15s ease, background .2s ease;
+  }
+  .reveal-btn:hover{transform:translateY(-1px); background:#e6b458;}
+
+  .name-stamp{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:22px;
+    color:var(--rose-deep);
+    opacity:0;
+    transform:scale(0.7) rotate(-6deg);
+    transition:opacity .3s ease, transform .35s cubic-bezier(.34,1.56,.64,1);
+    text-align:center;
+  }
+  .name-stamp.show{opacity:1; transform:scale(1) rotate(-4deg);}
+
+  .hint{
+    text-align:center;
+    font-family:'Caveat', cursive;
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-top:30px;
+  }
+
+  @media (max-width:520px){
+    .grid{gap:26px 16px;}
+    .front .num{font-size:44px;}
+    .back .clues{font-size:17px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">um jogo de adivinhação</span>
+    <h1>Quem é da Família?</h1>
+    <p class="subtitle">Clique em um card para virar e ler as <strong>5 dicas</strong> em voz alta — sem dizer o nome! A turma tenta adivinhar qual membro da família é antes de tocar no carimbo de resposta.</p>
+  </header>
+
+  <div class="controls">
+    <div class="counter">Revelados: <span id="count">0</span>/9</div>
+    <button class="shuffle" id="shuffleBtn">Embaralhar cards</button>
+  </div>
+
+  <div class="line-holder"></div>
+  <div class="grid" id="grid"></div>
+
+  <p class="hint">dica para o professor: peça para um aluno ler as dicas e escolher quem responde ✂️</p>
+</div>
+
+<script>
+const members = [
+  { name: "Father", tone:1, clues:[
+    "He is my mother's husband.",
+    "He is a man in my family.",
+    "He goes to work every day.",
+    "He teaches me how to ride a bike.",
+    "Everyone calls him \"Dad\"."
+  ]},
+  { name: "Mother", tone:2, clues:[
+    "She is my father's wife.",
+    "She is a woman in my family.",
+    "She cooks dinner every night.",
+    "She takes care of me when I'm sick.",
+    "Everyone calls her \"Mom\"."
+  ]},
+  { name: "Brother", tone:3, clues:[
+    "He is my parents' son.",
+    "He is a boy in my family.",
+    "We call the same people \"Mom\" and \"Dad\".",
+    "He can be older or younger than me.",
+    "We grew up in the same house."
+  ]},
+  { name: "Sister", tone:1, clues:[
+    "She is my parents' daughter.",
+    "She is a girl in my family.",
+    "We call the same people \"Mom\" and \"Dad\".",
+    "She can be older or younger than me.",
+    "We grew up in the same house."
+  ]},
+  { name: "Son", tone:2, clues:[
+    "He is my child.",
+    "He is a boy.",
+    "I am his mother or his father.",
+    "He calls me \"Mom\" or \"Dad\".",
+    "He will grow up in my house."
+  ]},
+  { name: "Daughter", tone:3, clues:[
+    "She is my child.",
+    "She is a girl.",
+    "I am her mother or her father.",
+    "She calls me \"Mom\" or \"Dad\".",
+    "She will grow up in my house."
+  ]},
+  { name: "Grandfather", tone:1, clues:[
+    "He is my father's father, or my mother's father.",
+    "He is a man.",
+    "He is older than my parents.",
+    "He tells long stories about the past.",
+    "He might have gray hair."
+  ]},
+  { name: "Grandmother", tone:2, clues:[
+    "She is my mother's mother.",
+    "She is old.",
+    "She loves cookies.",
+    "She likes to tell stories about the past.",
+    "She gives me hugs and gifts."
+  ]},
+  { name: "Uncle", tone:3, clues:[
+    "He is my father's brother, or my mother's brother.",
+    "He is a man.",
+    "He is not my parent.",
+    "He visits on holidays.",
+    "He sometimes brings me presents."
+  ]},
+];
+
+// swap one in for Aunt to keep exactly 9 total per the brief
+members.push({ name:"Aunt", tone:1, clues:[
+    "She is my father's sister, or my mother's sister.",
+    "She is a woman.",
+    "She is not my parent.",
+    "She visits on holidays.",
+    "She sometimes brings me presents."
+] });
+
+const toneVars = {
+  1:'var(--card-front-1)',
+  2:'var(--card-front-2)',
+  3:'var(--card-front-3)'
+};
+
+const grid = document.getElementById('grid');
+const countEl = document.getElementById('count');
+let revealedCount = 0;
+
+function shuffle(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function render(){
+  grid.innerHTML = '';
+  revealedCount = 0;
+  countEl.textContent = '0';
+  const order = shuffle(members);
+
+  order.forEach((member, idx) => {
+    const slot = document.createElement('div');
+    slot.className = 'slot';
+
+    const tilt = (idx % 2 === 0 ? -1 : 1) * (1 + (idx % 3));
+    slot.innerHTML = `
+      <div class="pin"></div>
+      <div class="card" style="--tilt:${tilt}deg">
+        <div class="face front">
+          <div class="photo" style="background:${toneVars[member.tone]}">
+            <span class="num">${idx+1}</span>
+          </div>
+          <div class="tag">clique para revelar as dicas</div>
+        </div>
+        <div class="face back">
+          <div class="top-row">
+            <span class="stamp">Perfil</span>
+            <button class="audio-btn" title="Ouvir as dicas em inglês" aria-label="Ouvir as dicas em inglês">🔊</button>
+          </div>
+          <ul class="clues">
+            ${member.clues.map(c => `<li>${c}</li>`).join('')}
+          </ul>
+          <div class="answer-zone">
+            <button class="reveal-btn">Revelar resposta</button>
+            <div class="name-stamp">${member.name}</div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const cardEl = slot.querySelector('.card');
+    cardEl.addEventListener('click', (e) => {
+      if(e.target.closest('.reveal-btn')) return;
+      slot.classList.toggle('flipped');
+    });
+
+    const revealBtn = slot.querySelector('.reveal-btn');
+    const nameStamp = slot.querySelector('.name-stamp');
+    revealBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if(!nameStamp.classList.contains('show')){
+        nameStamp.classList.add('show');
+        revealedCount++;
+        countEl.textContent = revealedCount;
+      }
+    });
+
+    const audioBtn = slot.querySelector('.audio-btn');
+    audioBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      speakClues(member.clues, audioBtn);
+    });
+
+    grid.appendChild(slot);
+  });
+}
+
+document.getElementById('shuffleBtn').addEventListener('click', render);
+
+const synth = window.speechSynthesis;
+let activeBtn = null;
+
+function pickEnglishVoice(){
+  const voices = synth.getVoices();
+  return voices.find(v => v.lang && v.lang.startsWith('en')) || null;
+}
+
+function stopSpeaking(){
+  synth.cancel();
+  if(activeBtn){ activeBtn.classList.remove('speaking'); }
+  activeBtn = null;
+}
+
+function speakClues(clues, btn){
+  if(!('speechSynthesis' in window)){
+    alert('Este navegador não tem suporte a leitura em voz alta.');
+    return;
+  }
+
+  const wasThisOne = (activeBtn === btn);
+  stopSpeaking();
+  if(wasThisOne) return; // acted as a stop/toggle
+
+  const utterance = new SpeechSynthesisUtterance(clues.join('. '));
+  utterance.lang = 'en-US';
+  utterance.rate = 0.92;
+  utterance.pitch = 1;
+  const voice = pickEnglishVoice();
+  if(voice) utterance.voice = voice;
+
+  utterance.onend = () => {
+    btn.classList.remove('speaking');
+    if(activeBtn === btn) activeBtn = null;
+  };
+  utterance.onerror = () => {
+    btn.classList.remove('speaking');
+    if(activeBtn === btn) activeBtn = null;
+  };
+
+  activeBtn = btn;
+  btn.classList.add('speaking');
+  synth.speak(utterance);
+}
+
+// Some browsers load voices asynchronously
+if('speechSynthesis' in window){
+  window.speechSynthesis.onvoiceschanged = () => pickEnglishVoice();
+}
+
+render();
+</script>
+</body>
+</html>
