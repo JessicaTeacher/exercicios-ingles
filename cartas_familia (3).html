@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cartas em Família</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Caveat:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #F3EAD8;
+    --ink: #3A2E28;
+    --ink-soft: #6B5D52;
+    --rose: #C1666B;
+    --rose-deep: #A44F54;
+    --sage: #6E8B74;
+    --sage-deep: #56705D;
+    --sky: #5E7C9E;
+    --mustard: #D9A441;
+    --card: #FFFDF6;
+    --line: rgba(58,46,40,0.16);
+    --shadow: 0 10px 26px rgba(58,46,40,0.14);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:radial-gradient(ellipse at top left, #FBF3E4 0%, var(--paper) 55%), var(--paper);
+    font-family:'Inter', sans-serif;
+    color:var(--ink);
+    padding:32px 16px 60px;
+  }
+  .wrap{max-width:720px; margin:0 auto;}
+
+  header{text-align:center; margin-bottom:22px;}
+  .eyebrow{
+    font-family:'Caveat', cursive;
+    font-size:21px;
+    color:var(--sky);
+    transform:rotate(-2deg);
+    display:inline-block;
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:clamp(28px, 5vw, 44px);
+    margin:2px 0 10px;
+    letter-spacing:-0.01em;
+  }
+  .subtitle{
+    max-width:560px;
+    margin:0 auto;
+    font-size:14.5px;
+    line-height:1.6;
+    color:var(--ink-soft);
+  }
+  .subtitle strong{color:var(--ink);}
+
+  .letter-card{
+    position:relative;
+    background:var(--card);
+    border-radius:10px;
+    box-shadow:var(--shadow);
+    border:1px solid var(--line);
+    overflow:hidden;
+    margin-bottom:28px;
+  }
+  .airmail-stripe{
+    height:8px;
+    background:repeating-linear-gradient(-45deg, var(--sky) 0 14px, var(--card) 14px 20px, var(--rose-deep) 20px 34px, var(--card) 34px 40px);
+  }
+  .letterhead{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px 18px;
+    border-bottom:1px dashed var(--line);
+    flex-wrap:wrap;
+    row-gap:8px;
+  }
+  .stamp-avatar{
+    width:44px; height:44px;
+    flex:none;
+    border-radius:8px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:20px;
+    color:#fff;
+    transform:rotate(-3deg);
+    box-shadow:0 3px 6px rgba(58,46,40,0.25);
+  }
+  .stamp-avatar.alex{background:var(--sky);}
+  .stamp-avatar.student{background:var(--rose-deep);}
+  .letterhead .who{flex:1;}
+  .letterhead .name{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:18px;
+  }
+  .letterhead .status{font-size:12px; color:var(--ink-soft);}
+
+  .icon-btn{
+    font-family:'Inter';
+    font-weight:600;
+    font-size:12.5px;
+    background:#fff;
+    border:1.5px solid var(--sage-deep);
+    color:var(--sage-deep);
+    padding:7px 13px;
+    border-radius:100px;
+    cursor:pointer;
+    transition:all .2s ease;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+  }
+  .icon-btn:hover{background:var(--sage-deep); color:#fff; transform:translateY(-1px);}
+  .icon-btn.speaking{background:var(--sage-deep); color:#fff; animation:pulseGreen 1s ease-in-out infinite;}
+  @keyframes pulseGreen{
+    0%,100%{box-shadow:0 0 0 0 rgba(86,112,93,0.35);}
+    50%{box-shadow:0 0 0 7px rgba(86,112,93,0);}
+  }
+
+  .letter-body{
+    padding:18px 20px 22px;
+    font-size:15.5px;
+    line-height:1.7;
+  }
+  .letter-body p{margin:0 0 12px;}
+  .letter-body p:last-child{margin-bottom:0;}
+  mark.voc{
+    background:rgba(217,164,65,0.35);
+    color:var(--ink);
+    padding:0 3px;
+    border-radius:3px;
+    font-weight:600;
+  }
+
+  /* vocabulary checklist */
+  .vocab-checklist{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    padding:0 20px 16px;
+  }
+  .vocab-chip{
+    font-family:'Inter';
+    font-weight:600;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    background:#FBF6EC;
+    border:1.5px solid var(--line);
+    padding:5px 12px;
+    border-radius:100px;
+    cursor:pointer;
+    transition:all .2s ease;
+  }
+  .vocab-chip:hover{border-color:var(--sky); color:var(--sky);}
+  .vocab-chip.used{
+    background:var(--sage-deep);
+    border-color:var(--sage-deep);
+    color:#fff;
+  }
+  .vocab-chip.used::before{content:'✓ ';}
+
+  .suggestions{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding:0 20px 14px;
+  }
+  .suggestion-chip{
+    flex:none;
+    font-family:'Caveat', cursive;
+    font-size:16px;
+    color:var(--ink-soft);
+    background:#FBF6EC;
+    border:1px solid var(--line);
+    padding:5px 13px;
+    border-radius:100px;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:all .15s ease;
+  }
+  .suggestion-chip:hover{border-color:var(--sky); color:var(--sky);}
+
+  textarea#studentLetter{
+    display:block;
+    width:calc(100% - 40px);
+    margin:0 20px 16px;
+    min-height:170px;
+    resize:vertical;
+    font-family:'Inter';
+    font-size:15px;
+    line-height:1.7;
+    padding:14px 16px;
+    border-radius:10px;
+    border:1.5px solid var(--line);
+    background:
+      repeating-linear-gradient(#FBF6EC 0 29px, var(--line) 29px 30px);
+    background-attachment:local;
+    color:var(--ink);
+    outline:none;
+    transition:border-color .2s ease;
+  }
+  textarea#studentLetter:focus{border-color:var(--sky);}
+
+  .actions-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    padding:0 20px 8px;
+  }
+
+  #micBtn{
+    font-family:'Inter';
+    font-weight:700;
+    font-size:12.5px;
+    background:var(--rose-deep);
+    color:#fff;
+    border:none;
+    padding:9px 16px;
+    border-radius:100px;
+    cursor:pointer;
+    transition:transform .15s ease, background .2s ease;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+  }
+  #micBtn:hover{transform:translateY(-1px);}
+  #micBtn.recording{animation:pulseRed 1s ease-in-out infinite;}
+  @keyframes pulseRed{
+    0%,100%{box-shadow:0 0 0 0 rgba(164,79,84,0.4);}
+    50%{box-shadow:0 0 0 8px rgba(164,79,84,0);}
+  }
+  #micBtn:disabled{opacity:0.45; cursor:not-allowed; animation:none;}
+
+  #clearBtn{
+    font-family:'Inter';
+    font-weight:600;
+    font-size:12.5px;
+    background:none;
+    border:1.5px solid var(--ink-soft);
+    color:var(--ink-soft);
+    padding:8px 15px;
+    border-radius:100px;
+    cursor:pointer;
+    transition:all .2s ease;
+  }
+  #clearBtn:hover{border-color:var(--rose-deep); color:var(--rose-deep);}
+
+  .live-transcript{
+    margin:0 20px 6px;
+    font-family:'Caveat', cursive;
+    font-size:16px;
+    color:var(--sky);
+    display:none;
+  }
+
+  .hint-note{
+    margin:0 20px 16px;
+    font-size:12px;
+    color:var(--ink-soft);
+    display:none;
+  }
+
+  .pronunciation-panel{
+    margin:0 20px 20px;
+    background:#FBF6EC;
+    border:1.5px dashed var(--sky);
+    border-radius:10px;
+    padding:14px 16px;
+    display:none;
+  }
+  .pronunciation-panel .p-title{
+    font-family:'Inter';
+    font-weight:700;
+    font-size:12px;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    color:var(--sky);
+    margin-bottom:6px;
+  }
+  .pronunciation-panel .p-heard{
+    font-family:'Caveat', cursive;
+    font-size:17px;
+    color:var(--ink-soft);
+    margin-bottom:8px;
+  }
+  .pronunciation-panel .p-words{
+    font-size:16px;
+    line-height:1.9;
+    margin-bottom:10px;
+  }
+  .pword{padding:1px 5px; border-radius:5px; margin-right:2px; display:inline-block;}
+  .pword.hit{background:rgba(110,139,116,0.22); color:var(--sage-deep); font-weight:600;}
+  .pword.miss{background:rgba(193,102,107,0.16); color:var(--rose-deep); text-decoration:underline; text-decoration-style:wavy;}
+  .p-score-row{display:flex; align-items:center; gap:10px;}
+  .p-score-bar{flex:1; height:8px; border-radius:100px; background:var(--line); overflow:hidden;}
+  .p-score-fill{height:100%; background:var(--sage-deep); border-radius:100px; transition:width .5s ease;}
+  .p-score-label{font-family:'Inter'; font-weight:700; font-size:13px; flex:none;}
+  .p-close{
+    display:block; margin:10px auto 0;
+    font-family:'Inter'; font-size:11.5px; font-weight:600;
+    color:var(--ink-soft); background:none; border:none;
+    cursor:pointer; text-decoration:underline;
+  }
+
+  .browser-note{
+    text-align:center;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    max-width:520px;
+    margin:0 auto;
+  }
+
+  ::-webkit-scrollbar{width:8px;}
+  ::-webkit-scrollbar-thumb{background:var(--line); border-radius:10px;}
+
+  @media (max-width:480px){
+    textarea#studentLetter{width:calc(100% - 32px); margin:0 16px 16px;}
+    .letter-body, .vocab-checklist, .suggestions, .actions-row, .live-transcript, .hint-note, .pronunciation-panel{padding-left:16px; padding-right:16px;}
+    .pronunciation-panel{margin-left:16px; margin-right:16px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">correspondência em inglês, sem pressa</span>
+    <h1>Cartas em Família</h1>
+    <p class="subtitle">Leia a carta do <strong>Alex</strong> sobre a família dele — usando <strong>verb to be</strong>, nomes, idades, profissões e nacionalidades. Depois, escreva a sua carta do mesmo jeito e grave sua voz para conferir a pronúncia!</p>
+  </header>
+
+  <!-- Alex's letter -->
+  <div class="letter-card">
+    <div class="airmail-stripe"></div>
+    <div class="letterhead">
+      <div class="stamp-avatar alex">A</div>
+      <div class="who">
+        <div class="name">Alex</div>
+        <div class="status">uma carta de Londres ✈️</div>
+      </div>
+      <button class="icon-btn" id="listenAlexBtn">🔊 Ouvir carta</button>
+    </div>
+    <div class="letter-body" id="alexLetter">
+      <p>Hello! My name is Alex. I am 11 years old. I am British.</p>
+      <p>This is my <mark class="voc">father</mark>. His name is Tom. He is 42 years old. He is a bus driver. He is British.</p>
+      <p>This is my <mark class="voc">mother</mark>. Her name is Kate. She is 40 years old. She is a nurse. She is British too.</p>
+      <p>This is my <mark class="voc">brother</mark>. His name is Sam. He is 14 years old. He is a student.</p>
+      <p>This is my <mark class="voc">sister</mark>. Her name is Emma. She is 8 years old. She is a student too.</p>
+      <p>This is my <mark class="voc">grandfather</mark>. His name is George. He is 70 years old. He is a farmer.</p>
+      <p>This is my <mark class="voc">grandmother</mark>. Her name is Rose. She is 68 years old. She is a teacher.</p>
+      <p>This is my <mark class="voc">uncle</mark>. His name is Ben. He is 35 years old. He is a doctor.</p>
+      <p>This is my <mark class="voc">aunt</mark>. Her name is Amy. She is 33 years old. She is a chef.</p>
+      <p>Someday, I want to be a <mark class="voc">father</mark>. Maybe I will have a <mark class="voc">son</mark> and a <mark class="voc">daughter</mark> too!</p>
+      <p>Now it's your turn! Write about your family. Use names, ages, professions, and nationalities.</p>
+    </div>
+  </div>
+
+  <!-- Student's letter -->
+  <div class="letter-card">
+    <div class="airmail-stripe"></div>
+    <div class="letterhead">
+      <div class="stamp-avatar student">✎</div>
+      <div class="who">
+        <div class="name">Sua carta para o Alex</div>
+        <div class="status" id="wordCountStatus">use as palavras da família na sua carta</div>
+      </div>
+      <button class="icon-btn" id="listenMineBtn">🔊 Ouvir minha carta</button>
+    </div>
+
+    <div class="vocab-checklist" id="vocabChecklist"></div>
+    <div class="suggestions" id="suggestions"></div>
+
+    <textarea id="studentLetter" placeholder="Dear Alex,
+
+This is my father. He is ... years old. He is a ... He is ...">Dear Alex,
+</textarea>
+
+    <div class="actions-row">
+      <button id="micBtn">🎙️ Gravar e conferir pronúncia</button>
+      <button id="clearBtn">Limpar carta</button>
+    </div>
+    <p class="live-transcript" id="liveTranscript"></p>
+    <p class="hint-note" id="hintNote"></p>
+
+    <div class="pronunciation-panel" id="pronunciationPanel">
+      <div class="p-title">Verificação de pronúncia</div>
+      <div class="p-heard" id="pHeard"></div>
+      <div class="p-words" id="pWords"></div>
+      <div class="p-score-row">
+        <div class="p-score-bar"><div class="p-score-fill" id="pScoreFill"></div></div>
+        <div class="p-score-label" id="pScoreLabel">0%</div>
+      </div>
+      <button class="p-close" id="pCloseBtn">fechar</button>
+    </div>
+  </div>
+
+  <p class="browser-note">Os recursos de voz (ouvir e gravar) usam os recursos nativos do navegador — funcionam melhor no <strong>Google Chrome</strong>, em qualquer computador, sem precisar de internet extra.</p>
+</div>
+
+<script>
+const vocab = ["father","mother","brother","sister","son","daughter","grandfather","grandmother","uncle","aunt"];
+const starters = [
+  "Dear Alex,",
+  "This is my father.",
+  "He is ... years old.",
+  "She is a doctor.",
+  "This is my grandmother.",
+  "I am Brazilian.",
+  "Write soon, [your name]"
+];
+
+const studentLetter = document.getElementById('studentLetter');
+const wordCountStatus = document.getElementById('wordCountStatus');
+const vocabChecklist = document.getElementById('vocabChecklist');
+const suggestionsEl = document.getElementById('suggestions');
+
+/* ---- vocabulary checklist that tracks words used in the student's letter ---- */
+const vocabChipEls = {};
+vocab.forEach(word => {
+  const chip = document.createElement('button');
+  chip.className = 'vocab-chip';
+  chip.textContent = word;
+  chip.addEventListener('click', () => insertAtCursor(word));
+  vocabChecklist.appendChild(chip);
+  vocabChipEls[word] = chip;
+});
+
+starters.forEach(text => {
+  const chip = document.createElement('button');
+  chip.className = 'suggestion-chip';
+  chip.textContent = text;
+  chip.addEventListener('click', () => insertAtCursor(text, true));
+  suggestionsEl.appendChild(chip);
+});
+
+function insertAtCursor(text, ownLine = false){
+  const start = studentLetter.selectionStart ?? studentLetter.value.length;
+  const end = studentLetter.selectionEnd ?? studentLetter.value.length;
+  const before = studentLetter.value.slice(0, start);
+  const after = studentLetter.value.slice(end);
+  let insertion = text;
+  if(ownLine){
+    insertion = (before.length && !before.endsWith('\n') ? '\n' : '') + text + '\n';
+  } else {
+    const needsSpace = before.length && !before.endsWith(' ') && !before.endsWith('\n');
+    insertion = (needsSpace ? ' ' : '') + text + ' ';
+  }
+  studentLetter.value = before + insertion + after;
+  studentLetter.focus();
+  updateVocabChecklist();
+}
+
+function updateVocabChecklist(){
+  const text = studentLetter.value.toLowerCase();
+  let usedCount = 0;
+  vocab.forEach(word => {
+    const re = new RegExp('\\b' + word + '\\b', 'i');
+    const used = re.test(text);
+    vocabChipEls[word].classList.toggle('used', used);
+    if(used) usedCount++;
+  });
+  wordCountStatus.textContent = usedCount === 0
+    ? 'use as palavras da família na sua carta'
+    : `${usedCount} de ${vocab.length} palavras da família usadas`;
+}
+studentLetter.addEventListener('input', updateVocabChecklist);
+updateVocabChecklist();
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+  studentLetter.value = 'Dear Alex,\n';
+  updateVocabChecklist();
+  pronunciationPanel.style.display = 'none';
+  hintNote.style.display = 'none';
+});
+
+/* ---- text-to-speech (works fully offline, native browser feature) ---- */
+const synth = window.speechSynthesis;
+let activeSpeakBtn = null;
+
+function pickEnglishVoice(preferMale){
+  const voices = synth.getVoices().filter(v => v.lang && v.lang.startsWith('en'));
+  if(!voices.length) return null;
+  if(preferMale){
+    const byLabel = voices.find(v => /male/i.test(v.name) && !/female/i.test(v.name));
+    if(byLabel) return byLabel;
+    const byKnownName = voices.find(v => /(Alex|David|Daniel|Mark|Fred|Aaron|Guy|Ryan|Oliver|James|Arthur)/i.test(v.name));
+    if(byKnownName) return byKnownName;
+  }
+  return voices[0];
+}
+if('speechSynthesis' in window){
+  window.speechSynthesis.onvoiceschanged = () => pickEnglishVoice(false);
+}
+
+function speakText(text, btn, options = {}){
+  if(!('speechSynthesis' in window)){
+    alert('Este navegador não tem suporte a leitura em voz alta.');
+    return;
+  }
+  const wasThisOne = (activeSpeakBtn === btn);
+  synth.cancel();
+  if(activeSpeakBtn) activeSpeakBtn.classList.remove('speaking');
+  activeSpeakBtn = null;
+  if(wasThisOne) return;
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'en-US';
+  utterance.rate = options.rate ?? 0.93;
+  utterance.pitch = options.pitch ?? 1;
+  const voice = pickEnglishVoice(options.preferMale);
+  if(voice) utterance.voice = voice;
+  utterance.onend = () => { btn.classList.remove('speaking'); if(activeSpeakBtn === btn) activeSpeakBtn = null; };
+  utterance.onerror = () => { btn.classList.remove('speaking'); if(activeSpeakBtn === btn) activeSpeakBtn = null; };
+
+  activeSpeakBtn = btn;
+  btn.classList.add('speaking');
+  synth.speak(utterance);
+}
+
+const listenAlexBtn = document.getElementById('listenAlexBtn');
+listenAlexBtn.addEventListener('click', () => {
+  const text = document.getElementById('alexLetter').innerText;
+  // higher pitch + slightly faster pace reads more like an 11-year-old than a grown adult
+  speakText(text, listenAlexBtn, { preferMale: true, pitch: 1.45, rate: 1.05 });
+});
+
+const listenMineBtn = document.getElementById('listenMineBtn');
+listenMineBtn.addEventListener('click', () => {
+  const text = studentLetter.value.trim();
+  if(!text){
+    alert('Escreva sua carta primeiro!');
+    return;
+  }
+  speakText(text, listenMineBtn, { preferMale: false });
+});
+
+/* ---- recording + pronunciation check (native browser speech recognition) ---- */
+const micBtn = document.getElementById('micBtn');
+const liveTranscript = document.getElementById('liveTranscript');
+const hintNote = document.getElementById('hintNote');
+const pronunciationPanel = document.getElementById('pronunciationPanel');
+const pHeard = document.getElementById('pHeard');
+const pWords = document.getElementById('pWords');
+const pScoreFill = document.getElementById('pScoreFill');
+const pScoreLabel = document.getElementById('pScoreLabel');
+const pCloseBtn = document.getElementById('pCloseBtn');
+
+const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = null;
+let isRecording = false;
+let finalTranscript = '';
+
+if(SpeechRecognitionAPI){
+  recognition = new SpeechRecognitionAPI();
+  recognition.lang = 'en-US';
+  recognition.continuous = true;
+  recognition.interimResults = true;
+
+  recognition.onresult = (event) => {
+    let interim = '';
+    for(let i = event.resultIndex; i < event.results.length; i++){
+      const res = event.results[i];
+      if(res.isFinal) finalTranscript += res[0].transcript + ' ';
+      else interim += res[0].transcript;
+    }
+    liveTranscript.textContent = 'Ouvindo você: "' + (finalTranscript + interim).trim() + '"';
+  };
+  recognition.onerror = () => {
+    hintNote.textContent = 'Não consegui ouvir. Verifique a permissão do microfone, ou baixe o arquivo e abra direto no Google Chrome.';
+    hintNote.style.display = 'block';
+  };
+  recognition.onend = () => {
+    stopRecordingUI();
+    if(finalTranscript.trim()){
+      showPronunciationFeedback(studentLetter.value, finalTranscript.trim());
+    }
+  };
+} else {
+  micBtn.disabled = true;
+  micBtn.title = 'Reconhecimento de voz não é suportado neste navegador';
+}
+
+function startRecordingUI(){
+  isRecording = true;
+  finalTranscript = '';
+  micBtn.classList.add('recording');
+  micBtn.textContent = '⏺️ Parar gravação';
+  liveTranscript.style.display = 'block';
+  liveTranscript.textContent = 'Ouvindo você...';
+  hintNote.style.display = 'none';
+  pronunciationPanel.style.display = 'none';
+}
+function stopRecordingUI(){
+  isRecording = false;
+  micBtn.classList.remove('recording');
+  micBtn.textContent = '🎙️ Gravar e conferir pronúncia';
+}
+
+micBtn.addEventListener('click', () => {
+  if(!recognition) return;
+  if(isRecording){
+    recognition.stop();
+    return;
+  }
+  const text = studentLetter.value.trim();
+  if(!text){
+    hintNote.textContent = 'Escreva sua carta primeiro, depois toque em gravar e leia em voz alta.';
+    hintNote.style.display = 'block';
+    studentLetter.focus();
+    return;
+  }
+  try{
+    recognition.start();
+    startRecordingUI();
+  }catch(err){
+    stopRecordingUI();
+    hintNote.textContent = 'Não consegui acessar o microfone aqui no preview. Baixe o arquivo (ícone de download) e abra direto no Google Chrome para gravar.';
+    hintNote.style.display = 'block';
+  }
+});
+
+pCloseBtn.addEventListener('click', () => {
+  pronunciationPanel.style.display = 'none';
+});
+
+function normalizeWords(text){
+  return text.toLowerCase().replace(/[.,!?;:"']/g, '').split(/\s+/).filter(Boolean);
+}
+
+// Longest common subsequence between written words and spoken words:
+// words said in the right content/order count as correctly pronounced,
+// even if the whole sentence isn't a perfect match.
+function matchWords(writtenWords, spokenWords){
+  const n = writtenWords.length, m = spokenWords.length;
+  const dp = Array.from({length:n+1}, () => new Array(m+1).fill(0));
+  for(let i=1;i<=n;i++){
+    for(let j=1;j<=m;j++){
+      if(writtenWords[i-1] === spokenWords[j-1]) dp[i][j] = dp[i-1][j-1] + 1;
+      else dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+    }
+  }
+  const matched = new Array(n).fill(false);
+  let i = n, j = m;
+  while(i > 0 && j > 0){
+    if(writtenWords[i-1] === spokenWords[j-1]){
+      matched[i-1] = true; i--; j--;
+    } else if(dp[i-1][j] >= dp[i][j-1]){
+      i--;
+    } else {
+      j--;
+    }
+  }
+  return { length: dp[n][m], matched };
+}
+
+function showPronunciationFeedback(writtenText, transcript){
+  const writtenWords = normalizeWords(writtenText);
+  const spokenWords = normalizeWords(transcript);
+  const { length, matched } = matchWords(writtenWords, spokenWords);
+  const score = writtenWords.length ? Math.round((length / writtenWords.length) * 100) : 0;
+
+  pHeard.textContent = `Você disse: "${transcript}"`;
+  pWords.innerHTML = writtenWords.map((w, idx) =>
+    `<span class="pword ${matched[idx] ? 'hit' : 'miss'}">${w}</span>`
+  ).join(' ');
+  pScoreFill.style.width = score + '%';
+  pScoreFill.style.background = score >= 80 ? 'var(--sage-deep)' : (score >= 50 ? 'var(--mustard)' : 'var(--rose-deep)');
+  pScoreLabel.textContent = score + '%';
+  pronunciationPanel.style.display = 'block';
+  liveTranscript.style.display = 'none';
+}
+</script>
+</body>
+</html>
