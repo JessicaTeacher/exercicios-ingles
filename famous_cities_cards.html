@@ -109,7 +109,7 @@
 
   .grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(240px,1fr));
+    grid-template-columns:repeat(auto-fit, minmax(260px,1fr));
     gap:26px;
   }
 
@@ -118,12 +118,17 @@
   .card{
     position:relative;
     width:100%;
-    aspect-ratio: 5 / 6.2;
+    height: 500px;
     cursor:pointer;
     transform-style:preserve-3d;
     transition: transform .6s cubic-bezier(.2,.8,.2,1);
   }
   .card.flipped{ transform: rotateY(180deg); }
+
+  /* Narrow single-column screens wrap text onto more lines, so give more room */
+  @media (max-width: 560px){
+    .card{ height: 580px; }
+  }
 
   .face{
     position:absolute; inset:0;
@@ -183,16 +188,39 @@
   }
   .clues{
     list-style:none;
-    margin:0; padding:0;
+    margin:0; padding:0 4px 0 0;
     display:flex; flex-direction:column; gap:8px;
     flex:1;
+    overflow-y:auto;
+    scrollbar-width:thin;
   }
+  .clues::-webkit-scrollbar{ width:5px; }
+  .clues::-webkit-scrollbar-thumb{ background:rgba(27,42,74,0.2); border-radius:99px; }
   .clues li{
     font-size:13.4px;
     line-height:1.4;
     padding-left:20px;
     position:relative;
   }
+  .audio-btn{
+    display:inline-flex; align-items:center; gap:6px;
+    align-self:flex-start;
+    background: rgba(46,139,132,0.12);
+    color:var(--teal);
+    border:1.5px solid var(--teal);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    font-weight:600;
+    padding:5px 11px;
+    border-radius:999px;
+    cursor:pointer;
+    margin: 10px 0 4px;
+    transition: background .15s ease, transform .1s ease;
+  }
+  .audio-btn:hover{ background: rgba(46,139,132,0.22); }
+  .audio-btn:active{ transform: scale(0.96); }
+  .audio-btn.speaking{ background:var(--teal); color:#fff; }
+  .audio-btn[disabled]{ opacity:.45; cursor:not-allowed; }
   .clues li::before{
     content: counter(clue) ".";
     counter-increment: clue;
@@ -425,6 +453,7 @@ function buildCard(city, idx){
           <div class="card-index">Nº ${String(idx+1).padStart(2,'0')}</div>
         </div>
         <span class="continent-tag">${city.continent}</span>
+        <button type="button" class="audio-btn" aria-label="Ouvir as pistas em inglês">🔊 Ouvir pistas</button>
         <ul class="clues">
           ${city.clues.map(c => `<li>${c}</li>`).join('')}
         </ul>
@@ -446,8 +475,40 @@ function buildCard(city, idx){
     if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggleCard(card); }
   });
 
+  const audioBtn = card.querySelector('.audio-btn');
+  audioBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    speakClues(city, audioBtn);
+  });
+  audioBtn.addEventListener('keydown', (e) => e.stopPropagation());
+
   slot.appendChild(card);
   return slot;
+}
+
+function speakClues(city, btn){
+  if(!('speechSynthesis' in window)){
+    alert('Seu navegador não tem suporte à leitura em voz alta.');
+    return;
+  }
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(city.clues.join('. ... '));
+  utterance.lang = 'en-US';
+  utterance.rate = 0.9;
+  utterance.pitch = 1;
+
+  btn.classList.add('speaking');
+  btn.textContent = '🔊 Lendo...';
+
+  const reset = () => {
+    btn.classList.remove('speaking');
+    btn.textContent = '🔊 Ouvir pistas';
+  };
+  utterance.onend = reset;
+  utterance.onerror = reset;
+
+  window.speechSynthesis.speak(utterance);
 }
 
 function toggleCard(card){
@@ -463,6 +524,7 @@ function updateCounter(){
 }
 
 function render(list){
+  if('speechSynthesis' in window){ window.speechSynthesis.cancel(); }
   grid.innerHTML = '';
   list.forEach((city, idx) => grid.appendChild(buildCard(city, idx)));
   revealedCount = 0;
