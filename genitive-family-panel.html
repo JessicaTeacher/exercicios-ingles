@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Family Ties — Caso genitivo com membros da família</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --fog:#E4E7DE;
+    --paper:#F7F6F1;
+    --ink:#283330;
+    --ink-soft:#4B564F;
+    --juniper:#3F5B46;
+    --juniper-light:#E4EBE2;
+    --ochre:#B98A2E;
+    --ochre-light:#F3E7CC;
+    --rust:#A8452F;
+    --rust-light:#F3E0D9;
+    --line:rgba(40,51,48,0.16);
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    min-height:100vh;
+    background:var(--fog);
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:4vh 20px;
+    font-family:'Work Sans', sans-serif;
+    color:var(--ink);
+  }
+
+  .sheet{
+    position:relative;
+    width:100%;
+    max-width:640px;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-left:6px solid var(--ochre);
+    border-radius:5px;
+    padding:2.5rem 2.25rem 2.25rem;
+    margin-top:28px;
+  }
+
+  .tab{
+    position:absolute;
+    top:-22px;
+    left:24px;
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.08em;
+    padding:6px 12px;
+    border-radius:3px 3px 0 0;
+  }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--ochre);
+    margin:0 0 10px;
+  }
+
+  h1{
+    font-family:'Spectral', serif;
+    font-weight:600;
+    font-size:32px;
+    line-height:1.15;
+    margin:0 0 8px;
+    color:var(--ink);
+  }
+
+  h1 em{
+    font-style:italic;
+    font-weight:400;
+    color:var(--juniper);
+  }
+
+  .subtitle{
+    font-size:14.5px;
+    color:var(--ink-soft);
+    line-height:1.6;
+    margin:0 0 22px;
+    max-width:46ch;
+  }
+
+  hr{
+    border:none;
+    border-top:1px solid var(--line);
+    margin:22px 0;
+  }
+
+  .instruction{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    margin:0 0 12px;
+  }
+
+  .answer-line{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:8px;
+    min-height:48px;
+    padding:10px 4px 16px;
+    border-bottom:2px solid var(--ink);
+    margin-bottom:22px;
+  }
+
+  .placeholder-hint{
+    font-family:'Spectral', serif;
+    font-style:italic;
+    font-size:15px;
+    color:var(--ink-soft);
+    opacity:0.6;
+  }
+
+  .pool-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:24px;
+  }
+
+  .tile{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    letter-spacing:0.01em;
+    color:var(--ink);
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:8px 12px;
+    cursor:pointer;
+    transition:border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .tile:hover{
+    border-color:var(--juniper);
+    background:var(--juniper-light);
+  }
+
+  .tile.correct{
+    border-color:var(--juniper);
+    color:var(--juniper);
+    background:var(--juniper-light);
+  }
+
+  .tile.wrong{
+    border-color:var(--rust);
+    color:var(--rust);
+    background:var(--rust-light);
+  }
+
+  .actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:16px;
+  }
+
+  button.btn{
+    font-family:'Work Sans', sans-serif;
+    font-size:14px;
+    font-weight:500;
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    padding:10px 16px;
+    border-radius:4px;
+    cursor:pointer;
+    border:1px solid var(--line);
+    background:var(--paper);
+    color:var(--ink);
+    transition:border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+  }
+
+  button.btn:active{ transform:scale(0.98); }
+
+  button.btn.primary{
+    background:var(--juniper);
+    border-color:var(--juniper);
+    color:var(--paper);
+  }
+
+  button.btn.primary:hover{ background:#354e3b; }
+
+  button.btn.ghost:hover{
+    border-color:var(--ink);
+  }
+
+  .result{
+    font-size:14px;
+    min-height:20px;
+    margin-bottom:6px;
+  }
+
+  .result.ok{ color:var(--juniper); }
+  .result.warn{ color:var(--ochre); }
+  .result.bad{ color:var(--rust); }
+
+  .audio-section{
+    display:none;
+    padding-top:20px;
+    border-top:1px solid var(--line);
+    margin-top:6px;
+  }
+
+  .feedback{
+    font-size:14px;
+    line-height:1.8;
+    margin-top:14px;
+    min-height:24px;
+  }
+
+  .feedback .said{
+    color:var(--ink-soft);
+    font-size:13px;
+    margin-top:6px;
+  }
+
+  .feedback .score{
+    color:var(--ink-soft);
+    font-size:13px;
+    margin-top:2px;
+  }
+
+  .word.correct{ color:var(--juniper); }
+  .word.wrong{ color:var(--rust); text-decoration:underline wavy; }
+
+  @media (max-width:480px){
+    .sheet{ padding:2rem 1.25rem 1.75rem; }
+    h1{ font-size:26px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+  <div class="tab" id="catalog-tab">Ficha nº 01</div>
+  <p class="eyebrow">Caso genitivo · Membros da família</p>
+  <h1>Family <em>Ties</em></h1>
+  <p class="subtitle">Desembaralhe as palavras na ordem certa para formar a frase em inglês. Depois de acertar, você pode ouvir a pronúncia correta e testar a sua.</p>
+
+  <hr>
+
+  <p class="instruction">Toque nas palavras abaixo, na ordem certa:</p>
+
+  <div class="answer-line" id="answer-row"></div>
+  <div class="pool-row" id="pool-row"></div>
+
+  <div class="actions">
+    <button class="btn primary" id="check-btn" type="button">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 12 9 17 20 6"/></svg>
+      Verificar frase
+    </button>
+    <button class="btn ghost" id="new-btn" type="button">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
+      Nova frase
+    </button>
+  </div>
+
+  <p class="result" id="result"></p>
+
+  <div class="audio-section" id="audio-section">
+    <div class="actions" style="margin-bottom:6px;">
+      <button class="btn ghost" id="play-btn" type="button">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        Ouvir frase correta
+      </button>
+      <button class="btn ghost" id="record-btn" type="button">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg>
+        Praticar pronúncia
+      </button>
+    </div>
+    <div class="feedback" id="feedback"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var sentences = [
+    "This is my mother's sister.",
+    "My father's brother is a doctor.",
+    "Her grandmother's house is very old.",
+    "My uncle's daughter is my cousin.",
+    "His sister's husband is kind.",
+    "The son of my aunt lives here.",
+    "My grandfather's wife is my grandmother.",
+    "Their brother's wife arrived yesterday.",
+    "The daughter of my uncle is young.",
+    "My cousin's mother is my aunt.",
+    "The husband of my sister is Portuguese.",
+    "Her son's wife works in London.",
+    "My brother's wife is a teacher.",
+    "Her aunt's house is near the beach.",
+    "My grandparents' farm is beautiful.",
+    "His cousin's dog is very friendly.",
+    "My parents' anniversary is in June.",
+    "The name of my grandmother was Elizabeth.",
+    "The birthday of my nephew is next week."
+  ];
+
+  var answerRow=document.getElementById('answer-row');
+  var poolRow=document.getElementById('pool-row');
+  var resultEl=document.getElementById('result');
+  var audioSection=document.getElementById('audio-section');
+  var feedback=document.getElementById('feedback');
+  var catalogTab=document.getElementById('catalog-tab');
+
+  var currentSentence='';
+  var originalWords=[];
+  var poolState=[];
+  var answerState=[];
+  var target='';
+  var lastIndex=-1;
+  var ficha=1;
+
+  function normalize(w){
+    return w.toLowerCase().replace(/[^a-z0-9]/g,'');
+  }
+
+  function shuffle(arr){
+    var a=arr.slice();
+    for(var i=a.length-1;i>0;i--){
+      var j=Math.floor(Math.random()*(i+1));
+      var tmp=a[i]; a[i]=a[j]; a[j]=tmp;
+    }
+    return a;
+  }
+
+  function pad(n){ return n<10 ? '0'+n : ''+n; }
+
+  function pickSentence(){
+    var idx;
+    do { idx=Math.floor(Math.random()*sentences.length); } while(sentences.length>1 && idx===lastIndex);
+    lastIndex=idx;
+    currentSentence=sentences[idx];
+    originalWords=currentSentence.split(' ').map(function(w,i){ return {id:i, text:w}; });
+    var shuffled;
+    do { shuffled=shuffle(originalWords); } while(originalWords.length>2 && shuffled.every(function(w,i){return w.id===originalWords[i].id;}));
+    poolState=shuffled;
+    answerState=[];
+    resultEl.textContent='';
+    resultEl.className='result';
+    audioSection.style.display='none';
+    feedback.innerHTML='';
+    var display=((ficha-1)%sentences.length)+1;
+    catalogTab.textContent='Ficha nº '+pad(display)+'/'+sentences.length;
+    ficha++;
+    renderPool();
+    renderAnswer();
+  }
+
+  function renderPool(){
+    poolRow.innerHTML='';
+    poolState.forEach(function(item){
+      var btn=document.createElement('button');
+      btn.type='button';
+      btn.className='tile';
+      btn.textContent=item.text;
+      btn.addEventListener('click', function(){
+        poolState=poolState.filter(function(w){return w.id!==item.id;});
+        answerState.push(item);
+        resultEl.textContent='';
+        resultEl.className='result';
+        audioSection.style.display='none';
+        renderPool();
+        renderAnswer();
+      });
+      poolRow.appendChild(btn);
+    });
+  }
+
+  function renderAnswer(){
+    answerRow.innerHTML='';
+    if(answerState.length===0){
+      var hint=document.createElement('span');
+      hint.className='placeholder-hint';
+      hint.textContent='sua frase aparece aqui...';
+      answerRow.appendChild(hint);
+      return;
+    }
+    answerState.forEach(function(item){
+      var btn=document.createElement('button');
+      btn.type='button';
+      btn.className='tile';
+      btn.textContent=item.text;
+      btn.addEventListener('click', function(){
+        answerState=answerState.filter(function(w){return w.id!==item.id;});
+        poolState.push(item);
+        resultEl.textContent='';
+        resultEl.className='result';
+        audioSection.style.display='none';
+        renderPool();
+        renderAnswer();
+      });
+      answerRow.appendChild(btn);
+    });
+  }
+
+  document.getElementById('check-btn').addEventListener('click', function(){
+    if(answerState.length!==originalWords.length){
+      resultEl.textContent='Complete a frase antes de verificar.';
+      resultEl.className='result warn';
+      return;
+    }
+    var allCorrect=true;
+    var tiles=answerRow.querySelectorAll('.tile');
+    tiles.forEach(function(btn,i){
+      var match = normalize(answerState[i].text)===normalize(originalWords[i].text);
+      if(!match) allCorrect=false;
+      btn.className='tile '+(match?'correct':'wrong');
+    });
+    if(allCorrect){
+      resultEl.textContent='Certo! Frase formada corretamente.';
+      resultEl.className='result ok';
+      target=currentSentence;
+      audioSection.style.display='block';
+      feedback.innerHTML='';
+    } else {
+      resultEl.textContent='Quase lá — ajuste as palavras destacadas em vermelho.';
+      resultEl.className='result bad';
+    }
+  });
+
+  document.getElementById('new-btn').addEventListener('click', pickSentence);
+
+  document.getElementById('play-btn').addEventListener('click', function(){
+    if(!('speechSynthesis' in window)){
+      feedback.innerHTML='<span style="color:var(--rust);">Reprodução de áudio não suportada neste navegador.</span>';
+      return;
+    }
+    var utter=new SpeechSynthesisUtterance(target);
+    utter.lang='en-US';
+    var voices=speechSynthesis.getVoices();
+    var enVoice=voices.find(function(v){return v.lang && v.lang.indexOf('en')===0;});
+    if(enVoice) utter.voice=enVoice;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(utter);
+  });
+
+  var recordBtn=document.getElementById('record-btn');
+  var Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var recognizing=false;
+
+  recordBtn.addEventListener('click', function(){
+    if(!Recognition){
+      feedback.innerHTML='<span style="color:var(--rust);">Reconhecimento de voz precisa de Chrome ou Edge.</span>';
+      return;
+    }
+    if(recognizing) return;
+    recognizing=true;
+    recordBtn.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg> Ouvindo...';
+    feedback.innerHTML='<span style="color:var(--ink-soft);">Ouvindo...</span>';
+
+    var rec=new Recognition();
+    rec.lang='en-US';
+    rec.interimResults=false;
+    rec.maxAlternatives=1;
+
+    rec.onresult=function(e){
+      var transcript=e.results[0][0].transcript;
+      renderPronFeedback(transcript);
+    };
+    rec.onerror=function(){
+      feedback.innerHTML='<span style="color:var(--rust);">Não consegui ouvir direito. Tente de novo.</span>';
+    };
+    rec.onend=function(){
+      recognizing=false;
+      recordBtn.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg> Praticar pronúncia';
+    };
+    rec.start();
+  });
+
+  function renderPronFeedback(transcript){
+    var targetWords=target.split(/\s+/).map(normalize);
+    var saidWords=transcript.toLowerCase().replace(/[^a-z0-9\s]/g,'').trim().split(/\s+/).filter(Boolean);
+    var displayWords=target.split(/\s+/);
+    var correct=0;
+    var html='<div>';
+    for(var i=0;i<displayWords.length;i++){
+      var match = saidWords[i]===targetWords[i];
+      if(match) correct++;
+      html += '<span class="word '+(match?'correct':'wrong')+'" style="margin-right:5px;">'+displayWords[i]+'</span>';
+    }
+    html+='</div>';
+    html+='<div class="said">Você disse: "'+transcript+'"</div>';
+    html+='<div class="score">'+correct+' de '+displayWords.length+' palavras corretas.</div>';
+    feedback.innerHTML=html;
+  }
+
+  pickSentence();
+})();
+</script>
+
+</body>
+</html>
