@@ -281,6 +281,10 @@
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg>
         Praticar pronúncia
       </button>
+      <button class="btn ghost" id="playback-btn" type="button" style="display:none;">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        Ouvir minha gravação
+      </button>
     </div>
     <div class="feedback" id="feedback"></div>
   </div>
@@ -354,6 +358,8 @@
     resultEl.className='result';
     audioSection.style.display='none';
     feedback.innerHTML='';
+    var playbackBtnEl=document.getElementById('playback-btn');
+    if(playbackBtnEl) playbackBtnEl.style.display='none';
     var display=((ficha-1)%sentences.length)+1;
     catalogTab.textContent='Ficha nº '+pad(display)+'/'+sentences.length;
     ficha++;
@@ -450,8 +456,14 @@
   });
 
   var recordBtn=document.getElementById('record-btn');
+  var playbackBtn=document.getElementById('playback-btn');
   var Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   var recognizing=false;
+  var currentStream=null;
+  var mediaRecorder=null;
+  var audioChunks=[];
+  var recordedBlobUrl=null;
+  var canRecordAudio = 'mediaDevices' in navigator && 'MediaRecorder' in window;
 
   recordBtn.addEventListener('click', function(){
     if(!Recognition){
@@ -478,8 +490,41 @@
     rec.onend=function(){
       recognizing=false;
       recordBtn.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg> Praticar pronúncia';
+      if(mediaRecorder && mediaRecorder.state==='recording'){
+        mediaRecorder.stop();
+      }
     };
-    rec.start();
+
+    if(canRecordAudio){
+      navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+        currentStream=stream;
+        audioChunks=[];
+        mediaRecorder=new MediaRecorder(stream);
+        mediaRecorder.ondataavailable=function(e){
+          if(e.data && e.data.size>0) audioChunks.push(e.data);
+        };
+        mediaRecorder.onstop=function(){
+          if(recordedBlobUrl) URL.revokeObjectURL(recordedBlobUrl);
+          var blob=new Blob(audioChunks, {type: mediaRecorder.mimeType || 'audio/webm'});
+          recordedBlobUrl=URL.createObjectURL(blob);
+          playbackBtn.style.display='inline-flex';
+          currentStream.getTracks().forEach(function(t){ t.stop(); });
+          currentStream=null;
+        };
+        mediaRecorder.start();
+        rec.start();
+      }).catch(function(){
+        rec.start();
+      });
+    } else {
+      rec.start();
+    }
+  });
+
+  playbackBtn.addEventListener('click', function(){
+    if(recordedBlobUrl){
+      new Audio(recordedBlobUrl).play();
+    }
   });
 
   function renderPronFeedback(transcript){
