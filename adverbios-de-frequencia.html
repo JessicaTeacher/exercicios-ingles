@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frequency Meter · Adverbs of Frequency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#141a23;
+    --panel:#1c2530;
+    --panel-2:#242f3d;
+    --line:rgba(255,255,255,0.08);
+    --gold:#d1a054;
+    --gold-dim:#8a6d3f;
+    --teal:#57b8ab;
+    --red:#d1616a;
+    --green:#6fbf8b;
+    --text:#eef1f4;
+    --dim:#8fa0b3;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 15% -10%, rgba(209,160,84,0.08), transparent 45%),
+      radial-gradient(circle at 90% 10%, rgba(87,184,171,0.06), transparent 40%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    padding:28px 16px 60px;
+  }
+  .wrap{max-width:920px;margin:0 auto;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  .display{font-family:'Space Grotesk',sans-serif;}
+
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:22px;flex-wrap:wrap;}
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--gold);margin:0 0 6px;
+  }
+  h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(24px,4vw,32px);margin:0 0 6px;font-weight:600;}
+  .sub{color:var(--dim);font-size:14.5px;max-width:520px;line-height:1.5;margin:0;}
+
+  .score-chip{
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:10px 16px;text-align:center;min-width:120px;
+  }
+  .score-chip .num{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--teal);}
+  .score-chip .lbl{font-size:10.5px;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;margin-top:2px;}
+
+  /* ---- GAUGE HERO ---- */
+  .gauge-card{
+    background:linear-gradient(180deg, var(--panel-2), var(--panel));
+    border:1px solid var(--line);border-radius:18px;
+    padding:26px 24px 20px;margin-bottom:22px;
+    display:grid;grid-template-columns:1fr 1.15fr;gap:22px;align-items:center;
+  }
+  @media (max-width:680px){ .gauge-card{grid-template-columns:1fr;} }
+
+  .gauge-box{display:flex;flex-direction:column;align-items:center;}
+  svg#gauge{width:100%;max-width:280px;}
+  .needle{transform-origin:150px 150px;transition:transform 0.8s cubic-bezier(.22,1,.36,1);}
+  .pct-readout{font-family:'Space Grotesk',sans-serif;font-size:34px;font-weight:700;color:var(--gold);margin-top:-46px;}
+  .pct-readout span{font-size:16px;color:var(--dim);font-weight:500;}
+
+  .word-list{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+  .word-chip{
+    background:var(--panel);border:1px solid var(--line);color:var(--text);
+    padding:8px 14px;border-radius:20px;font-size:14px;cursor:pointer;
+    font-family:'Space Grotesk',sans-serif;font-weight:500;
+    transition:all .15s ease;
+  }
+  .word-chip:hover{border-color:var(--gold);}
+  .word-chip.active{background:var(--gold);color:#231a0f;border-color:var(--gold);}
+
+  .example-box{
+    background:rgba(0,0,0,0.18);border:1px solid var(--line);border-radius:10px;
+    padding:14px 16px;min-height:72px;
+  }
+  .example-box .en{font-size:15.5px;line-height:1.5;}
+  .example-box .en b{color:var(--gold);}
+  .example-box .pt{font-size:13px;color:var(--dim);margin-top:6px;}
+
+  /* ---- TABS ---- */
+  .tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+  .tab-btn{
+    background:var(--panel);border:1px solid var(--line);color:var(--dim);
+    padding:9px 16px;border-radius:9px;cursor:pointer;font-size:13.5px;
+    font-family:'Inter',sans-serif;font-weight:500;
+  }
+  .tab-btn.active{background:var(--panel-2);color:var(--text);border-color:var(--teal);}
+
+  .panel{
+    background:var(--panel);border:1px solid var(--line);border-radius:16px;
+    padding:22px 22px 24px;display:none;
+  }
+  .panel.active{display:block;}
+  .panel h2{font-family:'Space Grotesk',sans-serif;font-size:18px;margin:0 0 4px;}
+  .panel p.hint{color:var(--dim);font-size:13.5px;margin:0 0 18px;line-height:1.5;}
+
+  /* ---- ORDER GAME ---- */
+  .scale-track{
+    display:flex;justify-content:space-between;gap:6px;margin-bottom:20px;
+    padding:0 2px;
+  }
+  .slot{
+    flex:1;min-height:64px;border:1.5px dashed var(--line);border-radius:10px;
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    font-size:11px;color:var(--dim);position:relative;padding:6px 4px;
+    background:rgba(0,0,0,0.15);
+  }
+  .slot .tag{position:absolute;top:-9px;left:50%;transform:translateX(-50%);
+    background:var(--bg);padding:0 6px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold-dim);}
+  .slot.filled{border-style:solid;border-color:var(--teal);background:rgba(87,184,171,0.08);}
+  .slot .chip-in-slot{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;color:var(--text);cursor:pointer;}
+  .slot.wrong{border-color:var(--red);background:rgba(209,97,106,0.1);}
+  .slot.correct{border-color:var(--green);background:rgba(111,191,139,0.1);}
+
+  .bank{display:flex;flex-wrap:wrap;gap:8px;min-height:44px;margin-bottom:18px;padding:10px;
+    border:1px solid var(--line);border-radius:10px;background:rgba(0,0,0,0.12);}
+  .drag-chip{
+    background:var(--panel-2);border:1px solid var(--line);padding:8px 14px;border-radius:8px;
+    font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13.5px;cursor:grab;
+  }
+  .drag-chip.selected{border-color:var(--gold);color:var(--gold);}
+
+  .action-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+  button.primary{
+    background:var(--gold);color:#231a0f;border:none;border-radius:9px;
+    padding:10px 20px;font-weight:600;font-size:14px;cursor:pointer;font-family:'Inter',sans-serif;
+  }
+  button.primary:hover{filter:brightness(1.08);}
+  button.ghost{
+    background:transparent;color:var(--dim);border:1px solid var(--line);border-radius:9px;
+    padding:10px 16px;font-size:13.5px;cursor:pointer;font-family:'Inter',sans-serif;
+  }
+  .feedback{font-size:13.5px;margin-top:12px;min-height:18px;}
+  .feedback.ok{color:var(--green);}
+  .feedback.bad{color:var(--red);}
+
+  /* ---- MCQ ---- */
+  .q-progress{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--dim);margin-bottom:10px;}
+  .q-sentence{font-size:17px;line-height:1.6;margin-bottom:6px;}
+  .q-sentence .blank{border-bottom:2px solid var(--gold);padding:0 8px;color:var(--gold);font-weight:600;}
+  .q-clue{font-size:12.5px;color:var(--dim);margin-bottom:16px;}
+  .options{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px;}
+  @media (max-width:520px){.options{grid-template-columns:1fr;}}
+  .opt-btn{
+    background:var(--panel-2);border:1px solid var(--line);color:var(--text);
+    padding:11px 14px;border-radius:9px;cursor:pointer;font-size:14px;text-align:left;
+    font-family:'Inter',sans-serif;
+  }
+  .opt-btn:hover{border-color:var(--teal);}
+  .opt-btn.correct{border-color:var(--green);background:rgba(111,191,139,0.12);}
+  .opt-btn.wrong{border-color:var(--red);background:rgba(209,97,106,0.12);}
+  .opt-btn[disabled]{cursor:default;}
+
+  /* ---- BUILDER ---- */
+  .build-area{
+    min-height:54px;border:1px solid var(--line);border-radius:10px;
+    background:rgba(0,0,0,0.12);padding:10px;display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;
+  }
+  .build-area .placeholder{color:var(--dim);font-size:13px;padding:6px 2px;}
+  .token{
+    background:var(--panel-2);border:1px solid var(--teal);color:var(--text);
+    padding:7px 12px;border-radius:7px;font-size:14px;cursor:pointer;
+    font-family:'Space Grotesk',sans-serif;
+  }
+  .token.bank-token{border-color:var(--line);}
+  .token.bank-token:hover{border-color:var(--gold);}
+
+  footer{text-align:center;color:var(--dim);font-size:12px;margin-top:30px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <p class="eyebrow">Instrument panel · English grammar</p>
+      <h1>Frequency Meter</h1>
+      <p class="sub">Pratique advérbios de frequência em inglês — do "never" (0%) ao "always" (100%) — usando o medidor, o jogo da escala, o quiz e o montador de frases abaixo.</p>
+    </div>
+    <div class="score-chip">
+      <div class="num" id="scoreNum">0 / 0</div>
+      <div class="lbl">Acertos no quiz</div>
+    </div>
+  </header>
+
+  <!-- GAUGE HERO -->
+  <div class="gauge-card">
+    <div class="gauge-box">
+      <svg id="gauge" viewBox="0 0 300 175">
+        <!-- ticks -->
+        <g id="ticks" stroke="rgba(255,255,255,0.25)" stroke-width="2"></g>
+        <g id="tickLabels" fill="#8fa0b3" font-family="JetBrains Mono" font-size="10" text-anchor="middle"></g>
+        <path d="M 20 150 A 130 130 0 0 1 280 150" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="10" stroke-linecap="round"/>
+        <path id="arcFill" d="M 20 150 A 130 130 0 0 1 280 150" fill="none" stroke="#d1a054" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 408" />
+        <g class="needle" id="needle">
+          <line x1="150" y1="150" x2="150" y2="45" stroke="#d1a054" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="150" cy="150" r="9" fill="#d1a054"/>
+          <circle cx="150" cy="150" r="4" fill="#141a23"/>
+        </g>
+      </svg>
+      <div class="pct-readout" id="pctReadout">— <span>%</span></div>
+    </div>
+    <div>
+      <div class="word-list" id="wordList"></div>
+      <div class="example-box" id="exampleBox">
+        <div class="en">Clique em um advérbio acima para ver a frequência e um exemplo.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="order">1 · Ordene na escala</button>
+    <button class="tab-btn" data-tab="quiz">2 · Complete a frase</button>
+    <button class="tab-btn" data-tab="build">3 · Monte a frase</button>
+  </div>
+
+  <!-- PANEL: ORDER GAME -->
+  <div class="panel active" id="panel-order">
+    <h2>Arraste (ou clique) para ordenar de 0% a 100%</h2>
+    <p class="hint">Toque em um advérbio no banco e depois toque no espaço correto — ou arraste com o mouse. Depois clique em "Conferir".</p>
+    <div class="scale-track" id="scaleTrack"></div>
+    <div class="bank" id="orderBank"></div>
+    <div class="action-row">
+      <button class="primary" id="checkOrderBtn">Conferir</button>
+      <button class="ghost" id="resetOrderBtn">Reiniciar</button>
+    </div>
+    <div class="feedback" id="orderFeedback"></div>
+  </div>
+
+  <!-- PANEL: QUIZ -->
+  <div class="panel" id="panel-quiz">
+    <h2>Escolha o advérbio certo</h2>
+    <p class="hint">Use a porcentagem entre parênteses como pista de frequência.</p>
+    <div class="q-progress" id="qProgress">Pergunta 1 / 8</div>
+    <div class="q-sentence" id="qSentence"></div>
+    <div class="q-clue" id="qClue"></div>
+    <div class="options" id="qOptions"></div>
+    <div class="action-row">
+      <button class="primary" id="nextQBtn" style="display:none;">Próxima →</button>
+      <button class="ghost" id="restartQBtn">Reiniciar quiz</button>
+    </div>
+  </div>
+
+  <!-- PANEL: BUILDER -->
+  <div class="panel" id="panel-build">
+    <h2>Monte a frase na ordem correta</h2>
+    <p class="hint">Clique nas palavras embaralhadas na ordem certa. O advérbio de frequência normalmente vem antes do verbo principal — mas depois do verbo "be" (am/is/are).</p>
+    <div class="q-progress" id="bProgress">Frase 1 / 6</div>
+    <div class="build-area" id="buildArea"><span class="placeholder">Sua frase aparecerá aqui…</span></div>
+    <div class="bank" id="buildBank"></div>
+    <div class="action-row">
+      <button class="primary" id="checkBuildBtn">Conferir</button>
+      <button class="ghost" id="clearBuildBtn">Limpar</button>
+      <button class="ghost" id="nextBuildBtn" style="display:none;">Próxima →</button>
+    </div>
+    <div class="feedback" id="buildFeedback"></div>
+  </div>
+
+  <footer>Frequency Meter · pratique um pouco todo dia — repetição é justamente o que torna esses advérbios úteis 🙂</footer>
+</div>
+
+<script>
+/* ---------------- DATA ---------------- */
+const ADVERBS = [
+  {word:'never', pct:0, ex:"I never drink coffee at night.", pt:"Eu nunca bebo café à noite."},
+  {word:'rarely', pct:10, ex:"She rarely arrives late.", pt:"Ela raramente chega atrasada."},
+  {word:'occasionally', pct:30, ex:"We occasionally eat out on weekends.", pt:"Nós ocasionalmente comemos fora nos fins de semana."},
+  {word:'sometimes', pct:50, ex:"They sometimes study together after class.", pt:"Eles às vezes estudam juntos depois da aula."},
+  {word:'often', pct:70, ex:"He often forgets his umbrella.", pt:"Ele frequentemente esquece o guarda-chuva."},
+  {word:'usually', pct:90, ex:"I usually wake up at 7 am.", pt:"Eu geralmente acordo às 7h."},
+  {word:'always', pct:100, ex:"You always help your friends.", pt:"Você sempre ajuda seus amigos."}
+];
+
+/* ---------------- GAUGE ---------------- */
+const gaugeTicks = document.getElementById('ticks');
+const gaugeLabels = document.getElementById('tickLabels');
+const cx=150, cy=150, r=130;
+function angleFor(pct){ return -180 + (pct/100)*180; } // -180deg(left,0%) to 0deg(right,100%) in svg coord math below
+function polar(pct, radius){
+  const deg = -180 + (pct/100)*180; // 0% -> 180deg(left), 100% -> 0deg(right) measuring from positive x-axis, but we want left-to-right arc on top
+  const rad = (Math.PI/180)*deg;
+  return {x: cx + radius*Math.cos(rad), y: cy + radius*Math.sin(rad)};
+}
+[0,10,30,50,70,90,100].forEach(p=>{
+  const outer = polar(p, r+14);
+  const inner = polar(p, r+4);
+  const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+  line.setAttribute('x1', inner.x); line.setAttribute('y1', inner.y);
+  line.setAttribute('x2', outer.x); line.setAttribute('y2', outer.y);
+  gaugeTicks.appendChild(line);
+  const lbl = polar(p, r+26);
+  const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+  t.setAttribute('x', lbl.x); t.setAttribute('y', lbl.y+3);
+  t.textContent = p+'%';
+  gaugeLabels.appendChild(t);
+});
+
+const needle = document.getElementById('needle');
+const arcFill = document.getElementById('arcFill');
+const pctReadout = document.getElementById('pctReadout');
+const exampleBox = document.getElementById('exampleBox');
+const wordList = document.getElementById('wordList');
+const ARC_LEN = Math.PI * r; // half circle length
+
+function setGauge(pct){
+  const rot = -90 + (pct/100)*180; // needle starts pointing up(-90 from vertical baseline), rotate to pct
+  needle.style.transform = `rotate(${rot}deg)`;
+  const filled = ARC_LEN * (pct/100);
+  arcFill.setAttribute('stroke-dasharray', `${filled} ${ARC_LEN*2}`);
+  pctReadout.innerHTML = pct + '<span>%</span>';
+}
+setGauge(0);
+
+ADVERBS.forEach(a=>{
+  const chip = document.createElement('button');
+  chip.className='word-chip';
+  chip.textContent = a.word;
+  chip.addEventListener('click', ()=>{
+    document.querySelectorAll('.word-chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    setGauge(a.pct);
+    exampleBox.innerHTML = `<div class="en"><b>${a.word}</b> — ${a.ex}</div><div class="pt">${a.pt}</div>`;
+  });
+  wordList.appendChild(chip);
+});
+
+/* ---------------- TABS ---------------- */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ---------------- SCORE ---------------- */
+let scoreCorrect = 0, scoreTotal = 0;
+function bumpScore(correct){
+  scoreTotal++; if(correct) scoreCorrect++;
+  document.getElementById('scoreNum').textContent = `${scoreCorrect} / ${scoreTotal}`;
+}
+
+/* ---------------- ORDER GAME ---------------- */
+const scaleTrack = document.getElementById('scaleTrack');
+const orderBank = document.getElementById('orderBank');
+const orderFeedback = document.getElementById('orderFeedback');
+let orderSlots = []; // word or null per slot, indexed 0..6 matching sorted pct order
+let selectedChip = null;
+
+function shuffle(arr){ return [...arr].sort(()=>Math.random()-0.5); }
+
+function buildOrderGame(){
+  scaleTrack.innerHTML=''; orderBank.innerHTML=''; orderFeedback.textContent=''; orderFeedback.className='feedback';
+  orderSlots = new Array(ADVERBS.length).fill(null);
+  ADVERBS.forEach((a,i)=>{
+    const slot = document.createElement('div');
+    slot.className='slot';
+    slot.dataset.index = i;
+    const tag = document.createElement('div');
+    tag.className='tag';
+    tag.textContent = i===0 ? '0%' : i===ADVERBS.length-1 ? '100%' : '';
+    slot.appendChild(tag);
+    slot.addEventListener('dragover', e=>e.preventDefault());
+    slot.addEventListener('drop', e=>{
+      e.preventDefault();
+      const word = e.dataTransfer.getData('text/plain');
+      placeInSlot(word, i);
+    });
+    slot.addEventListener('click', ()=>{
+      if(selectedChip){
+        placeInSlot(selectedChip, i);
+        selectedChip = null;
+        document.querySelectorAll('.drag-chip').forEach(c=>c.classList.remove('selected'));
+      } else if(orderSlots[i]){
+        // return chip to bank
+        returnToBank(orderSlots[i]);
+        orderSlots[i]=null;
+        renderSlot(i);
+      }
+    });
+    scaleTrack.appendChild(slot);
+  });
+  shuffle(ADVERBS).forEach(a=>{
+    const chip = document.createElement('div');
+    chip.className='drag-chip'; chip.draggable=true; chip.textContent=a.word; chip.dataset.word=a.word;
+    chip.addEventListener('dragstart', e=> e.dataTransfer.setData('text/plain', a.word));
+    chip.addEventListener('click', ()=>{
+      document.querySelectorAll('.drag-chip').forEach(c=>c.classList.remove('selected'));
+      chip.classList.add('selected');
+      selectedChip = a.word;
+    });
+    orderBank.appendChild(chip);
+  });
+}
+
+function placeInSlot(word, index){
+  if(orderSlots[index]) return; // occupied
+  const bankChip = [...orderBank.children].find(c=>c.dataset.word===word);
+  if(bankChip) bankChip.remove();
+  orderSlots[index]=word;
+  renderSlot(index);
+}
+function returnToBank(word){
+  const chip = document.createElement('div');
+  chip.className='drag-chip'; chip.draggable=true; chip.textContent=word; chip.dataset.word=word;
+  chip.addEventListener('dragstart', e=> e.dataTransfer.setData('text/plain', word));
+  chip.addEventListener('click', ()=>{
+    document.querySelectorAll('.drag-chip').forEach(c=>c.classList.remove('selected'));
+    chip.classList.add('selected');
+    selectedChip = word;
+  });
+  orderBank.appendChild(chip);
+}
+function renderSlot(index){
+  const slot = scaleTrack.children[index];
+  slot.classList.remove('wrong','correct');
+  const tagHTML = slot.querySelector('.tag').outerHTML;
+  if(orderSlots[index]){
+    slot.innerHTML = tagHTML + `<div class="chip-in-slot">${orderSlots[index]}</div>`;
+    slot.classList.add('filled');
+  } else {
+    slot.innerHTML = tagHTML;
+    slot.classList.remove('filled');
+  }
+}
+
+document.getElementById('checkOrderBtn').addEventListener('click', ()=>{
+  const sorted = [...ADVERBS].sort((a,b)=>a.pct-b.pct).map(a=>a.word);
+  let allCorrect = true, allFilled = orderSlots.every(s=>s!==null);
+  if(!allFilled){
+    orderFeedback.textContent = 'Preencha todos os espaços antes de conferir.';
+    orderFeedback.className='feedback bad';
+    return;
+  }
+  orderSlots.forEach((w,i)=>{
+    const slot = scaleTrack.children[i];
+    slot.classList.remove('wrong','correct');
+    if(w===sorted[i]){ slot.classList.add('correct'); }
+    else { slot.classList.add('wrong'); allCorrect=false; }
+  });
+  orderFeedback.textContent = allCorrect ? '✓ Perfeito! Essa é a escala correta, de "never" a "always".' : 'Alguns estão fora de ordem — os espaços em vermelho precisam trocar de lugar.';
+  orderFeedback.className = 'feedback ' + (allCorrect?'ok':'bad');
+});
+document.getElementById('resetOrderBtn').addEventListener('click', buildOrderGame);
+buildOrderGame();
+
+/* ---------------- QUIZ ---------------- */
+const QUIZ = [
+  {sentence:"I ___ brush my teeth before bed.", clue:"(100%)", answer:"always"},
+  {sentence:"My brother ___ watches horror movies — maybe once a year.", clue:"(10%)", answer:"rarely"},
+  {sentence:"We ___ visit our grandparents on Sundays.", clue:"(70%)", answer:"often"},
+  {sentence:"He ___ eats vegetables, but not every day.", clue:"(50%)", answer:"sometimes"},
+  {sentence:"She ___ takes the bus — almost every morning.", clue:"(90%)", answer:"usually"},
+  {sentence:"They ___ go to the theater, maybe twice a year.", clue:"(30%)", answer:"occasionally"},
+  {sentence:"I ___ eat meat — I've been vegetarian for years.", clue:"(0%)", answer:"never"},
+  {sentence:"You ___ arrive on time for meetings.", clue:"(100%)", answer:"always"}
+];
+let qIndex = 0;
+const qProgress = document.getElementById('qProgress');
+const qSentence = document.getElementById('qSentence');
+const qClue = document.getElementById('qClue');
+const qOptions = document.getElementById('qOptions');
+const nextQBtn = document.getElementById('nextQBtn');
+
+function loadQuestion(){
+  nextQBtn.style.display='none';
+  const q = QUIZ[qIndex];
+  qProgress.textContent = `Pergunta ${qIndex+1} / ${QUIZ.length}`;
+  qSentence.innerHTML = q.sentence.replace('___','<span class="blank">___</span>');
+  qClue.textContent = 'Pista de frequência: ' + q.clue;
+  const opts = shuffle([...new Set([q.answer, ...shuffle(ADVERBS.map(a=>a.word)).slice(0,3)])]).slice(0,4);
+  if(!opts.includes(q.answer)) opts[0]=q.answer;
+  qOptions.innerHTML='';
+  shuffle(opts).forEach(word=>{
+    const btn = document.createElement('button');
+    btn.className='opt-btn'; btn.textContent=word;
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.opt-btn').forEach(b=>b.disabled=true);
+      const correct = word===q.answer;
+      btn.classList.add(correct?'correct':'wrong');
+      if(!correct){
+        [...qOptions.children].find(b=>b.textContent===q.answer).classList.add('correct');
+      }
+      bumpScore(correct);
+      nextQBtn.style.display='inline-block';
+    });
+    qOptions.appendChild(btn);
+  });
+}
+nextQBtn.addEventListener('click', ()=>{
+  qIndex = (qIndex+1) % QUIZ.length;
+  loadQuestion();
+});
+document.getElementById('restartQBtn').addEventListener('click', ()=>{
+  qIndex = 0; loadQuestion();
+});
+loadQuestion();
+
+/* ---------------- BUILDER ---------------- */
+const BUILD = [
+  {tokens:["She","always","eats","breakfast."], answer:"She always eats breakfast."},
+  {tokens:["We","are","usually","tired","on","Fridays."], answer:"We are usually tired on Fridays."},
+  {tokens:["He","never","calls","me","first."], answer:"He never calls me first."},
+  {tokens:["I","am","rarely","late","for","class."], answer:"I am rarely late for class."},
+  {tokens:["They","sometimes","play","football","after","school."], answer:"They sometimes play football after school."},
+  {tokens:["Do","you","often","cook","dinner?"], answer:"Do you often cook dinner?"}
+];
+let bIndex = 0;
+let currentTokens = [];
+const bProgress = document.getElementById('bProgress');
+const buildArea = document.getElementById('buildArea');
+const buildBank = document.getElementById('buildBank');
+const buildFeedback = document.getElementById('buildFeedback');
+const nextBuildBtn = document.getElementById('nextBuildBtn');
+
+function loadBuild(){
+  nextBuildBtn.style.display='none';
+  buildFeedback.textContent=''; buildFeedback.className='feedback';
+  currentTokens = [];
+  bProgress.textContent = `Frase ${bIndex+1} / ${BUILD.length}`;
+  renderBuildArea();
+  buildBank.innerHTML='';
+  shuffle(BUILD[bIndex].tokens).forEach(tok=>{
+    const t = document.createElement('div');
+    t.className='token bank-token'; t.textContent=tok;
+    t.addEventListener('click', ()=>{
+      currentTokens.push(tok);
+      t.remove();
+      renderBuildArea();
+    });
+    buildBank.appendChild(t);
+  });
+}
+function renderBuildArea(){
+  buildArea.innerHTML='';
+  if(currentTokens.length===0){
+    buildArea.innerHTML = '<span class="placeholder">Sua frase aparecerá aqui…</span>';
+    return;
+  }
+  currentTokens.forEach((tok,i)=>{
+    const t = document.createElement('div');
+    t.className='token'; t.textContent=tok;
+    t.addEventListener('click', ()=>{
+      currentTokens.splice(i,1);
+      renderBuildArea();
+      const back = document.createElement('div');
+      back.className='token bank-token'; back.textContent=tok;
+      back.addEventListener('click', ()=>{
+        currentTokens.push(tok);
+        back.remove();
+        renderBuildArea();
+      });
+      buildBank.appendChild(back);
+    });
+    buildArea.appendChild(t);
+  });
+}
+document.getElementById('checkBuildBtn').addEventListener('click', ()=>{
+  const attempt = currentTokens.join(' ');
+  const correct = attempt === BUILD[bIndex].answer;
+  bumpScore(correct);
+  buildFeedback.textContent = correct ? '✓ Isso mesmo!' : `Quase — a ordem certa é: "${BUILD[bIndex].answer}"`;
+  buildFeedback.className = 'feedback ' + (correct?'ok':'bad');
+  nextBuildBtn.style.display='inline-block';
+});
+document.getElementById('clearBuildBtn').addEventListener('click', loadBuild);
+nextBuildBtn.addEventListener('click', ()=>{
+  bIndex = (bIndex+1) % BUILD.length;
+  loadBuild();
+});
+loadBuild();
+</script>
+</body>
+</html>
