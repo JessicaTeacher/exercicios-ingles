@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Time in English · Practice Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito+Sans:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F8F4E9;
+    --cream-2:#F1EADA;
+    --navy:#122542;
+    --navy-2:#1C3860;
+    --navy-3:#0D1D34;
+    --gold:#D6A44E;
+    --gold-light:#EFC97C;
+    --teal:#2E7D6B;
+    --red:#C1554F;
+    --green:#4F9A6B;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--navy);
+    font-family:'Nunito Sans',sans-serif;
+    padding:22px 14px 50px;
+  }
+  .wrap{max-width:960px;margin:0 auto;position:relative;}
+
+  /* ---- ORNATE FRAME ---- */
+  .frame{
+    border:2px solid var(--gold);
+    border-radius:22px;
+    padding:26px 26px 30px;
+    position:relative;
+    background:
+      radial-gradient(circle at 8% 6%, rgba(214,164,78,0.10), transparent 40%),
+      radial-gradient(circle at 94% 94%, rgba(46,125,107,0.08), transparent 40%),
+      var(--cream);
+  }
+  .corner{position:absolute;width:34px;height:34px;border:2px solid var(--gold);}
+  .corner.tl{top:-2px;left:-2px;border-right:none;border-bottom:none;border-radius:18px 0 0 0;}
+  .corner.tr{top:-2px;right:-2px;border-left:none;border-bottom:none;border-radius:0 18px 0 0;}
+  .corner.bl{bottom:-2px;left:-2px;border-right:none;border-top:none;border-radius:0 0 0 18px;}
+  .corner.br{bottom:-2px;right:-2px;border-left:none;border-top:none;border-radius:0 0 18px 0;}
+  .dot{position:absolute;width:7px;height:7px;border-radius:50%;background:var(--teal);}
+  .dot.d1{top:8px;left:8px;} .dot.d2{top:8px;right:8px;}
+  .dot.d3{bottom:8px;left:8px;} .dot.d4{bottom:8px;right:8px;}
+
+  h1.title{
+    font-family:'Baloo 2',sans-serif;
+    font-weight:800;
+    text-align:center;
+    font-size:clamp(30px,6vw,46px);
+    color:var(--navy);
+    letter-spacing:.02em;
+    margin:6px 0 4px;
+  }
+  .subtitle{
+    text-align:center;color:var(--teal);font-family:'Baloo 2',sans-serif;
+    font-weight:600;font-size:14px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:16px;
+  }
+  .rule{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px;}
+  .rule .line{height:1.5px;width:110px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+  .rule .diamond{width:9px;height:9px;background:var(--gold);transform:rotate(45deg);}
+
+  /* score bar */
+  .scorebar{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:22px;}
+  .score-chip{
+    background:var(--navy);color:var(--gold-light);border-radius:12px;padding:9px 18px;
+    font-family:'Baloo 2',sans-serif;font-size:13.5px;text-align:center;min-width:150px;
+  }
+  .score-chip b{font-size:18px;display:block;color:#fff;}
+
+  /* tabs */
+  .tabs{display:flex;justify-content:center;gap:8px;margin-bottom:22px;flex-wrap:wrap;}
+  .tab-btn{
+    font-family:'Baloo 2',sans-serif;font-weight:600;font-size:14.5px;
+    background:var(--cream-2);border:2px solid var(--gold);color:var(--navy);
+    padding:9px 18px;border-radius:30px;cursor:pointer;
+  }
+  .tab-btn.active{background:var(--navy);color:var(--gold-light);border-color:var(--navy);}
+
+  .panel{display:none;}
+  .panel.active{display:block;}
+  .panel-head{text-align:center;margin-bottom:18px;}
+  .panel-head h2{font-family:'Baloo 2',sans-serif;font-size:22px;margin:0 0 4px;color:var(--navy);}
+  .panel-head p{margin:0;color:#5b6b80;font-size:13.5px;max-width:520px;margin:0 auto;line-height:1.5;}
+
+  /* digital clock tile */
+  .clock-tile{
+    background:linear-gradient(180deg,var(--navy-2),var(--navy-3));
+    border:3px solid var(--gold);border-radius:14px;
+    padding:16px 10px;text-align:center;
+    box-shadow:inset 0 0 14px rgba(0,0,0,0.35);
+  }
+  .clock-tile .digits{
+    font-family:'Share Tech Mono',monospace;
+    font-size:clamp(28px,5vw,42px);
+    color:var(--gold-light);
+    text-shadow:0 0 10px rgba(239,201,124,0.55);
+    letter-spacing:2px;
+  }
+
+  /* generic centered card */
+  .card{
+    background:#fff;border:1.5px solid #e7dfc8;border-radius:16px;
+    padding:22px;max-width:560px;margin:0 auto 18px;
+  }
+
+  .big-clock-wrap{display:flex;justify-content:center;margin-bottom:18px;}
+  .big-clock-wrap .clock-tile{width:220px;}
+
+  .listen-btn, .action-btn{
+    font-family:'Baloo 2',sans-serif;font-weight:700;font-size:15px;
+    background:var(--gold);color:var(--navy-3);border:none;border-radius:10px;
+    padding:12px 22px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+  }
+  .listen-btn:hover,.action-btn:hover{filter:brightness(1.06);}
+  .ghost-btn{
+    font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:13.5px;
+    background:transparent;border:1.5px solid #cfc4a3;color:#5b6b80;
+    padding:10px 16px;border-radius:10px;cursor:pointer;
+  }
+
+  .center{text-align:center;}
+  .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;margin-top:14px;}
+
+  /* MCQ options styled like image captions */
+  .opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px;}
+  @media(max-width:560px){.opt-grid{grid-template-columns:1fr;}}
+  .opt-card{
+    background:var(--cream-2);border:1.5px solid var(--gold);border-radius:12px;
+    padding:12px 14px;cursor:pointer;text-align:center;
+    font-family:'Baloo 2',sans-serif;font-weight:600;color:var(--navy);font-size:14.5px;
+  }
+  .opt-card:hover{background:#f4e9cf;}
+  .opt-card.correct{background:rgba(79,154,107,0.18);border-color:var(--green);}
+  .opt-card.wrong{background:rgba(193,85,79,0.16);border-color:var(--red);}
+  .opt-card[disabled]{pointer-events:none;}
+
+  .clock-opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px;}
+  @media(max-width:560px){.clock-opt-grid{grid-template-columns:1fr;}}
+  .clock-opt{cursor:pointer;border-radius:14px;padding:2px;border:3px solid transparent;}
+  .clock-opt.correct{border-color:var(--green);}
+  .clock-opt.wrong{border-color:var(--red);}
+
+  input.write-input{
+    width:100%;max-width:380px;font-family:'Nunito Sans',sans-serif;font-size:15px;
+    padding:12px 14px;border-radius:10px;border:1.5px solid #cfc4a3;
+    text-align:center;margin-top:16px;
+  }
+  input.write-input:focus{outline:2px solid var(--gold);}
+
+  .feedback{margin-top:14px;font-family:'Baloo 2',sans-serif;font-weight:600;font-size:14.5px;min-height:20px;}
+  .feedback.ok{color:var(--green);}
+  .feedback.bad{color:var(--red);}
+
+  .progress{font-family:'Share Tech Mono',monospace;font-size:12px;color:#8a7c55;text-align:center;margin-bottom:10px;}
+
+  .tip-box{
+    background:rgba(46,125,107,0.08);border:1px dashed var(--teal);border-radius:10px;
+    padding:10px 14px;font-size:12.5px;color:#2f4a41;margin-top:16px;text-align:left;
+  }
+  .mic-status{font-size:12.5px;color:#5b6b80;margin-top:10px;min-height:16px;}
+  audio{margin-top:10px;width:100%;max-width:380px;}
+
+  footer{text-align:center;color:#8a7c55;font-size:11.5px;margin-top:26px;font-family:'Nunito Sans',sans-serif;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="frame">
+  <div class="corner tl"></div><div class="corner tr"></div>
+  <div class="corner bl"></div><div class="corner br"></div>
+  <div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div><div class="dot d4"></div>
+
+  <h1 class="title">TIME IN ENGLISH</h1>
+  <p class="subtitle">Practice Studio</p>
+  <div class="rule"><div class="line"></div><div class="diamond"></div><div class="line"></div></div>
+
+  <div class="scorebar">
+    <div class="score-chip">Listening<br><b id="scoreListening">0 / 0</b></div>
+    <div class="score-chip">Reading<br><b id="scoreReading">0 / 0</b></div>
+    <div class="score-chip">Writing<br><b id="scoreWriting">0 / 0</b></div>
+    <div class="score-chip">Speaking<br><b id="scoreSpeaking">0 praticadas</b></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="listening">🎧 Listening</button>
+    <button class="tab-btn" data-tab="reading">📖 Reading</button>
+    <button class="tab-btn" data-tab="writing">✏️ Writing</button>
+    <button class="tab-btn" data-tab="speaking">🗣️ Speaking</button>
+  </div>
+
+  <!-- LISTENING -->
+  <div class="panel active" id="panel-listening">
+    <div class="panel-head">
+      <h2>Ouça e escolha o relógio certo</h2>
+      <p>Clique em "Ouvir o horário" e depois toque no relógio digital que mostra a hora que você ouviu.</p>
+    </div>
+    <div class="card center">
+      <div class="progress" id="lisProgress">Rodada 1 / 8</div>
+      <button class="listen-btn" id="lisPlayBtn">🔊 Ouvir o horário</button>
+      <div class="clock-opt-grid" id="lisOptions"></div>
+      <div class="feedback" id="lisFeedback"></div>
+      <div class="row">
+        <button class="action-btn" id="lisNextBtn" style="display:none;">Próxima →</button>
+        <button class="ghost-btn" id="lisRestartBtn">Reiniciar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- READING -->
+  <div class="panel" id="panel-reading">
+    <div class="panel-head">
+      <h2>Leia o relógio e escolha a frase certa</h2>
+      <p>Olhe para o relógio digital e selecione a forma correta de falar aquele horário em inglês.</p>
+    </div>
+    <div class="card center">
+      <div class="progress" id="readProgress">Rodada 1 / 8</div>
+      <div class="big-clock-wrap"><div class="clock-tile"><div class="digits" id="readDigits">1:00</div></div></div>
+      <div class="opt-grid" id="readOptions"></div>
+      <div class="feedback" id="readFeedback"></div>
+      <div class="row">
+        <button class="action-btn" id="readNextBtn" style="display:none;">Próxima →</button>
+        <button class="ghost-btn" id="readRestartBtn">Reiniciar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- WRITING -->
+  <div class="panel" id="panel-writing">
+    <div class="panel-head">
+      <h2>Escreva o horário por extenso</h2>
+      <p>Digite a frase completa em inglês, como no exemplo: <i>It's one o'clock.</i></p>
+    </div>
+    <div class="card center">
+      <div class="progress" id="writeProgress">Rodada 1 / 8</div>
+      <div class="big-clock-wrap"><div class="clock-tile"><div class="digits" id="writeDigits">1:00</div></div></div>
+      <input class="write-input" id="writeInput" type="text" placeholder="It's …" autocomplete="off">
+      <div class="feedback" id="writeFeedback"></div>
+      <div class="row">
+        <button class="action-btn" id="writeCheckBtn">Conferir</button>
+        <button class="action-btn" id="writeNextBtn" style="display:none;">Próxima →</button>
+        <button class="ghost-btn" id="writeRestartBtn">Reiniciar</button>
+      </div>
+      <div class="tip-box">Dica: "o'clock" só é usado nas horas exatas (1:00, 2:00…). Para os outros minutos, basta dizer a hora + os minutos, como em "one twenty".</div>
+    </div>
+  </div>
+
+  <!-- SPEAKING -->
+  <div class="panel" id="panel-speaking">
+    <div class="panel-head">
+      <h2>Ouça, repita e grave sua voz</h2>
+      <p>Escute a pronúncia, repita em voz alta e grave-se para comparar. A gravação fica só no seu navegador.</p>
+    </div>
+    <div class="card center">
+      <div class="progress" id="speakProgress">Frase 1 / 8</div>
+      <div class="big-clock-wrap"><div class="clock-tile"><div class="digits" id="speakDigits">1:00</div></div></div>
+      <p style="font-family:'Baloo 2',sans-serif;font-weight:700;font-size:19px;color:var(--navy);margin:6px 0 4px;" id="speakPhrase">It's one o'clock.</p>
+      <div class="row">
+        <button class="listen-btn" id="speakPlayBtn">🔊 Ouvir pronúncia</button>
+        <button class="action-btn" id="speakRecordBtn">🎙️ Gravar minha fala</button>
+      </div>
+      <div class="mic-status" id="micStatus"></div>
+      <audio id="speakPlayback" controls style="display:none;"></audio>
+      <div class="row">
+        <button class="action-btn" id="speakDoneBtn">✓ Pratiquei essa frase</button>
+        <button class="action-btn" id="speakNextBtn">Próxima →</button>
+        <button class="ghost-btn" id="speakRestartBtn">Reiniciar</button>
+      </div>
+      <div class="tip-box">Dica de pronúncia: junte as palavras naturalmente — "it's" soa como "its", e o número e os minutos são ditos sem pausa: "one-twen-ty", não "one... twenty".</div>
+    </div>
+  </div>
+
+  <footer>Time in English · Practice Studio — pratique um pouco em cada aba para dominar as quatro habilidades 🕐</footer>
+</div>
+</div>
+
+<script>
+/* ---------------- DATA ---------------- */
+const TIMES = [
+  {digits:"1:00", phrase:"It's one o'clock."},
+  {digits:"1:05", phrase:"It's one five."},
+  {digits:"1:10", phrase:"It's one ten."},
+  {digits:"1:15", phrase:"It's one fifteen."},
+  {digits:"1:20", phrase:"It's one twenty."},
+  {digits:"1:25", phrase:"It's one twenty-five."},
+  {digits:"1:30", phrase:"It's one thirty."},
+  {digits:"1:35", phrase:"It's one thirty-five."},
+  {digits:"1:40", phrase:"It's one forty."},
+  {digits:"1:45", phrase:"It's one forty-five."},
+  {digits:"1:50", phrase:"It's one fifty."},
+  {digits:"1:55", phrase:"It's one fifty-five."},
+  {digits:"2:00", phrase:"It's two o'clock."}
+];
+function shuffle(arr){ return [...arr].sort(()=>Math.random()-0.5); }
+function speak(text){
+  if(!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US'; u.rate = 0.9;
+  window.speechSynthesis.speak(u);
+}
+
+/* ---------------- TABS ---------------- */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ================= LISTENING ================= */
+let lisRound = 0, lisCorrect = 0, lisTotal = 0, lisTarget = null;
+const TOTAL_ROUNDS = 8;
+function updateScore(id, correct, total){ document.getElementById(id).textContent = `${correct} / ${total}`; }
+
+function loadListening(){
+  document.getElementById('lisNextBtn').style.display='none';
+  document.getElementById('lisFeedback').textContent='';
+  document.getElementById('lisFeedback').className='feedback';
+  document.getElementById('lisProgress').textContent = `Rodada ${lisRound+1} / ${TOTAL_ROUNDS}`;
+  lisTarget = shuffle(TIMES)[0];
+  const distractors = shuffle(TIMES.filter(t=>t.digits!==lisTarget.digits)).slice(0,3);
+  const options = shuffle([lisTarget, ...distractors]);
+  const grid = document.getElementById('lisOptions');
+  grid.innerHTML='';
+  options.forEach(opt=>{
+    const wrap = document.createElement('div');
+    wrap.className='clock-opt';
+    wrap.innerHTML = `<div class="clock-tile"><div class="digits">${opt.digits}</div></div>`;
+    wrap.addEventListener('click', ()=>{
+      document.querySelectorAll('.clock-opt').forEach(c=>c.style.pointerEvents='none');
+      const correct = opt.digits===lisTarget.digits;
+      wrap.classList.add(correct?'correct':'wrong');
+      if(!correct){
+        [...grid.children].find((c,i)=>options[i].digits===lisTarget.digits).classList.add('correct');
+      }
+      lisTotal++; if(correct) lisCorrect++;
+      updateScore('scoreListening', lisCorrect, lisTotal);
+      document.getElementById('lisFeedback').textContent = correct ? '✓ Isso mesmo!' : `Era "${lisTarget.digits}" — ${lisTarget.phrase}`;
+      document.getElementById('lisFeedback').className = 'feedback ' + (correct?'ok':'bad');
+      document.getElementById('lisNextBtn').style.display='inline-flex';
+    });
+    grid.appendChild(wrap);
+  });
+  speak(lisTarget.phrase);
+}
+document.getElementById('lisPlayBtn').addEventListener('click', ()=> speak(lisTarget.phrase));
+document.getElementById('lisNextBtn').addEventListener('click', ()=>{
+  lisRound = (lisRound+1) % TOTAL_ROUNDS;
+  loadListening();
+});
+document.getElementById('lisRestartBtn').addEventListener('click', ()=>{
+  lisRound=0; lisCorrect=0; lisTotal=0; updateScore('scoreListening',0,0); loadListening();
+});
+loadListening();
+
+/* ================= READING ================= */
+let readRound = 0, readCorrect = 0, readTotal = 0, readTarget = null;
+function loadReading(){
+  document.getElementById('readNextBtn').style.display='none';
+  document.getElementById('readFeedback').textContent='';
+  document.getElementById('readFeedback').className='feedback';
+  document.getElementById('readProgress').textContent = `Rodada ${readRound+1} / ${TOTAL_ROUNDS}`;
+  readTarget = shuffle(TIMES)[0];
+  document.getElementById('readDigits').textContent = readTarget.digits;
+  const distractors = shuffle(TIMES.filter(t=>t.phrase!==readTarget.phrase)).slice(0,3);
+  const options = shuffle([readTarget, ...distractors]);
+  const grid = document.getElementById('readOptions');
+  grid.innerHTML='';
+  options.forEach(opt=>{
+    const el = document.createElement('div');
+    el.className='opt-card';
+    el.textContent = opt.phrase;
+    el.addEventListener('click', ()=>{
+      document.querySelectorAll('#readOptions .opt-card').forEach(c=>c.setAttribute('disabled','true'));
+      const correct = opt.phrase===readTarget.phrase;
+      el.classList.add(correct?'correct':'wrong');
+      if(!correct){
+        [...grid.children].find(c=>c.textContent===readTarget.phrase).classList.add('correct');
+      }
+      readTotal++; if(correct) readCorrect++;
+      updateScore('scoreReading', readCorrect, readTotal);
+      document.getElementById('readFeedback').textContent = correct ? '✓ Perfeito!' : 'Quase — veja a opção certa em verde.';
+      document.getElementById('readFeedback').className = 'feedback ' + (correct?'ok':'bad');
+      document.getElementById('readNextBtn').style.display='inline-flex';
+    });
+    grid.appendChild(el);
+  });
+}
+document.getElementById('readNextBtn').addEventListener('click', ()=>{
+  readRound = (readRound+1) % TOTAL_ROUNDS;
+  loadReading();
+});
+document.getElementById('readRestartBtn').addEventListener('click', ()=>{
+  readRound=0; readCorrect=0; readTotal=0; updateScore('scoreReading',0,0); loadReading();
+});
+loadReading();
+
+/* ================= WRITING ================= */
+let writeRound = 0, writeCorrect = 0, writeTotal = 0, writeTarget = null, writeChecked = false;
+function normalize(str){
+  return str.toLowerCase()
+    .replace(/’/g,"'")
+    .replace(/it is/g,"it's")
+    .replace(/[.,!]/g,'')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+function loadWriting(){
+  writeChecked = false;
+  document.getElementById('writeNextBtn').style.display='none';
+  document.getElementById('writeFeedback').textContent='';
+  document.getElementById('writeFeedback').className='feedback';
+  document.getElementById('writeInput').value='';
+  document.getElementById('writeProgress').textContent = `Rodada ${writeRound+1} / ${TOTAL_ROUNDS}`;
+  writeTarget = shuffle(TIMES)[0];
+  document.getElementById('writeDigits').textContent = writeTarget.digits;
+}
+document.getElementById('writeCheckBtn').addEventListener('click', ()=>{
+  if(writeChecked) return;
+  const val = document.getElementById('writeInput').value;
+  const correct = normalize(val) === normalize(writeTarget.phrase);
+  writeChecked = true;
+  writeTotal++; if(correct) writeCorrect++;
+  updateScore('scoreWriting', writeCorrect, writeTotal);
+  document.getElementById('writeFeedback').textContent = correct ? '✓ Muito bem!' : `Resposta certa: "${writeTarget.phrase}"`;
+  document.getElementById('writeFeedback').className = 'feedback ' + (correct?'ok':'bad');
+  document.getElementById('writeNextBtn').style.display='inline-flex';
+});
+document.getElementById('writeInput').addEventListener('keydown', e=>{
+  if(e.key==='Enter') document.getElementById('writeCheckBtn').click();
+});
+document.getElementById('writeNextBtn').addEventListener('click', ()=>{
+  writeRound = (writeRound+1) % TOTAL_ROUNDS;
+  loadWriting();
+});
+document.getElementById('writeRestartBtn').addEventListener('click', ()=>{
+  writeRound=0; writeCorrect=0; writeTotal=0; updateScore('scoreWriting',0,0); loadWriting();
+});
+loadWriting();
+
+/* ================= SPEAKING ================= */
+let speakRound = 0, speakPracticed = 0, speakTarget = null;
+let mediaRecorder = null, audioChunks = [];
+
+function loadSpeaking(){
+  document.getElementById('speakProgress').textContent = `Frase ${speakRound+1} / ${TOTAL_ROUNDS}`;
+  speakTarget = shuffle(TIMES)[0];
+  document.getElementById('speakDigits').textContent = speakTarget.digits;
+  document.getElementById('speakPhrase').textContent = speakTarget.phrase;
+  document.getElementById('micStatus').textContent='';
+  const pb = document.getElementById('speakPlayback');
+  pb.style.display='none'; pb.src='';
+}
+document.getElementById('speakPlayBtn').addEventListener('click', ()=> speak(speakTarget.phrase));
+
+document.getElementById('speakRecordBtn').addEventListener('click', async ()=>{
+  const status = document.getElementById('micStatus');
+  const pb = document.getElementById('speakPlayback');
+  try{
+    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+    audioChunks = [];
+    mediaRecorder = new MediaRecorder(stream);
+    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+    mediaRecorder.onstop = ()=>{
+      const blob = new Blob(audioChunks, {type:'audio/webm'});
+      pb.src = URL.createObjectURL(blob);
+      pb.style.display='block';
+      stream.getTracks().forEach(t=>t.stop());
+      status.textContent = 'Gravação pronta — toque para ouvir e comparar com a pronúncia.';
+    };
+    mediaRecorder.start();
+    status.textContent = '🔴 Gravando… (3 segundos)';
+    setTimeout(()=>{ if(mediaRecorder && mediaRecorder.state==='recording') mediaRecorder.stop(); }, 3000);
+  }catch(err){
+    status.textContent = 'Não foi possível acessar o microfone aqui. Use o gravador de voz do seu celular/computador para praticar e comparar com o áudio de pronúncia.';
+  }
+});
+document.getElementById('speakDoneBtn').addEventListener('click', ()=>{
+  speakPracticed++;
+  document.getElementById('scoreSpeaking').textContent = `${speakPracticed} praticadas`;
+});
+document.getElementById('speakNextBtn').addEventListener('click', ()=>{
+  speakRound = (speakRound+1) % TOTAL_ROUNDS;
+  loadSpeaking();
+});
+document.getElementById('speakRestartBtn').addEventListener('click', ()=>{
+  speakRound=0; speakPracticed=0; document.getElementById('scoreSpeaking').textContent='0 praticadas'; loadSpeaking();
+});
+loadSpeaking();
+</script>
+</body>
+</html>
