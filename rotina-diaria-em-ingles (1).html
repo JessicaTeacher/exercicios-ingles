@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What time do you...? — Painel de Rotina Diária</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#1B1B3A;
+    --dawn:#FF8C61;
+    --day:#FFC857;
+    --dusk:#7A5195;
+    --paper:#FBF6EC;
+    --paper-2:#F1E9D8;
+    --ink:#241F3D;
+    --ink-soft:#5B5670;
+    --line:#DDD3BB;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Space Grotesk',sans-serif;
+    line-height:1.5;
+  }
+  .app{max-width:1000px;margin:0 auto;padding:0 0 4rem;}
+
+  /* HERO */
+  .hero{
+    background:var(--night);
+    color:var(--paper);
+    padding:2.5rem 2rem 2rem;
+    display:flex;
+    align-items:center;
+    gap:2rem;
+    flex-wrap:wrap;
+    border-radius:0 0 28px 28px;
+  }
+  .hero-text{flex:1;min-width:260px;}
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    letter-spacing:.12em;
+    color:var(--day);
+    text-transform:uppercase;
+  }
+  .hero h1{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:clamp(28px,5vw,42px);
+    margin:.4rem 0 .6rem;
+  }
+  .hero p{margin:0;color:#CFCBE6;max-width:40ch;font-size:15px;}
+  .dial-wrap{flex-shrink:0;}
+  #dial{width:220px;height:220px;display:block;}
+
+  /* SECTIONS */
+  section{padding:2rem;}
+  h2{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:20px;
+    margin:0 0 1rem;
+    color:var(--ink);
+  }
+  .step-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--dusk);
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    display:block;
+    margin-bottom:.3rem;
+  }
+
+  .builder{display:grid;grid-template-columns:1.1fr 1fr;gap:1.5rem;}
+  @media (max-width:720px){.builder{grid-template-columns:1fr;}}
+
+  .group-title{
+    font-size:12px;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    margin:1rem 0 .5rem;
+  }
+  .group-title:first-child{margin-top:0;}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;}
+  .chip{
+    border:1px solid var(--line);
+    background:#fff;
+    color:var(--ink);
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:13px;
+    cursor:pointer;
+    font-family:'Space Grotesk',sans-serif;
+    transition:background .15s, color .15s, border-color .15s;
+  }
+  .chip:hover{border-color:var(--dusk);}
+  .chip.active{background:var(--night);color:var(--day);border-color:var(--night);}
+
+  .panel{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:1.3rem 1.4rem;
+  }
+
+  .time-picker{display:flex;align-items:center;gap:8px;margin-bottom:1.1rem;}
+  .time-picker select{
+    font-family:'JetBrains Mono',monospace;
+    font-size:18px;
+    padding:8px 10px;
+    border-radius:8px;
+    border:1px solid var(--line);
+    background:var(--paper);
+    color:var(--ink);
+  }
+  .colon{font-family:'JetBrains Mono',monospace;font-size:18px;color:var(--ink-soft);}
+  .ampm-toggle{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-left:6px;}
+  .ampm-toggle button{
+    border:none;background:var(--paper);color:var(--ink-soft);
+    font-family:'JetBrains Mono',monospace;font-size:13px;
+    padding:8px 12px;cursor:pointer;
+  }
+  .ampm-toggle button.active{background:var(--dawn);color:#3A1E0E;font-weight:700;}
+
+  .sentence-preview{
+    background:var(--paper-2);
+    border-radius:12px;
+    padding:.9rem 1rem;
+    margin-bottom:1rem;
+  }
+  .sentence-preview p{margin:0 0 .5rem;font-size:15px;}
+  .sentence-preview p:last-child{margin-bottom:0;}
+  .tag{
+    display:inline-block;width:20px;height:20px;line-height:20px;
+    text-align:center;border-radius:5px;font-size:11px;font-weight:700;
+    margin-right:8px;font-family:'JetBrains Mono',monospace;
+  }
+  .q .tag{background:var(--dusk);color:#fff;}
+  .a .tag{background:var(--day);color:#5A3E00;}
+
+  button.primary{
+    width:100%;
+    background:var(--night);
+    color:var(--day);
+    border:none;
+    border-radius:10px;
+    padding:11px;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+  }
+  button.primary:hover{background:#2A2A55;}
+  .hint{font-size:12px;color:var(--text-danger,#B23A3A);margin-top:6px;min-height:14px;}
+
+  /* SCHEDULE */
+  .schedule-list{display:flex;flex-direction:column;gap:8px;}
+  .schedule-empty{
+    color:var(--ink-soft);font-size:14px;font-style:italic;
+    border:1px dashed var(--line);border-radius:12px;padding:1.2rem;text-align:center;
+  }
+  .sched-item{
+    display:flex;align-items:center;gap:12px;
+    background:#fff;border:1px solid var(--line);border-radius:12px;
+    padding:.7rem 1rem;
+  }
+  .sched-time{
+    font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;
+    color:var(--dusk);min-width:66px;
+  }
+  .sched-text{flex:1;font-size:14px;}
+  .sched-text .verb{font-weight:600;}
+  .sched-remove{
+    border:none;background:none;color:var(--ink-soft);cursor:pointer;font-size:16px;
+    width:24px;height:24px;border-radius:50%;
+  }
+  .sched-remove:hover{background:var(--paper-2);color:#B23A3A;}
+
+  /* QUIZ */
+  .quiz-card{
+    background:var(--paper-2);border-radius:16px;padding:1.3rem 1.4rem;
+  }
+  .quiz-prompt{font-size:16px;margin:0 0 .8rem;font-family:'Fraunces',serif;}
+  .quiz-prompt b{font-weight:600;color:var(--dusk);}
+  textarea{
+    width:100%;min-height:70px;border-radius:10px;border:1px solid var(--line);
+    padding:10px;font-family:'Space Grotesk',sans-serif;font-size:14px;resize:vertical;
+    background:#fff;color:var(--ink);
+  }
+  .quiz-actions{display:flex;gap:10px;margin-top:.8rem;}
+  .quiz-actions button{
+    flex:1;border-radius:10px;padding:10px;font-family:'Space Grotesk',sans-serif;
+    font-size:14px;font-weight:600;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink);
+  }
+  #revealBtn{background:var(--dawn);border-color:var(--dawn);color:#3A1E0E;}
+  #nextBtn:disabled{opacity:.4;cursor:not-allowed;}
+  .hint.ok{color:var(--text-success,#2E7D45);}
+  .quiz-reveal{
+    margin-top:1rem;padding-top:1rem;border-top:1px solid var(--line);
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="hero">
+    <div class="hero-text">
+      <span class="eyebrow">Painel interativo · Rotina diária</span>
+      <h1>What time do you...?</h1>
+      <p>Escolha uma atividade, defina um horário e veja a pergunta e a resposta em inglês se formarem na hora.</p>
+    </div>
+    <div class="dial-wrap">
+      <svg id="dial" viewBox="0 0 220 220" role="img" aria-label="Relógio de 24 horas mostrando os horários da rotina adicionados"></svg>
+    </div>
+  </header>
+
+  <section class="builder">
+    <div class="panel">
+      <span class="step-label">Passo 1</span>
+      <h2>Escolha uma atividade</h2>
+      <div id="activityGroups"></div>
+    </div>
+
+    <div class="panel">
+      <span class="step-label">Passo 2</span>
+      <h2>Defina o horário</h2>
+      <div class="time-picker">
+        <select id="hour"></select>
+        <span class="colon">:</span>
+        <select id="minute"></select>
+        <div class="ampm-toggle">
+          <button data-v="AM" class="active">AM</button>
+          <button data-v="PM">PM</button>
+        </div>
+      </div>
+
+      <div class="sentence-preview">
+        <p class="q"><span class="tag">Q</span><span id="qText">What time do you wake up?</span></p>
+        <p class="a"><span class="tag">A</span><span id="aText">I wake up at 7:00 am.</span></p>
+      </div>
+
+      <button class="primary" id="addBtn">Adicionar à minha rotina</button>
+      <div class="hint" id="addHint"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Minha rotina</h2>
+    <div class="schedule-list" id="scheduleList"></div>
+  </section>
+
+  <section>
+    <h2>Pratique</h2>
+    <div class="quiz-card">
+      <p class="quiz-prompt" id="quizPrompt">Carregando...</p>
+      <textarea id="quizAnswer" placeholder="Escreva aqui a pergunta e a resposta em inglês"></textarea>
+      <div class="hint" id="quizHint"></div>
+      <div class="quiz-actions">
+        <button id="revealBtn">Verificar resposta</button>
+        <button id="nextBtn" disabled>Próxima atividade</button>
+      </div>
+      <div class="quiz-reveal" id="quizReveal" hidden></div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const groups = [
+  { name: "Manhã", items: [
+    "wake up","get up","brush my teeth","take a shower","cook breakfast",
+    "have breakfast","go to work","go to school","start work","have classes",
+    "relax in the morning"
+  ]},
+  { name: "Meio-dia", items: [
+    "have lunch","cook lunch","go to the gym","go to the supermarket","go to the doctor"
+  ]},
+  { name: "Tarde", items: [
+    "finish work","go home","have a snack","relax in the afternoon",
+    "read a newspaper","read a post"
+  ]},
+  { name: "Noite", items: [
+    "cook dinner","relax in the evening","read a book","watch TV",
+    "watch videos online","watch movies","watch series","take the dog for a walk",
+    "hang out with my friends","hang out with my family","go to bed","sleep"
+  ]}
+];
+
+let selectedActivity = "wake up";
+let schedule = [];
+let quizCurrent = null;
+let quizSolved = false;
+
+function allActivities(){
+  return groups.flatMap(g => g.items);
+}
+
+function pad(n){ return String(n).padStart(2,'0'); }
+
+function to24(hour12, minute, ampm){
+  let h = hour12 % 12;
+  if (ampm === 'PM') h += 12;
+  return h*60 + minute;
+}
+
+function formatTime(hour12, minute, ampm){
+  return hour12 + ':' + pad(minute) + ' ' + ampm.toLowerCase();
+}
+
+function buildSentences(activity, timeLabel){
+  const q = 'What time do you ' + activity + '?';
+  const a = 'I ' + activity + ' at ' + timeLabel + '.';
+  return { q, a };
+}
+
+function renderActivityGroups(){
+  const wrap = document.getElementById('activityGroups');
+  wrap.innerHTML = '';
+  groups.forEach(g => {
+    const title = document.createElement('div');
+    title.className = 'group-title';
+    title.textContent = g.name;
+    wrap.appendChild(title);
+    const row = document.createElement('div');
+    row.className = 'chips';
+    g.items.forEach(item => {
+      const chip = document.createElement('button');
+      chip.className = 'chip' + (item === selectedActivity ? ' active' : '');
+      chip.textContent = item;
+      chip.addEventListener('click', () => {
+        selectedActivity = item;
+        renderActivityGroups();
+        updatePreview();
+      });
+      row.appendChild(chip);
+    });
+    wrap.appendChild(row);
+  });
+}
+
+function populateTimeSelects(){
+  const hourSel = document.getElementById('hour');
+  const minSel = document.getElementById('minute');
+  for(let h=1; h<=12; h++){
+    const opt = document.createElement('option');
+    opt.value = h; opt.textContent = h;
+    if(h===7) opt.selected = true;
+    hourSel.appendChild(opt);
+  }
+  [0,15,30,45].forEach(m => {
+    const opt = document.createElement('option');
+    opt.value = m; opt.textContent = pad(m);
+    minSel.appendChild(opt);
+  });
+}
+
+function getCurrentTime(){
+  const hour = parseInt(document.getElementById('hour').value, 10);
+  const minute = parseInt(document.getElementById('minute').value, 10);
+  const ampm = document.querySelector('.ampm-toggle button.active').dataset.v;
+  return { hour, minute, ampm };
+}
+
+function updatePreview(){
+  const { hour, minute, ampm } = getCurrentTime();
+  const timeLabel = formatTime(hour, minute, ampm);
+  const { q, a } = buildSentences(selectedActivity, timeLabel);
+  document.getElementById('qText').textContent = q;
+  document.getElementById('aText').textContent = a;
+}
+
+function renderSchedule(){
+  const list = document.getElementById('scheduleList');
+  list.innerHTML = '';
+  if(schedule.length === 0){
+    const empty = document.createElement('div');
+    empty.className = 'schedule-empty';
+    empty.textContent = 'Sua rotina está vazia. Adicione atividades acima para montar seu dia.';
+    list.appendChild(empty);
+  } else {
+    schedule.slice().sort((a,b) => a.minutes24 - b.minutes24).forEach((entry, idxSorted) => {
+      const row = document.createElement('div');
+      row.className = 'sched-item';
+      row.innerHTML =
+        '<span class="sched-time">' + entry.timeLabel + '</span>' +
+        '<span class="sched-text"><span class="verb">' + entry.activity + '</span></span>' +
+        '<button class="sched-remove" aria-label="Remover">×</button>';
+      row.querySelector('.sched-remove').addEventListener('click', () => {
+        schedule = schedule.filter(e => e.id !== entry.id);
+        renderSchedule();
+        renderDial();
+      });
+      list.appendChild(row);
+    });
+  }
+}
+
+function renderDial(){
+  const svg = document.getElementById('dial');
+  const cx = 110, cy = 110, r = 95;
+  const segs = [
+    { from:5, to:8, color:'var(--dawn)' },
+    { from:8, to:18, color:'var(--day)' },
+    { from:18, to:21, color:'var(--dusk)' },
+    { from:21, to:29, color:'var(--night)' }
+  ];
+  function point(hour24, radius){
+    const angle = (hour24 / 24) * 360 - 90;
+    const rad = angle * Math.PI / 180;
+    return { x: cx + radius * Math.cos(rad), y: cy + radius * Math.sin(rad) };
+  }
+  function arcPath(from, to, radius){
+    const p1 = point(from, radius);
+    const p2 = point(to, radius);
+    const largeArc = (to - from) > 12 ? 1 : 0;
+    return 'M ' + p1.x + ' ' + p1.y + ' A ' + radius + ' ' + radius + ' 0 ' + largeArc + ' 1 ' + p2.x + ' ' + p2.y;
+  }
+  let svgContent = '<circle cx="' + cx + '" cy="' + cy + '" r="' + (r+2) + '" fill="none" stroke="var(--line)" stroke-width="1"/>';
+  segs.forEach(s => {
+    svgContent += '<path d="' + arcPath(s.from, s.to, r) + '" fill="none" stroke="' + s.color + '" stroke-width="14" stroke-linecap="round"/>';
+  });
+  for(let h=0; h<24; h+=2){
+    const p1 = point(h, r-12);
+    const p2 = point(h, r-6);
+    svgContent += '<line x1="'+p1.x+'" y1="'+p1.y+'" x2="'+p2.x+'" y2="'+p2.y+'" stroke="var(--night)" stroke-width="1" opacity="0.35"/>';
+  }
+  svgContent += '<circle cx="'+cx+'" cy="'+cy+'" r="30" fill="var(--paper)" stroke="var(--line)" stroke-width="1"/>';
+  svgContent += '<text x="'+cx+'" y="'+(cy+5)+'" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--ink)">' + schedule.length + ' / dia</text>';
+  schedule.forEach(entry => {
+    const h24 = entry.minutes24 / 60;
+    const p = point(h24, r);
+    svgContent += '<circle cx="'+p.x+'" cy="'+p.y+'" r="5" fill="var(--ink)" stroke="var(--paper)" stroke-width="1.5"><title>' + entry.activity + ' — ' + entry.timeLabel + '</title></circle>';
+  });
+  svg.innerHTML = svgContent;
+}
+
+function addToSchedule(){
+  const { hour, minute, ampm } = getCurrentTime();
+  const timeLabel = formatTime(hour, minute, ampm);
+  const minutes24 = to24(hour, minute, ampm);
+  const hintEl = document.getElementById('addHint');
+  const dup = schedule.find(e => e.activity === selectedActivity && e.timeLabel === timeLabel);
+  if(dup){
+    hintEl.textContent = 'Essa atividade já está na sua rotina nesse horário.';
+    return;
+  }
+  hintEl.textContent = '';
+  schedule.push({
+    id: Date.now() + Math.random(),
+    activity: selectedActivity,
+    timeLabel,
+    minutes24
+  });
+  renderSchedule();
+  renderDial();
+}
+
+function pickQuizActivity(){
+  const list = allActivities();
+  const activity = list[Math.floor(Math.random() * list.length)];
+  const hour = 1 + Math.floor(Math.random() * 12);
+  const minute = [0,15,30,45][Math.floor(Math.random() * 4)];
+  const ampm = Math.random() < 0.5 ? 'AM' : 'PM';
+  const timeLabel = formatTime(hour, minute, ampm);
+  return { activity, timeLabel };
+}
+
+function normalize(str){
+  return str
+    .toLowerCase()
+    .replace(/[?.!,]/g,'')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+function renderQuiz(){
+  quizCurrent = pickQuizActivity();
+  quizSolved = false;
+  document.getElementById('quizPrompt').innerHTML =
+    'Atividade: <b>' + quizCurrent.activity + '</b> — Horário: <b>' + quizCurrent.timeLabel + '</b>';
+  document.getElementById('quizAnswer').value = '';
+  document.getElementById('quizAnswer').disabled = false;
+  document.getElementById('quizHint').textContent = '';
+  document.getElementById('quizHint').className = 'hint';
+  document.getElementById('quizReveal').hidden = true;
+  document.getElementById('quizReveal').innerHTML = '';
+  document.getElementById('nextBtn').disabled = true;
+}
+
+function checkQuiz(){
+  const answerEl = document.getElementById('quizAnswer');
+  const hintEl = document.getElementById('quizHint');
+  if(answerEl.value.trim() === ''){
+    hintEl.className = 'hint';
+    hintEl.textContent = 'Escreva a pergunta e a resposta antes de verificar.';
+    return;
+  }
+  const { q, a } = buildSentences(quizCurrent.activity, quizCurrent.timeLabel);
+  const expected = normalize(q + ' ' + a);
+  const given = normalize(answerEl.value);
+  const reveal = document.getElementById('quizReveal');
+
+  if(given === expected){
+    quizSolved = true;
+    hintEl.className = 'hint ok';
+    hintEl.textContent = 'Certo! Você pode avançar para a próxima atividade.';
+    reveal.hidden = false;
+    reveal.innerHTML =
+      '<p class="q"><span class="tag">Q</span>' + q + '</p>' +
+      '<p class="a"><span class="tag">A</span>' + a + '</p>';
+    document.getElementById('nextBtn').disabled = false;
+  } else {
+    quizSolved = false;
+    hintEl.className = 'hint';
+    hintEl.textContent = 'Ainda não está igual ao gabarito. Revise a pergunta e a resposta e tente de novo.';
+    reveal.hidden = true;
+    reveal.innerHTML = '';
+    document.getElementById('nextBtn').disabled = true;
+  }
+}
+
+document.getElementById('hour').addEventListener('change', updatePreview);
+document.getElementById('minute').addEventListener('change', updatePreview);
+document.querySelectorAll('.ampm-toggle button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.ampm-toggle button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    updatePreview();
+  });
+});
+document.getElementById('addBtn').addEventListener('click', addToSchedule);
+document.getElementById('revealBtn').addEventListener('click', checkQuiz);
+document.getElementById('nextBtn').addEventListener('click', () => {
+  if(!quizSolved) return;
+  renderQuiz();
+});
+document.getElementById('quizAnswer').addEventListener('input', () => {
+  if(quizSolved){
+    quizSolved = false;
+    document.getElementById('nextBtn').disabled = true;
+    document.getElementById('quizHint').className = 'hint';
+    document.getElementById('quizHint').textContent = 'Resposta alterada — verifique novamente.';
+    document.getElementById('quizReveal').hidden = true;
+  }
+});
+
+populateTimeSelects();
+renderActivityGroups();
+updatePreview();
+renderSchedule();
+renderDial();
+renderQuiz();
+</script>
+</body>
+</html>
