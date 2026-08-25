@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rotina em Inglês — painel de prática</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#12162A;
+    --panel:#1B2140;
+    --panel-2:#232B4D;
+    --line: rgba(242,239,230,0.12);
+    --line-strong: rgba(242,239,230,0.22);
+    --text:#F2EFE6;
+    --muted:#9AA3C0;
+    --dawn:#FFB454;
+    --day:#6FD6C4;
+    --dusk:#FF7A6B;
+    --night:#8C7AE6;
+    --dawn-d:#4A2E0A;
+    --day-d:#0E3A33;
+    --dusk-d:#4A1B15;
+    --night-d:#2A1F52;
+    --ok:#7ED9A4;
+    --err:#FF8F87;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    padding:2.5rem 1.25rem 4rem;
+    display:flex;
+    justify-content:center;
+  }
+  .wrap{width:100%;max-width:760px;}
+  header{margin-bottom:1.75rem;}
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:clamp(28px,4.5vw,38px);
+    margin:0 0 6px;
+    letter-spacing:-0.01em;
+  }
+  .subtitle{color:var(--muted);font-size:14.5px;line-height:1.6;margin:0;max-width:56ch;}
+
+  .timeline{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:2px;
+    border-radius:14px;
+    overflow:hidden;
+    margin:1.75rem 0 1.5rem;
+    border:1px solid var(--line);
+  }
+  .seg{
+    padding:14px 10px;
+    cursor:pointer;
+    text-align:left;
+    border:none;
+    color:var(--text);
+    font-family:'IBM Plex Mono',monospace;
+    position:relative;
+    transition:filter .15s ease;
+  }
+  .seg:hover{filter:brightness(1.12);}
+  .seg .label{display:block;font-size:12.5px;font-weight:500;margin-bottom:2px;}
+  .seg .time{display:block;font-size:11px;opacity:.75;}
+  .seg[data-active="true"]{outline:2px solid var(--text); outline-offset:-2px;}
+  .seg.dawn{background:var(--dawn-d);}
+  .seg.day{background:var(--day-d);}
+  .seg.dusk{background:var(--dusk-d);}
+  .seg.night{background:var(--night-d);}
+  .seg.dawn .label{color:var(--dawn);}
+  .seg.day .label{color:var(--day);}
+  .seg.dusk .label{color:var(--dusk);}
+  .seg.night .label{color:var(--night);}
+
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:1.25rem;
+    margin-bottom:1rem;
+  }
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media (max-width:520px){.grid2{grid-template-columns:1fr;}}
+  .grid3{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;}
+  @media (max-width:520px){.grid3{grid-template-columns:1fr;}}
+
+  label.field-label{
+    display:block;
+    font-size:11.5px;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:var(--muted);
+    margin-bottom:6px;
+  }
+  select, textarea{
+    width:100%;
+    background:var(--panel-2);
+    border:1px solid var(--line-strong);
+    color:var(--text);
+    border-radius:9px;
+    padding:9px 10px;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+  }
+  select:focus, textarea:focus, button:focus-visible{
+    outline:none;
+    box-shadow:0 0 0 2px var(--day);
+  }
+  .chipgroup{display:flex;gap:8px;flex-wrap:wrap;}
+  .chip{
+    background:var(--panel-2);
+    border:1px solid var(--line-strong);
+    color:var(--muted);
+    border-radius:999px;
+    padding:8px 14px;
+    font-size:13.5px;
+    cursor:pointer;
+    font-family:'Inter',sans-serif;
+  }
+  .chip[data-active="true"]{
+    background:var(--day-d);
+    border-color:var(--day);
+    color:var(--day);
+  }
+
+  .actions{display:flex;gap:10px;margin:1.25rem 0;flex-wrap:wrap;}
+  button.primary, button.secondary{
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    font-weight:500;
+    padding:10px 18px;
+    border-radius:9px;
+    cursor:pointer;
+  }
+  button.primary{
+    background:var(--text);
+    color:var(--bg);
+    border:1px solid var(--text);
+  }
+  button.secondary{
+    background:transparent;
+    color:var(--text);
+    border:1px solid var(--line-strong);
+  }
+  button.secondary:hover{background:var(--panel-2);}
+  button.primary:hover{filter:brightness(0.92);}
+
+  .pieces{font-size:13.5px;color:var(--muted);line-height:1.8;margin-bottom:14px;}
+  .pieces b{color:var(--text);font-weight:500;}
+  .answer-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+  .error-msg{color:var(--err);font-size:13px;margin-top:6px;display:none;}
+  .feedback{margin-top:14px;font-size:14.5px;line-height:1.6;padding:12px 14px;border-radius:9px;display:none;}
+  .feedback.ok{background:rgba(126,217,164,0.12);color:var(--ok);}
+  .feedback.err{background:rgba(255,143,135,0.12);color:var(--err);}
+
+  .scorebar{
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--muted);
+    margin-bottom:1rem;
+  }
+  .scorebar b{color:var(--text);font-weight:500;}
+  footer{margin-top:2rem;color:var(--muted);font-size:12.5px;text-align:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Rotina em inglês</h1>
+    <p class="subtitle">Pratique verbos do dia a dia combinando sujeito, tipo de frase, advérbio de frequência, parte do dia e expressão de tempo. Escolha os elementos ou sorteie uma combinação e escreva a frase completa.</p>
+  </header>
+
+  <div class="scorebar">
+    <span>Painel de prática</span>
+    <span>Acertos: <b id="score">0</b>/<b id="total">0</b></span>
+  </div>
+
+  <div class="timeline" id="timeline">
+    <button class="seg dawn" data-value="in the morning" data-label="Manhã">
+      <span class="label">Manhã</span><span class="time">in the morning</span>
+    </button>
+    <button class="seg day" data-value="in the afternoon" data-label="Tarde">
+      <span class="label">Tarde</span><span class="time">in the afternoon</span>
+    </button>
+    <button class="seg dusk" data-value="in the evening" data-label="Noite (início)">
+      <span class="label">Noite</span><span class="time">in the evening</span>
+    </button>
+    <button class="seg night" data-value="at night" data-label="Madrugada">
+      <span class="label">Madrugada</span><span class="time">at night</span>
+    </button>
+  </div>
+  <div style="text-align:right;margin:-10px 0 20px;">
+    <button class="chip" id="clearDaypart" data-active="false" style="font-size:12px;padding:5px 12px;">nenhuma parte do dia</button>
+  </div>
+
+  <div class="card">
+    <div class="grid2">
+      <div>
+        <label class="field-label">Verbo</label>
+        <select id="verb"></select>
+      </div>
+      <div>
+        <label class="field-label">Sujeito</label>
+        <select id="subject"></select>
+      </div>
+    </div>
+
+    <div style="margin-top:14px;">
+      <label class="field-label">Tipo de frase</label>
+      <div class="chipgroup" id="typeGroup">
+        <button type="button" class="chip typeBtn" data-type="affirmative">Afirmativa</button>
+        <button type="button" class="chip typeBtn" data-type="negative">Negativa</button>
+        <button type="button" class="chip typeBtn" data-type="interrogative">Interrogativa</button>
+      </div>
+    </div>
+
+    <div class="grid3">
+      <div>
+        <label class="field-label">Advérbio de frequência</label>
+        <select id="adverb"></select>
+      </div>
+      <div>
+        <label class="field-label">Expressão de tempo/frequência</label>
+        <select id="timeexp"></select>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="secondary" id="randomBtn">Sortear tudo</button>
+    <button class="primary" id="genBtn">Gerar desafio</button>
+  </div>
+
+  <div class="card" id="challengeCard" style="display:none;">
+    <div class="pieces" id="pieces"></div>
+    <label class="field-label">Sua frase em inglês</label>
+    <textarea id="answer" rows="2" placeholder="Digite a frase completa aqui"></textarea>
+    <div class="error-msg" id="inputError">Digite uma frase antes de verificar.</div>
+    <div class="answer-row">
+      <button class="primary" id="checkBtn">Verificar</button>
+      <button class="secondary" id="revealBtn">Ver resposta</button>
+      <button class="secondary" id="nextBtn">Próxima</button>
+    </div>
+    <div class="feedback" id="feedback"></div>
+  </div>
+
+  <footer>Feito para praticar Simple Present com verbos de rotina diária.</footer>
+</div>
+
+<script>
+const verbs = [
+"go to the gym","go to the supermarket","take a shower","go to bed",
+"watch series","cook dinner","go home","have lunch",
+"go to work","go to the mall","hang out with my family","start work",
+"have classes","have breakfast","go to the doctor","take the dog for a walk",
+"wake up","go to the park","sleep","read a book",
+"clean the room","watch videos online","have dinner","watch TV",
+"relax in the morning","cook breakfast","relax at night","have a snack",
+"read a newspaper","go to school","brush the teeth","hang out with my friends",
+"study English"
+];
+const subjects = ["I","You","He","She","It","We","They"];
+const possessive = {I:"my",You:"your",He:"his",She:"her",It:"its",We:"our",They:"their"};
+const thirdP = ["He","She","It"];
+const adverbs = ["","always","usually","often","sometimes","rarely","never"];
+const timeexps = ["","every day","every weekend","twice a week","once a month","on Mondays","on weekdays","after work","before school","at 7 a.m.","at noon","at midnight"];
+
+function fill(id, arr, noneLabel){
+  const el = document.getElementById(id);
+  arr.forEach(v=>{
+    const o = document.createElement("option");
+    o.value = v;
+    o.textContent = v === "" ? (noneLabel || "Nenhum") : v;
+    el.appendChild(o);
+  });
+}
+fill("verb", verbs);
+fill("subject", subjects);
+fill("adverb", adverbs, "Nenhum");
+fill("timeexp", timeexps, "Nenhuma");
+
+let currentType = "affirmative";
+let currentDaypart = "";
+
+document.querySelectorAll(".typeBtn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    currentType = btn.dataset.type;
+    document.querySelectorAll(".typeBtn").forEach(b=> b.dataset.active = "false");
+    btn.dataset.active = "true";
+  });
+});
+document.querySelector('.typeBtn[data-type="affirmative"]').click();
+
+document.querySelectorAll(".seg").forEach(seg=>{
+  seg.addEventListener("click", ()=>{
+    currentDaypart = seg.dataset.value;
+    document.querySelectorAll(".seg").forEach(s=> s.dataset.active = "false");
+    seg.dataset.active = "true";
+    document.getElementById("clearDaypart").dataset.active = "false";
+  });
+});
+document.getElementById("clearDaypart").addEventListener("click", ()=>{
+  currentDaypart = "";
+  document.querySelectorAll(".seg").forEach(s=> s.dataset.active = "false");
+  document.getElementById("clearDaypart").dataset.active = "true";
+});
+
+function thirdPersonForm(v){
+  if (v === "have") return "has";
+  if (/(ch|sh|ss|x|zz|o)$/.test(v)) return v + "es";
+  if (/[^aeiou]y$/.test(v)) return v.slice(0,-1) + "ies";
+  return v + "s";
+}
+
+function buildSentence(){
+  const subject = document.getElementById("subject").value;
+  const verbBase = document.getElementById("verb").value;
+  const adverb = document.getElementById("adverb").value;
+  const timeexp = document.getElementById("timeexp").value;
+  const daypart = currentDaypart;
+  const isThird = thirdP.includes(subject);
+  const phrase = verbBase.replace(/\bmy\b/, possessive[subject]);
+  const words = phrase.split(" ");
+  const baseVerb = words[0];
+  const rest = words.slice(1).join(" ");
+  const tail = [daypart, timeexp].filter(Boolean).join(" ").trim();
+  let sentence;
+  if (currentType === "affirmative"){
+    const verbForm = isThird ? thirdPersonForm(baseVerb) : baseVerb;
+    sentence = [subject, adverb, verbForm, rest, tail].filter(Boolean).join(" ") + ".";
+  } else if (currentType === "negative"){
+    const aux = isThird ? "doesn't" : "don't";
+    sentence = [subject, aux, adverb, baseVerb, rest, tail].filter(Boolean).join(" ") + ".";
+  } else {
+    const aux = isThird ? "Does" : "Do";
+    const subjMid = subject === "I" ? "I" : subject.toLowerCase();
+    sentence = [aux, subjMid, adverb, baseVerb, rest, tail].filter(Boolean).join(" ") + "?";
+  }
+  return sentence.replace(/\s+/g," ").replace(/\s([.?])/,"$1");
+}
+
+const typeLabels = {affirmative:"Afirmativa", negative:"Negativa", interrogative:"Interrogativa"};
+
+function renderChallenge(){
+  const subject = document.getElementById("subject").value;
+  const verbBase = document.getElementById("verb").value;
+  const adverb = document.getElementById("adverb").value;
+  const timeexp = document.getElementById("timeexp").value;
+  const daypart = currentDaypart;
+  const pieces = document.getElementById("pieces");
+  pieces.innerHTML =
+    "Sujeito: <b>" + subject + "</b> &middot; " +
+    "Verbo: <b>" + verbBase + "</b> &middot; " +
+    "Tipo: <b>" + typeLabels[currentType] + "</b>" +
+    (adverb ? " &middot; Advérbio: <b>" + adverb + "</b>" : "") +
+    (daypart ? " &middot; Parte do dia: <b>" + daypart + "</b>" : "") +
+    (timeexp ? " &middot; Tempo: <b>" + timeexp + "</b>" : "");
+  document.getElementById("challengeCard").style.display = "block";
+  document.getElementById("answer").value = "";
+  const fb = document.getElementById("feedback");
+  fb.style.display = "none";
+  fb.className = "feedback";
+  document.getElementById("inputError").style.display = "none";
+  document.getElementById("answer").dataset.correct = buildSentence();
+  document.getElementById("answer").focus();
+}
+
+function randPick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+document.getElementById("randomBtn").addEventListener("click", ()=>{
+  document.getElementById("verb").value = randPick(verbs);
+  document.getElementById("subject").value = randPick(subjects);
+  document.getElementById("adverb").value = randPick(adverbs);
+  document.getElementById("timeexp").value = randPick(timeexps);
+  const segs = document.querySelectorAll(".seg");
+  const options = [null, ...segs];
+  const pick = options[Math.floor(Math.random()*options.length)];
+  if (pick === null){
+    document.getElementById("clearDaypart").click();
+  } else {
+    pick.click();
+  }
+  const types = ["affirmative","negative","interrogative"];
+  document.querySelector('.typeBtn[data-type="'+randPick(types)+'"]').click();
+  renderChallenge();
+});
+
+document.getElementById("genBtn").addEventListener("click", renderChallenge);
+document.getElementById("nextBtn").addEventListener("click", ()=>{
+  document.getElementById("randomBtn").click();
+});
+
+function normalize(s){
+  return s.toLowerCase().replace(/[.?!]/g,"").replace(/\s+/g," ").trim();
+}
+
+document.getElementById("checkBtn").addEventListener("click", ()=>{
+  const answerEl = document.getElementById("answer");
+  const val = answerEl.value.trim();
+  const errorEl = document.getElementById("inputError");
+  if (!val){
+    errorEl.style.display = "block";
+    return;
+  }
+  errorEl.style.display = "none";
+  const correct = answerEl.dataset.correct;
+  const fb = document.getElementById("feedback");
+  const totalEl = document.getElementById("total");
+  const scoreEl = document.getElementById("score");
+  totalEl.textContent = String(Number(totalEl.textContent) + 1);
+  fb.style.display = "block";
+  if (normalize(val) === normalize(correct)){
+    scoreEl.textContent = String(Number(scoreEl.textContent) + 1);
+    fb.className = "feedback ok";
+    fb.innerHTML = "Certo. " + correct;
+  } else {
+    fb.className = "feedback err";
+    fb.innerHTML = "Quase. Resposta esperada: " + correct;
+  }
+});
+
+document.getElementById("revealBtn").addEventListener("click", ()=>{
+  const fb = document.getElementById("feedback");
+  fb.style.display = "block";
+  fb.className = "feedback";
+  fb.innerHTML = "Resposta: " + document.getElementById("answer").dataset.correct;
+});
+</script>
+</body>
+</html>
