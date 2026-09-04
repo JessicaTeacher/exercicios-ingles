@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rotina Diária — Simple Present</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#17233D;
+    --navy-2:#22335A;
+    --bg:#EEF3F1;
+    --card:#FFFFFF;
+    --gold:#F2A93B;
+    --coral:#E8604C;
+    --teal:#2F9C95;
+    --teal-dark:#1F6E68;
+    --ink:#1B2430;
+    --muted:#5C6773;
+    --line:#DDE4E1;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Baloo 2',sans-serif;
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px 64px;}
+
+  /* HERO */
+  .hero{
+    background:linear-gradient(180deg,var(--navy) 0%,var(--navy-2) 100%);
+    color:#F4F6F5;
+    padding:44px 20px 30px;
+    border-bottom:5px solid var(--gold);
+  }
+  .hero-inner{max-width:920px;margin:0 auto;}
+  .eyebrow-free-title{
+    font-size:clamp(28px,4.2vw,42px);
+    font-weight:800;
+    margin:0 0 8px;
+    letter-spacing:.2px;
+  }
+  .hero p{
+    margin:0 0 26px;
+    color:#C7D0DE;
+    font-size:16px;
+    max-width:58ch;
+  }
+  .day-strip{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .day-block{
+    flex:1 1 130px;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:10px;
+    padding:12px 14px;
+    min-width:120px;
+  }
+  .day-block .time{
+    font-family:'Baloo 2',sans-serif;
+    font-weight:700;
+    color:var(--gold);
+    font-size:15px;
+  }
+  .day-block .verb{
+    font-size:13.5px;
+    color:#DCE3EC;
+    margin-top:2px;
+  }
+
+  /* TABS */
+  .tabbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    max-width:920px;
+    margin:0 auto;
+    padding:22px 20px 0;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+  .tabs{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+  }
+  .tab-btn{
+    font-family:'Baloo 2',sans-serif;
+    font-size:16px;
+    font-weight:600;
+    background:none;
+    border:none;
+    color:var(--muted);
+    padding:10px 4px;
+    cursor:pointer;
+    position:relative;
+    border-bottom:3px solid transparent;
+    transition:color .15s ease, border-color .15s ease;
+    margin-right:18px;
+  }
+  .tab-btn:hover{color:var(--ink);}
+  .tab-btn.active{
+    color:var(--navy);
+    border-bottom-color:var(--coral);
+  }
+  .score-badge{
+    font-family:'Baloo 2',sans-serif;
+    font-weight:700;
+    background:var(--teal);
+    color:#fff;
+    padding:8px 16px;
+    border-radius:999px;
+    font-size:14px;
+    white-space:nowrap;
+  }
+
+  /* CARD */
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    margin-top:16px;
+    padding:28px 26px;
+  }
+  .section{display:none;}
+  .section.active{display:block;}
+  .section h2{
+    margin:0 0 6px;
+    font-size:23px;
+    color:var(--navy);
+  }
+  .section .lead{
+    color:var(--muted);
+    margin:0 0 22px;
+    font-size:15px;
+    max-width:62ch;
+  }
+
+  /* LISTENING */
+  .listen-item{
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px 18px;
+    margin-bottom:14px;
+  }
+  .listen-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:12px;
+  }
+  .play-btn{
+    flex:none;
+    width:40px;height:40px;
+    border-radius:50%;
+    border:none;
+    background:var(--teal);
+    color:#fff;
+    font-size:17px;
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:transform .1s ease, background .15s ease;
+  }
+  .play-btn:hover{background:var(--teal-dark);}
+  .play-btn:active{transform:scale(.93);}
+  .sentence{font-size:15.5px;}
+  .sentence .gap{
+    display:inline-block;
+    min-width:70px;
+    border-bottom:2px solid var(--coral);
+    text-align:center;
+    font-weight:600;
+    color:var(--coral);
+  }
+  .options{display:flex;gap:8px;flex-wrap:wrap;}
+  .opt-btn{
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    font-weight:600;
+    padding:8px 14px;
+    border-radius:8px;
+    border:1.5px solid var(--line);
+    background:#fff;
+    cursor:pointer;
+    color:var(--ink);
+    transition:all .12s ease;
+  }
+  .opt-btn:hover:not(:disabled){border-color:var(--navy);}
+  .opt-btn:disabled{cursor:default;}
+  .opt-btn.correct{background:#E4F4EE;border-color:var(--teal);color:var(--teal-dark);}
+  .opt-btn.wrong{background:#FBE6E2;border-color:var(--coral);color:#A83B2A;}
+
+  /* SPEAKING */
+  .speak-item{
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px 18px;
+    margin-bottom:14px;
+  }
+  .speak-target{
+    font-size:15.5px;
+    font-weight:600;
+    color:var(--navy);
+    margin-bottom:10px;
+  }
+  .speak-controls{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .icon-btn{
+    font-family:'Inter',sans-serif;
+    font-size:13.5px;
+    font-weight:600;
+    padding:8px 14px;
+    border-radius:8px;
+    border:1.5px solid var(--line);
+    background:#fff;
+    cursor:pointer;
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .icon-btn.mic{border-color:var(--coral);color:var(--coral);}
+  .icon-btn.mic.recording{background:var(--coral);color:#fff;}
+  .speak-feedback{
+    margin-top:8px;
+    font-size:13.5px;
+    color:var(--muted);
+    min-height:18px;
+  }
+  .speak-feedback.ok{color:var(--teal-dark);font-weight:600;}
+  .speak-feedback.retry{color:#A83B2A;font-weight:600;}
+  .support-note{
+    background:#FFF6E6;
+    border:1px solid #F0D8A0;
+    color:#7A5A12;
+    padding:10px 14px;
+    border-radius:8px;
+    font-size:13.5px;
+    margin-bottom:18px;
+  }
+
+  /* READING */
+  .passage{
+    background:#F7FAF9;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:18px 20px;
+    font-size:15.5px;
+    margin-bottom:22px;
+  }
+  .passage b{color:var(--teal-dark);}
+  .q-block{margin-bottom:18px;}
+  .q-block p{font-weight:600;margin:0 0 8px;font-size:15px;}
+
+  /* WRITING */
+  .field-label{
+    display:block;
+    font-weight:600;
+    font-size:13.5px;
+    color:var(--muted);
+    margin-bottom:6px;
+  }
+  input[type=text], textarea{
+    width:100%;
+    font-family:'Inter',sans-serif;
+    font-size:15px;
+    padding:11px 13px;
+    border-radius:8px;
+    border:1.5px solid var(--line);
+    color:var(--ink);
+    resize:vertical;
+  }
+  input[type=text]:focus, textarea:focus{
+    outline:2px solid var(--teal);
+    outline-offset:1px;
+    border-color:var(--teal);
+  }
+  .name-field{margin-bottom:16px;max-width:320px;}
+  .writing-hints{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin:14px 0 20px;
+  }
+  .hint-chip{
+    background:#EAF2F0;
+    color:var(--teal-dark);
+    border-radius:999px;
+    padding:5px 12px;
+    font-size:12.5px;
+    font-weight:600;
+  }
+  .word-count{
+    font-size:12.5px;
+    color:var(--muted);
+    margin-top:6px;
+  }
+  .whatsapp-btn{
+    margin-top:18px;
+    font-family:'Baloo 2',sans-serif;
+    font-weight:700;
+    font-size:16px;
+    background:var(--coral);
+    color:#fff;
+    border:none;
+    padding:13px 24px;
+    border-radius:9px;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    transition:background .15s ease, transform .1s ease;
+  }
+  .whatsapp-btn:hover{background:#D3543F;}
+  .whatsapp-btn:active{transform:scale(.98);}
+  .whatsapp-btn:disabled{background:#CBB6B1;cursor:not-allowed;}
+  .send-note{
+    font-size:12.5px;
+    color:var(--muted);
+    margin-top:9px;
+  }
+
+  @media (max-width:560px){
+    .card{padding:20px 16px;}
+    .tab-btn{margin-right:10px;font-size:14.5px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <h1 class="eyebrow-free-title">A rotina no Simple Present</h1>
+    <p>Um painel para praticar verbos de rotina em inglês — ouça, fale, escreva e leia sobre o dia a dia usando o Simple Present.</p>
+    <div class="day-strip">
+      <div class="day-block"><div class="time">6:00</div><div class="verb">wake up / get up</div></div>
+      <div class="day-block"><div class="time">12:00</div><div class="verb">have lunch</div></div>
+      <div class="day-block"><div class="time">18:00</div><div class="verb">have dinner</div></div>
+      <div class="day-block"><div class="time">22:00</div><div class="verb">go to bed</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="tabbar">
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="listening">Listening</button>
+    <button class="tab-btn" data-tab="speaking">Speaking</button>
+    <button class="tab-btn" data-tab="writing">Writing</button>
+    <button class="tab-btn" data-tab="reading">Reading</button>
+  </div>
+  <div class="score-badge">Pontos: <span id="score">0</span>/11</div>
+</div>
+
+<div class="wrap">
+  <div class="card">
+
+    <!-- LISTENING -->
+    <section class="section active" id="listening">
+      <h2>Listening</h2>
+      <p class="lead">Clique no alto-falante para ouvir a frase completa e escolha a forma correta do verbo no Simple Present.</p>
+      <div id="listen-list"></div>
+    </section>
+
+    <!-- SPEAKING -->
+    <section class="section" id="speaking">
+      <h2>Speaking</h2>
+      <p class="lead">Ouça o modelo, depois clique no microfone e diga a frase em voz alta. O painel tenta reconhecer sua fala — mas o mais importante é praticar!</p>
+      <p class="support-note" id="mic-note" style="display:none;">Seu navegador não suporta reconhecimento de voz. Sem problema: ouça o modelo com o alto-falante e pratique falando em voz alta mesmo assim.</p>
+      <div id="speak-list"></div>
+    </section>
+
+    <!-- WRITING -->
+    <section class="section" id="writing">
+      <h2>Writing</h2>
+      <p class="lead">Escreva 5 frases sobre a sua rotina diária usando o Simple Present. Depois, envie direto para o seu professor pelo WhatsApp.</p>
+      <div class="writing-hints">
+        <span class="hint-chip">wake up</span>
+        <span class="hint-chip">get up</span>
+        <span class="hint-chip">brush my teeth</span>
+        <span class="hint-chip">have breakfast</span>
+        <span class="hint-chip">go to school / work</span>
+        <span class="hint-chip">study</span>
+        <span class="hint-chip">do homework</span>
+        <span class="hint-chip">have dinner</span>
+        <span class="hint-chip">watch TV</span>
+        <span class="hint-chip">go to bed</span>
+      </div>
+      <div class="name-field">
+        <label class="field-label" for="student-name">Seu nome</label>
+        <input type="text" id="student-name" placeholder="Digite seu nome">
+      </div>
+      <label class="field-label" for="writing-text">Suas frases (em inglês)</label>
+      <textarea id="writing-text" rows="6" placeholder="Example: I wake up at seven o'clock. I have breakfast with my family..."></textarea>
+      <div class="word-count"><span id="word-count">0</span> palavras</div>
+      <button class="whatsapp-btn" id="send-whatsapp" disabled>Enviar para o professor no WhatsApp</button>
+      <div class="send-note">Escreva pelo menos uma frase para liberar o envio.</div>
+    </section>
+
+    <!-- READING -->
+    <section class="section" id="reading">
+      <h2>Reading</h2>
+      <p class="lead">Leia o texto sobre a rotina da Ana e responda às perguntas.</p>
+      <div class="passage">
+        Ana is a student. She <b>wakes</b> up at 6:30 every morning and <b>takes</b> a quick shower. After that, she <b>brushes</b> her teeth and <b>has</b> breakfast with her family. At 7:15, she <b>leaves</b> home and <b>goes</b> to school by bike. Classes start at 8 a.m. and finish at noon. In the afternoon, Ana <b>does</b> her homework and <b>studies</b> for tests. She usually <b>watches</b> a bit of TV before dinner. Her family <b>has</b> dinner together at 7 p.m. and talks about the day. Later, Ana reads a book or talks to her friends online. She <b>goes</b> to bed at 10 p.m. because she needs eight hours of sleep.
+      </div>
+      <div id="reading-list"></div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+  /* ---------- TABS ---------- */
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const sections = document.querySelectorAll('.section');
+  tabBtns.forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      tabBtns.forEach(b=>b.classList.remove('active'));
+      sections.forEach(s=>s.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  /* ---------- SCORE ---------- */
+  let score = 0;
+  const scoreEl = document.getElementById('score');
+  function addPoint(){ score++; scoreEl.textContent = score; }
+
+  /* ---------- TTS helper ---------- */
+  function speak(text){
+    if(!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US';
+    u.rate = 0.92;
+    window.speechSynthesis.speak(u);
+  }
+
+  /* ---------- LISTENING DATA ---------- */
+  const listenData = [
+    { sentence:"He __ up at six a.m.", full:"He wakes up at six a.m.", options:["wakes","wake","waked"], answer:"wakes" },
+    { sentence:"She __ her teeth after breakfast.", full:"She brushes her teeth after breakfast.", options:["brushes","brush","brushing"], answer:"brushes" },
+    { sentence:"My brother __ TV every night.", full:"My brother watches TV every night.", options:["watches","watch","watched"], answer:"watches" },
+    { sentence:"Our teacher __ to school by bus.", full:"Our teacher goes to school by bus.", options:["goes","go","going"], answer:"goes" },
+    { sentence:"He __ up early on weekdays.", full:"He gets up early on weekdays.", options:["gets","get","getting"], answer:"gets" },
+    { sentence:"She __ breakfast at 7:30.", full:"She has breakfast at 7:30.", options:["has","have","haves"], answer:"has" }
+  ];
+
+  const listenList = document.getElementById('listen-list');
+  listenData.forEach((item,i)=>{
+    const div = document.createElement('div');
+    div.className = 'listen-item';
+    const parts = item.sentence.split('__');
+    div.innerHTML = `
+      <div class="listen-row">
+        <button class="play-btn" aria-label="Ouvir frase">🔊</button>
+        <div class="sentence">${parts[0]}<span class="gap">?</span>${parts[1]}</div>
+      </div>
+      <div class="options">
+        ${item.options.map(o=>`<button class="opt-btn" data-opt="${o}">${o}</button>`).join('')}
+      </div>
+    `;
+    listenList.appendChild(div);
+
+    div.querySelector('.play-btn').addEventListener('click', ()=> speak(item.full));
+
+    div.querySelectorAll('.opt-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const opts = div.querySelectorAll('.opt-btn');
+        opts.forEach(o=>o.disabled = true);
+        if(btn.dataset.opt === item.answer){
+          btn.classList.add('correct');
+          div.querySelector('.gap').textContent = item.answer;
+          addPoint();
+        } else {
+          btn.classList.add('wrong');
+          opts.forEach(o=>{ if(o.dataset.opt === item.answer) o.classList.add('correct'); });
+        }
+      });
+    });
+  });
+
+  /* ---------- SPEAKING DATA ---------- */
+  const speakData = [
+    "I wake up at seven o'clock.",
+    "She brushes her teeth every morning.",
+    "We have breakfast together.",
+    "He goes to work by car.",
+    "They watch TV after dinner."
+  ];
+
+  const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SpeechRecognitionCtor){
+    document.getElementById('mic-note').style.display = 'block';
+  }
+
+  const speakList = document.getElementById('speak-list');
+  speakData.forEach((target,i)=>{
+    const div = document.createElement('div');
+    div.className = 'speak-item';
+    div.innerHTML = `
+      <div class="speak-target">"${target}"</div>
+      <div class="speak-controls">
+        <button class="icon-btn listen">🔊 Ouvir modelo</button>
+        <button class="icon-btn mic" ${SpeechRecognitionCtor ? '' : 'disabled'}>🎤 Falar</button>
+      </div>
+      <div class="speak-feedback"></div>
+    `;
+    speakList.appendChild(div);
+
+    div.querySelector('.listen').addEventListener('click', ()=> speak(target));
+
+    const micBtn = div.querySelector('.mic');
+    const feedback = div.querySelector('.speak-feedback');
+
+    if(SpeechRecognitionCtor){
+      micBtn.addEventListener('click', ()=>{
+        const recognition = new SpeechRecognitionCtor();
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        micBtn.classList.add('recording');
+        micBtn.textContent = '🎤 Ouvindo...';
+        feedback.textContent = '';
+        feedback.className = 'speak-feedback';
+
+        recognition.start();
+
+        recognition.onresult = (event)=>{
+          const said = event.results[0][0].transcript.toLowerCase().trim();
+          const targetWords = target.toLowerCase().replace(/[.,!?']/g,'').split(' ').filter(w=>w.length>3);
+          const matches = targetWords.filter(w=> said.includes(w)).length;
+          if(matches >= Math.ceil(targetWords.length*0.6)){
+            feedback.textContent = `Você disse: "${said}" — muito bem!`;
+            feedback.className = 'speak-feedback ok';
+          } else {
+            feedback.textContent = `Você disse: "${said}" — tente de novo, ouvindo o modelo primeiro.`;
+            feedback.className = 'speak-feedback retry';
+          }
+        };
+        recognition.onerror = ()=>{
+          feedback.textContent = 'Não consegui ouvir. Verifique a permissão do microfone e tente novamente.';
+          feedback.className = 'speak-feedback retry';
+        };
+        recognition.onend = ()=>{
+          micBtn.classList.remove('recording');
+          micBtn.textContent = '🎤 Falar';
+        };
+      });
+    }
+  });
+
+  /* ---------- READING DATA ---------- */
+  const readingData = [
+    { q:"What time does Ana wake up?", options:["6:30","7:15","8:00"], answer:"6:30" },
+    { q:"How does Ana go to school?", options:["By bus","By bike","On foot"], answer:"By bike" },
+    { q:"What does Ana do in the afternoon?", options:["She sleeps","She does homework","She goes shopping"], answer:"She does homework" },
+    { q:"What time does the family have dinner?", options:["6 p.m.","7 p.m.","8 p.m."], answer:"7 p.m." },
+    { q:"Why does Ana go to bed at 10 p.m.?", options:["She is tired of school","She needs eight hours of sleep","Her parents tell her to"], answer:"She needs eight hours of sleep" }
+  ];
+
+  const readingList = document.getElementById('reading-list');
+  readingData.forEach((item,i)=>{
+    const div = document.createElement('div');
+    div.className = 'q-block';
+    div.innerHTML = `
+      <p>${i+1}. ${item.q}</p>
+      <div class="options">
+        ${item.options.map(o=>`<button class="opt-btn" data-opt="${o}">${o}</button>`).join('')}
+      </div>
+    `;
+    readingList.appendChild(div);
+
+    div.querySelectorAll('.opt-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const opts = div.querySelectorAll('.opt-btn');
+        opts.forEach(o=>o.disabled = true);
+        if(btn.dataset.opt === item.answer){
+          btn.classList.add('correct');
+          addPoint();
+        } else {
+          btn.classList.add('wrong');
+          opts.forEach(o=>{ if(o.dataset.opt === item.answer) o.classList.add('correct'); });
+        }
+      });
+    });
+  });
+
+  /* ---------- WRITING / WHATSAPP ---------- */
+  const TEACHER_PHONE = "5521966360511";
+  const writingText = document.getElementById('writing-text');
+  const wordCount = document.getElementById('word-count');
+  const sendBtn = document.getElementById('send-whatsapp');
+  const nameField = document.getElementById('student-name');
+
+  writingText.addEventListener('input', ()=>{
+    const words = writingText.value.trim().split(/\s+/).filter(Boolean);
+    wordCount.textContent = writingText.value.trim() ? words.length : 0;
+    sendBtn.disabled = writingText.value.trim().length === 0;
+  });
+
+  sendBtn.addEventListener('click', ()=>{
+    const name = nameField.value.trim() || "Aluno(a)";
+    const text = writingText.value.trim();
+    const message = `Atividade de Writing - Simple Present (rotina diária)\nAluno(a): ${name}\n\n${text}`;
+    const url = `https://wa.me/${TEACHER_PHONE}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+  });
+</script>
+
+</body>
+</html>
