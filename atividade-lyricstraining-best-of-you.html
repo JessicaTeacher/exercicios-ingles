@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Best of You — Atividade LyricsTraining</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --maroon:#3B1220;
+    --maroon-2:#54182A;
+    --gold:#E8A33D;
+    --coral:#D64550;
+    --cream:#F5EDE3;
+    --bg:#EDEFF3;
+    --card:#FFFFFF;
+    --ink:#241318;
+    --muted:#655C63;
+    --line:#DEDCE3;
+    --teal:#2F9C95;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,.display{font-family:'Bebas Neue',sans-serif; letter-spacing:.5px;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px 60px;}
+
+  /* HERO */
+  .hero{
+    background:linear-gradient(160deg,var(--maroon) 0%,var(--maroon-2) 100%);
+    color:var(--cream);
+    padding:46px 20px 34px;
+    border-bottom:5px solid var(--gold);
+  }
+  .hero-inner{max-width:760px;margin:0 auto;}
+  .kicker{
+    font-size:13.5px;
+    color:var(--gold);
+    font-weight:600;
+    margin-bottom:10px;
+  }
+  .hero h1{
+    font-size:clamp(40px,7vw,60px);
+    margin:0 0 4px;
+    line-height:0.95;
+  }
+  .hero .band{
+    font-size:16px;
+    color:#D8C4C9;
+    margin:0 0 18px;
+    font-weight:500;
+  }
+  .hero p{
+    margin:0;
+    color:#E4D6DA;
+    font-size:15px;
+    max-width:58ch;
+  }
+
+  /* CARD */
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    margin-top:22px;
+    padding:26px 26px;
+  }
+  .card h2{
+    font-size:26px;
+    color:var(--maroon);
+    margin:0 0 16px;
+  }
+
+  /* STEPS */
+  .steps{list-style:none;margin:0;padding:0;counter-reset:step;}
+  .steps li{
+    counter-increment:step;
+    display:flex;
+    gap:14px;
+    padding:14px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .steps li:last-child{border-bottom:none;}
+  .steps li::before{
+    content:counter(step);
+    flex:none;
+    width:30px;height:30px;
+    border-radius:50%;
+    background:var(--maroon);
+    color:var(--gold);
+    font-family:'Bebas Neue',sans-serif;
+    font-size:15px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .step-text strong{display:block;font-size:15px;color:var(--ink);margin-bottom:2px;}
+  .step-text span{font-size:14px;color:var(--muted);}
+
+  /* MODES */
+  .modes{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+    margin-top:8px;
+  }
+  .mode-card{
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    padding:14px;
+  }
+  .mode-card .name{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:19px;
+    color:var(--maroon);
+    letter-spacing:.4px;
+  }
+  .mode-card p{
+    font-size:13px;
+    color:var(--muted);
+    margin:4px 0 0;
+  }
+
+  /* CTA */
+  .cta-block{
+    text-align:center;
+    padding:30px 20px;
+    background:linear-gradient(160deg,var(--maroon) 0%,var(--maroon-2) 100%);
+    border-radius:14px;
+    margin-top:22px;
+  }
+  .cta-block p{
+    color:#E4D6DA;
+    font-size:14px;
+    margin:0 0 16px;
+  }
+  .cta-btn{
+    display:inline-block;
+    font-family:'Bebas Neue',sans-serif;
+    font-size:22px;
+    letter-spacing:.5px;
+    background:var(--gold);
+    color:var(--maroon);
+    text-decoration:none;
+    padding:14px 32px;
+    border-radius:9px;
+    transition:transform .1s ease, background .15s ease;
+  }
+  .cta-btn:hover{background:#F2B85A;}
+  .cta-btn:active{transform:scale(.98);}
+
+  /* REPORT */
+  .field-label{
+    display:block;
+    font-weight:600;
+    font-size:13.5px;
+    color:var(--muted);
+    margin-bottom:6px;
+  }
+  input[type=text], textarea{
+    width:100%;
+    font-family:'Inter',sans-serif;
+    font-size:15px;
+    padding:11px 13px;
+    border-radius:8px;
+    border:1.5px solid var(--line);
+    color:var(--ink);
+    resize:vertical;
+    margin-bottom:14px;
+  }
+  input[type=text]:focus, textarea:focus{
+    outline:2px solid var(--teal);
+    outline-offset:1px;
+    border-color:var(--teal);
+  }
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .whatsapp-btn{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:19px;
+    letter-spacing:.4px;
+    background:var(--coral);
+    color:#fff;
+    border:none;
+    padding:13px 24px;
+    border-radius:9px;
+    cursor:pointer;
+    width:100%;
+    transition:background .15s ease, transform .1s ease;
+  }
+  .whatsapp-btn:hover{background:#C13D48;}
+  .whatsapp-btn:active{transform:scale(.99);}
+  .send-note{
+    font-size:12.5px;
+    color:var(--muted);
+    margin-top:9px;
+    text-align:center;
+  }
+
+  @media (max-width:560px){
+    .card{padding:20px 18px;}
+    .modes{grid-template-columns:1fr;}
+    .row2{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="kicker">Atividade indicada pela professora</div>
+    <h1>Best of You</h1>
+    <p class="band">Foo Fighters — LyricsTraining</p>
+    <p>Complete a letra da música enquanto ela toca e treine seu listening em inglês, no ritmo do rock.</p>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="card">
+    <h2>Como jogar</h2>
+    <ol class="steps">
+      <li>
+        <div class="step-text">
+          <strong>Abra a atividade</strong>
+          <span>Clique no botão abaixo para abrir "Best of You" no LyricsTraining.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-text">
+          <strong>Selecione o nível Beginner</strong>
+          <span>Para esta atividade, use o nível Beginner (só cerca de 10% da letra fica em branco).</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-text">
+          <strong>Selecione Choice Mode</strong>
+          <span>Escolha o modo Choice Mode: você vai selecionar a palavra certa entre opções, em vez de digitar.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-text">
+          <strong>Jogue e preencha as lacunas</strong>
+          <span>O vídeo pausa até você completar a lacuna da linha atual. Use a tecla "backspace" para ouvir a frase de novo e "tab" para pular uma palavra.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-text">
+          <strong>Confira sua pontuação</strong>
+          <span>No final, anote seus acertos, erros e o percentual de progresso mostrado na tela.</span>
+        </div>
+      </li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>Nível e modo desta atividade</h2>
+    <div class="modes">
+      <div class="mode-card" style="border-color:var(--gold); background:#FFF8EA;">
+        <div class="name">Beginner</div>
+        <p>Nível usado nesta atividade. Cerca de 10% da letra fica em branco.</p>
+      </div>
+      <div class="mode-card" style="border-color:var(--gold); background:#FFF8EA;">
+        <div class="name">Choice Mode</div>
+        <p>Modo usado nesta atividade. Você escolhe a palavra certa entre opções.</p>
+      </div>
+      <div class="mode-card">
+        <div class="name">Karaoke</div>
+        <p>Letra completa, sem lacunas — opcional, só para ouvir antes de jogar.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-block">
+    <p>A atividade abre em uma nova aba no site do LyricsTraining. Depois de abrir, clique em <strong>Beginner</strong> e depois em <strong>Choice Mode</strong>.</p>
+    <a class="cta-btn" href="https://lyricstraining.com/en/play/foo-fighters/best-of-you/UymUHg21Vy" target="_blank" rel="noopener">Abrir atividade ↗</a>
+  </div>
+
+  <div class="card">
+    <h2>Depois de jogar</h2>
+    <label class="field-label" for="student-name">Seu nome</label>
+    <input type="text" id="student-name" placeholder="Digite seu nome">
+    <div class="row2">
+      <div>
+        <label class="field-label" for="mode-played">Modo e nível jogados</label>
+        <input type="text" id="mode-played" value="Choice Mode - Beginner">
+      </div>
+      <div>
+        <label class="field-label" for="score">Sua pontuação</label>
+        <input type="text" id="score" placeholder="Ex: 85% de acertos">
+      </div>
+    </div>
+    <label class="field-label" for="notes">Alguma palavra ou trecho que foi difícil de entender?</label>
+    <textarea id="notes" rows="3" placeholder="Ex: Tive dificuldade para ouvir 'confession' e 'resist'."></textarea>
+    <button class="whatsapp-btn" id="send-whatsapp">Enviar resultado para o professor no WhatsApp</button>
+    <div class="send-note">Preencha ao menos seu nome e a pontuação para enviar.</div>
+  </div>
+
+</div>
+
+<script>
+  const TEACHER_PHONE = "5521966360511";
+  document.getElementById('send-whatsapp').addEventListener('click', ()=>{
+    const name = document.getElementById('student-name').value.trim();
+    const mode = document.getElementById('mode-played').value.trim();
+    const score = document.getElementById('score').value.trim();
+    const notes = document.getElementById('notes').value.trim();
+
+    if(!name || !score){
+      alert('Por favor, preencha ao menos seu nome e a pontuação antes de enviar.');
+      return;
+    }
+
+    let message = `Atividade LyricsTraining - Best of You (Foo Fighters)\nAluno(a): ${name}\nPontuação: ${score}`;
+    if(mode) message += `\nModo/nível: ${mode}`;
+    if(notes) message += `\nDificuldades: ${notes}`;
+
+    const url = `https://wa.me/${TEACHER_PHONE}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+  });
+</script>
+
+</body>
+</html>
