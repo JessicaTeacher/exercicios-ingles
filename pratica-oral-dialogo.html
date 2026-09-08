@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prática Oral — English Mindset</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-950:#080f1a;
+    --navy-900:#0d1b2a;
+    --navy-800:#132840;
+    --navy-700:#1c3550;
+    --gold-400:#c9a961;
+    --gold-300:#e0c589;
+    --cream:#f3ede0;
+    --slate:#93a6ba;
+    --slate-dim:#5f7086;
+    --sage:#7fae8a;
+    --sage-dim:#3f5a48;
+    --rose:#cf8a80;
+    --rose-dim:#5a3d3a;
+    --radius-lg:22px;
+    --radius-sm:10px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 15% -10%, #1a3350 0%, transparent 45%),
+      radial-gradient(circle at 110% 10%, #16283f 0%, transparent 40%),
+      var(--navy-950);
+    color:var(--cream);
+    font-family:'Manrope', sans-serif;
+    display:flex;
+    justify-content:center;
+    padding:32px 16px 64px;
+  }
+  .app{
+    width:100%;
+    max-width:720px;
+  }
+
+  /* ---------- Header ---------- */
+  .brand{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    margin-bottom:6px;
+  }
+  .brand .mark{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:15px;
+    letter-spacing:0.08em;
+    color:var(--gold-300);
+  }
+  .brand .mark span{ color: var(--slate); }
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size:clamp(28px, 5vw, 38px);
+    line-height:1.15;
+    margin:2px 0 6px;
+    color:var(--cream);
+  }
+  .subtitle{
+    color:var(--slate);
+    font-size:15px;
+    line-height:1.5;
+    margin:0 0 28px;
+    max-width:52ch;
+  }
+
+  /* ---------- Role select ---------- */
+  .role-select{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin-top:8px;
+  }
+  .role-card{
+    background:var(--navy-900);
+    border:1px solid var(--navy-700);
+    border-radius:var(--radius-lg);
+    padding:26px 20px;
+    cursor:pointer;
+    text-align:left;
+    color:var(--cream);
+    font-family:'Manrope', sans-serif;
+    transition:border-color .18s ease, transform .18s ease, background .18s ease;
+  }
+  .role-card:hover{
+    border-color:var(--gold-400);
+    transform:translateY(-2px);
+    background:var(--navy-800);
+  }
+  .role-card:focus-visible{
+    outline:2px solid var(--gold-400);
+    outline-offset:3px;
+  }
+  .role-card .who{
+    font-family:'Fraunces', serif;
+    font-size:24px;
+    margin-bottom:6px;
+    color:var(--gold-300);
+  }
+  .role-card .desc{
+    font-size:13.5px;
+    color:var(--slate);
+    line-height:1.5;
+  }
+  .role-card .first-line{
+    margin-top:14px;
+    font-size:13px;
+    font-style:italic;
+    color:var(--slate-dim);
+    border-top:1px solid var(--navy-700);
+    padding-top:12px;
+  }
+
+  /* ---------- Progress ---------- */
+  .progress-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+    gap:16px;
+  }
+  .dots{
+    display:flex;
+    flex-wrap:wrap;
+    gap:5px;
+    flex:1;
+  }
+  .dot{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--navy-700);
+    transition:background .2s ease, transform .2s ease;
+  }
+  .dot.done{ background:var(--sage); }
+  .dot.current{ background:var(--gold-400); transform:scale(1.4); }
+  .swap-btn{
+    font-family:'Manrope',sans-serif;
+    font-size:12.5px;
+    color:var(--slate);
+    background:transparent;
+    border:1px solid var(--navy-700);
+    border-radius:999px;
+    padding:6px 13px;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:border-color .15s ease, color .15s ease;
+  }
+  .swap-btn:hover{ border-color:var(--gold-400); color:var(--gold-300); }
+
+  /* ---------- Stage ---------- */
+  .stage{
+    background:var(--navy-900);
+    border:1px solid var(--navy-700);
+    border-radius:var(--radius-lg);
+    padding:28px 26px;
+    position:relative;
+    overflow:hidden;
+  }
+  .stage::before{
+    content:"";
+    position:absolute;
+    top:-60%; left:50%;
+    width:420px; height:420px;
+    transform:translateX(-50%);
+    background:radial-gradient(circle, rgba(201,169,97,0.10) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .context-line{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:14.5px;
+    color:var(--slate-dim);
+    margin-bottom:18px;
+    padding-bottom:14px;
+    border-bottom:1px dashed var(--navy-700);
+    position:relative;
+    z-index:1;
+  }
+  .context-line .who{ color:var(--slate); font-style:normal; font-weight:600; }
+  .speaker-tag{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-size:12px;
+    letter-spacing:.04em;
+    color:var(--slate);
+    margin-bottom:10px;
+    position:relative; z-index:1;
+  }
+  .speaker-tag .badge{
+    width:22px;height:22px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif;
+    font-size:12px;
+    background:var(--navy-700);
+    color:var(--cream);
+  }
+  .speaker-tag.you .badge{ background:var(--gold-400); color:var(--navy-950); }
+
+  .line-text{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size:clamp(20px, 4vw, 25px);
+    line-height:1.4;
+    color:var(--cream);
+    margin:0 0 20px;
+    position:relative; z-index:1;
+  }
+  .line-text.pt{
+    font-family:'Manrope', sans-serif;
+    font-size:13.5px;
+    color:var(--slate);
+    font-weight:400;
+    margin-top:-14px;
+    margin-bottom:22px;
+  }
+
+  .controls-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+    position:relative; z-index:1;
+  }
+  button.primary, button.ghost{
+    font-family:'Manrope', sans-serif;
+    font-weight:700;
+    font-size:14px;
+    border-radius:999px;
+    padding:12px 22px;
+    cursor:pointer;
+    border:none;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  button.primary{
+    background:var(--gold-400);
+    color:var(--navy-950);
+  }
+  button.primary:hover{ background:var(--gold-300); transform:translateY(-1px); }
+  button.primary:disabled{ opacity:.45; cursor:not-allowed; transform:none; }
+  button.ghost{
+    background:transparent;
+    color:var(--cream);
+    border:1px solid var(--navy-700);
+  }
+  button.ghost:hover{ border-color:var(--gold-400); color:var(--gold-300); }
+  button:focus-visible{ outline:2px solid var(--gold-400); outline-offset:2px; }
+
+  .mic-btn{
+    width:56px; height:56px;
+    border-radius:50%;
+    border:none;
+    background:var(--gold-400);
+    color:var(--navy-950);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+    position:relative;
+    transition:background .15s ease, transform .15s ease;
+  }
+  .mic-btn:hover{ background:var(--gold-300); }
+  .mic-btn.listening{ background:var(--rose); animation:pulse 1.4s ease-in-out infinite; }
+  .mic-btn:disabled{ opacity:.4; cursor:not-allowed; }
+  @keyframes pulse{
+    0%,100%{ box-shadow:0 0 0 0 rgba(207,138,128,.55); }
+    50%{ box-shadow:0 0 0 12px rgba(207,138,128,0); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .mic-btn.listening{ animation:none; }
+    .role-card, button.primary, .dot { transition:none; }
+  }
+
+  .hint{
+    font-size:12.5px;
+    color:var(--slate-dim);
+    margin-left:2px;
+  }
+
+  /* ---------- Feedback ---------- */
+  .feedback{
+    margin-top:22px;
+    padding-top:20px;
+    border-top:1px solid var(--navy-700);
+    position:relative; z-index:1;
+    animation:rise .25s ease;
+  }
+  @keyframes rise{ from{ opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
+  .heard{
+    font-size:13px;
+    color:var(--slate);
+    margin-bottom:12px;
+  }
+  .heard b{ color:var(--cream); font-weight:600; font-style:normal; }
+  .score-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:14px;
+  }
+  .score-num{
+    font-family:'Fraunces', serif;
+    font-size:34px;
+    line-height:1;
+  }
+  .score-num.high{ color:var(--sage); }
+  .score-num.mid{ color:var(--gold-300); }
+  .score-num.low{ color:var(--rose); }
+  .score-msg{ font-size:14px; color:var(--cream); line-height:1.4; }
+  .diff-line{
+    font-family:'Fraunces', serif;
+    font-size:18px;
+    line-height:1.6;
+    margin-bottom:14px;
+  }
+  .diff-line .w{ padding:0 1px; border-radius:3px; }
+  .diff-line .w.ok{ color:var(--sage); }
+  .diff-line .w.miss{ color:var(--rose); text-decoration:underline; text-decoration-color:var(--rose-dim); text-decoration-thickness:2px; }
+  .review-words{
+    display:flex; gap:8px; flex-wrap:wrap; margin-top:6px;
+  }
+  .chip{
+    background:var(--rose-dim);
+    color:var(--rose);
+    font-size:12.5px;
+    padding:5px 11px;
+    border-radius:999px;
+  }
+  .not-supported{
+    font-size:13px;
+    color:var(--slate);
+    background:var(--navy-800);
+    border:1px solid var(--navy-700);
+    padding:12px 14px;
+    border-radius:var(--radius-sm);
+    margin-top:14px;
+  }
+  textarea.type-fallback{
+    width:100%;
+    background:var(--navy-800);
+    border:1px solid var(--navy-700);
+    border-radius:var(--radius-sm);
+    color:var(--cream);
+    font-family:'Manrope',sans-serif;
+    font-size:14px;
+    padding:12px 14px;
+    resize:none;
+    margin-top:10px;
+  }
+  textarea.type-fallback:focus{ outline:2px solid var(--gold-400); border-color:transparent; }
+
+  /* ---------- Footer summary ---------- */
+  .summary-bar{
+    margin-top:20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-size:13px;
+    color:var(--slate);
+  }
+  .summary-bar .avg{ color:var(--gold-300); font-weight:700; }
+
+  /* ---------- End screen ---------- */
+  .end-card{
+    background:var(--navy-900);
+    border:1px solid var(--navy-700);
+    border-radius:var(--radius-lg);
+    padding:40px 28px;
+    text-align:center;
+  }
+  .end-card .big{
+    font-family:'Fraunces', serif;
+    font-size:46px;
+    color:var(--gold-300);
+    margin-bottom:6px;
+  }
+  .end-card p{ color:var(--slate); font-size:14.5px; line-height:1.6; max-width:44ch; margin:0 auto 24px; }
+
+  .hidden{ display:none !important; }
+
+  @media (max-width: 480px){
+    .role-select{ grid-template-columns:1fr; }
+    .stage{ padding:22px 18px; }
+    .end-card{ padding:32px 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="brand"><span class="mark">ENGLISH<span> MINDSET</span></span></div>
+  <h1 id="mainHeading">Prática Oral: Encontro entre Pedro e Julia</h1>
+  <p class="subtitle" id="subtitleText">
+    Escolha o personagem que você quer interpretar. Você vai ouvir a fala do outro
+    personagem e falar a sua parte em voz alta — o painel te dá feedback na hora.
+  </p>
+
+  <!-- ROLE SELECTION -->
+  <div class="role-select" id="roleSelect">
+    <button class="role-card" data-role="A" tabindex="0">
+      <div class="who">Pedro</div>
+      <div class="desc">Engenheiro, 35 anos, mora em São Paulo. Curte rock e um bom café.</div>
+      <div class="first-line">Sua primeira fala: "Hi! I'm Pedro. What's your name?"</div>
+    </button>
+    <button class="role-card" data-role="B" tabindex="0">
+      <div class="who">Julia</div>
+      <div class="desc">Professora, 32 anos, mora no Rio de Janeiro. Curte pop music e pizza.</div>
+      <div class="first-line">Sua primeira fala: "Hi, Pedro! My name is Julia..."</div>
+    </button>
+  </div>
+
+  <!-- PRACTICE SCREEN -->
+  <div id="practiceScreen" class="hidden">
+    <div class="progress-row">
+      <div class="dots" id="dots"></div>
+      <button class="swap-btn" id="swapBtn">Trocar personagem</button>
+    </div>
+
+    <div class="stage">
+      <div class="context-line" id="contextLine"></div>
+
+      <div class="speaker-tag" id="speakerTag">
+        <span class="badge" id="speakerBadge">?</span>
+        <span id="speakerLabel"></span>
+      </div>
+
+      <p class="line-text" id="lineText"></p>
+
+      <div class="controls-row" id="partnerControls">
+        <button class="primary" id="playBtn">▶ Ouvir a fala</button>
+        <button class="ghost" id="nextFromPartnerBtn">Próxima fala →</button>
+      </div>
+
+      <div class="controls-row" id="userControls">
+        <button class="mic-btn" id="micBtn" title="Falar" aria-label="Gravar sua fala">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+        </button>
+        <button class="ghost" id="userPlayBtn">▶ Ouvir modelo</button>
+        <span class="hint" id="micHint">Toque no microfone e fale a frase em inglês.</span>
+      </div>
+
+      <div id="notSupportedBox" class="not-supported hidden">
+        Este navegador não oferece reconhecimento de voz. Digite abaixo o que você
+        diria em voz alta, e o painel ainda avalia sua frase.
+        <textarea class="type-fallback" id="typeFallback" rows="2" placeholder="Digite sua fala em inglês aqui..."></textarea>
+        <div style="margin-top:10px;">
+          <button class="primary" id="checkTypedBtn">Verificar</button>
+        </div>
+      </div>
+
+      <div class="feedback hidden" id="feedbackBox">
+        <div class="heard">Você disse: <b id="heardText"></b></div>
+        <div class="score-row">
+          <div class="score-num" id="scoreNum">0%</div>
+          <div class="score-msg" id="scoreMsg"></div>
+        </div>
+        <div class="diff-line" id="diffLine"></div>
+        <div id="reviewBlock" class="hidden">
+          <span class="hint">Palavras para revisar:</span>
+          <div class="review-words" id="reviewWords"></div>
+        </div>
+        <div class="controls-row" style="margin-top:16px;">
+          <button class="ghost" id="retryBtn">↻ Tentar de novo</button>
+          <button class="primary" id="nextAfterFeedbackBtn">Próxima fala →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary-bar">
+      <span>Linha <b id="lineCounter">1</b> de <span id="lineTotal"></span></span>
+      <span>Média das suas falas: <span class="avg" id="avgScore">—</span></span>
+    </div>
+  </div>
+
+  <!-- END SCREEN -->
+  <div id="endScreen" class="hidden">
+    <div class="end-card">
+      <div class="big" id="endScoreBig">—</div>
+      <div style="font-family:'Fraunces',serif; font-size:20px; color:var(--cream); margin-bottom:10px;" id="endTitle"></div>
+      <p id="endMsg"></p>
+      <div class="controls-row" style="justify-content:center;">
+        <button class="primary" id="restartBtn">Praticar novamente</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+
+  // -------- Dialogue data --------
+  const dialogue = [
+    {s:'A', en:"Hi! I'm Pedro. What's your name?"},
+    {s:'B', en:"Hi, Pedro! My name is Julia. Nice to meet you."},
+    {s:'A', en:"Nice to meet you too, Julia. Where are you from?"},
+    {s:'B', en:"I'm from Brazil. I live in Rio de Janeiro. What about you?"},
+    {s:'A', en:"I'm from Brazil too, but I live in São Paulo. How old are you?"},
+    {s:'B', en:"I'm 32 years old. And you?"},
+    {s:'A', en:"I'm 35. What do you do?"},
+    {s:'B', en:"I'm a teacher. What about you?"},
+    {s:'A', en:"I'm an engineer. Do you like your job?"},
+    {s:'B', en:"Yes, I do! And I also like music."},
+    {s:'A', en:"Really? What music do you like?"},
+    {s:'B', en:"I like pop music. What about you?"},
+    {s:'A', en:"I like rock music. And what's your favorite food?"},
+    {s:'B', en:"My favorite food is pizza. I love having pizza for dinner!"},
+    {s:'A', en:"Me too! Do you like coffee?"},
+    {s:'B', en:"Yes, I do. I usually have coffee for breakfast."},
+    {s:'A', en:"What else do you have for breakfast?"},
+    {s:'B', en:"I usually have bread and fruit. What about you?"},
+    {s:'A', en:"I have eggs and coffee. What time do you wake up?"},
+    {s:'B', en:"I wake up at 6:30 a.m. because I start work early. And you?"},
+    {s:'A', en:"I wake up at 7 a.m. Do you work or study during the day?"},
+    {s:'B', en:"I work during the day and study English at night. What do you do at night?"},
+    {s:'A', en:"I usually have dinner, watch TV and rest."},
+    {s:'B', en:"What time do you go to bed?"},
+    {s:'A', en:"I go to bed at about 11 p.m. And you?"},
+    {s:'B', en:"I go to bed at 10:30 p.m."},
+    {s:'A', en:"It was nice talking to you, Julia!"},
+    {s:'B', en:"Nice talking to you too, Pedro! See you!"}
+  ];
+
+  const names = { A:'Pedro', B:'Julia' };
+
+  let userRole = null;
+  let idx = 0;
+  let scores = [];
+  let recognizing = false;
+  let recognition = null;
+
+  const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const speechSupported = !!SpeechRecognitionAPI;
+  const ttsSupported = 'speechSynthesis' in window;
+
+  // -------- DOM refs --------
+  const roleSelect = document.getElementById('roleSelect');
+  const practiceScreen = document.getElementById('practiceScreen');
+  const endScreen = document.getElementById('endScreen');
+  const dotsEl = document.getElementById('dots');
+  const contextLine = document.getElementById('contextLine');
+  const speakerTag = document.getElementById('speakerTag');
+  const speakerBadge = document.getElementById('speakerBadge');
+  const speakerLabel = document.getElementById('speakerLabel');
+  const lineText = document.getElementById('lineText');
+  const partnerControls = document.getElementById('partnerControls');
+  const userControls = document.getElementById('userControls');
+  const playBtn = document.getElementById('playBtn');
+  const nextFromPartnerBtn = document.getElementById('nextFromPartnerBtn');
+  const micBtn = document.getElementById('micBtn');
+  const userPlayBtn = document.getElementById('userPlayBtn');
+  const micHint = document.getElementById('micHint');
+  const notSupportedBox = document.getElementById('notSupportedBox');
+  const typeFallback = document.getElementById('typeFallback');
+  const checkTypedBtn = document.getElementById('checkTypedBtn');
+  const feedbackBox = document.getElementById('feedbackBox');
+  const heardText = document.getElementById('heardText');
+  const scoreNum = document.getElementById('scoreNum');
+  const scoreMsg = document.getElementById('scoreMsg');
+  const diffLine = document.getElementById('diffLine');
+  const reviewBlock = document.getElementById('reviewBlock');
+  const reviewWords = document.getElementById('reviewWords');
+  const retryBtn = document.getElementById('retryBtn');
+  const nextAfterFeedbackBtn = document.getElementById('nextAfterFeedbackBtn');
+  const lineCounter = document.getElementById('lineCounter');
+  const lineTotal = document.getElementById('lineTotal');
+  const avgScore = document.getElementById('avgScore');
+  const swapBtn = document.getElementById('swapBtn');
+  const endScoreBig = document.getElementById('endScoreBig');
+  const endTitle = document.getElementById('endTitle');
+  const endMsg = document.getElementById('endMsg');
+  const restartBtn = document.getElementById('restartBtn');
+
+  lineTotal.textContent = dialogue.length;
+
+  // -------- Role selection --------
+  document.querySelectorAll('.role-card').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      userRole = card.getAttribute('data-role');
+      idx = 0; scores = [];
+      roleSelect.classList.add('hidden');
+      endScreen.classList.add('hidden');
+      practiceScreen.classList.remove('hidden');
+      buildDots();
+      renderLine();
+    });
+  });
+
+  swapBtn.addEventListener('click', ()=>{
+    userRole = userRole === 'A' ? 'B' : 'A';
+    idx = 0; scores = [];
+    buildDots();
+    renderLine();
+  });
+
+  restartBtn.addEventListener('click', ()=>{
+    endScreen.classList.add('hidden');
+    roleSelect.classList.remove('hidden');
+  });
+
+  function buildDots(){
+    dotsEl.innerHTML = '';
+    dialogue.forEach((_,i)=>{
+      const d = document.createElement('div');
+      d.className = 'dot';
+      d.id = 'dot-'+i;
+      dotsEl.appendChild(d);
+    });
+  }
+
+  function updateDots(){
+    dialogue.forEach((_,i)=>{
+      const d = document.getElementById('dot-'+i);
+      d.classList.remove('done','current');
+      if(i < idx) d.classList.add('done');
+      else if(i === idx) d.classList.add('current');
+    });
+  }
+
+  // -------- Rendering --------
+  function renderLine(){
+    if(idx >= dialogue.length){ showEnd(); return; }
+    updateDots();
+    lineCounter.textContent = idx+1;
+
+    const line = dialogue[idx];
+    const isUserTurn = line.s === userRole;
+
+    // context (previous line)
+    if(idx > 0){
+      const prev = dialogue[idx-1];
+      contextLine.innerHTML = '<span class="who">'+names[prev.s]+':</span> "'+prev.en+'"';
+      contextLine.classList.remove('hidden');
+    } else {
+      contextLine.classList.add('hidden');
+    }
+
+    speakerLabel.textContent = names[line.s] + (isUserTurn ? ' (você)' : '');
+    speakerBadge.textContent = names[line.s][0];
+    speakerTag.classList.toggle('you', isUserTurn);
+
+    lineText.textContent = line.en;
+
+    feedbackBox.classList.add('hidden');
+    notSupportedBox.classList.add('hidden');
+    typeFallback.value = '';
+
+    if(isUserTurn){
+      partnerControls.classList.add('hidden');
+      userControls.classList.remove('hidden');
+      if(!speechSupported){
+        notSupportedBox.classList.remove('hidden');
+        userControls.classList.add('hidden');
+      }
+    } else {
+      userControls.classList.add('hidden');
+      partnerControls.classList.remove('hidden');
+      // auto play partner line
+      speak(line.en);
+    }
+
+    updateAvg();
+  }
+
+  function goNext(){
+    idx++;
+    renderLine();
+  }
+
+  playBtn.addEventListener('click', ()=> speak(dialogue[idx].en));
+  userPlayBtn.addEventListener('click', ()=> speak(dialogue[idx].en));
+  nextFromPartnerBtn.addEventListener('click', goNext);
+  nextAfterFeedbackBtn.addEventListener('click', goNext);
+
+  // -------- Text to speech --------
+  function speak(text){
+    if(!ttsSupported) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US';
+    u.rate = 0.95;
+    const voices = window.speechSynthesis.getVoices();
+    const enVoice = voices.find(v=>v.lang && v.lang.startsWith('en'));
+    if(enVoice) u.voice = enVoice;
+    window.speechSynthesis.speak(u);
+  }
+  if(ttsSupported){
+    window.speechSynthesis.onvoiceschanged = ()=>{};
+  }
+
+  // -------- Speech recognition --------
+  if(speechSupported){
+    recognition = new SpeechRecognitionAPI();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = ()=>{
+      recognizing = true;
+      micBtn.classList.add('listening');
+      micHint.textContent = 'Ouvindo... fale agora.';
+    };
+    recognition.onerror = (e)=>{
+      recognizing = false;
+      micBtn.classList.remove('listening');
+      micHint.textContent = 'Não consegui te ouvir. Toque no microfone e tente de novo.';
+    };
+    recognition.onend = ()=>{
+      recognizing = false;
+      micBtn.classList.remove('listening');
+    };
+    recognition.onresult = (e)=>{
+      const transcript = e.results[0][0].transcript;
+      evaluate(transcript);
+    };
+  }
+
+  micBtn.addEventListener('click', ()=>{
+    if(!speechSupported) return;
+    if(recognizing){ recognition.stop(); return; }
+    try{ recognition.start(); }catch(err){ /* already started */ }
+  });
+
+  checkTypedBtn.addEventListener('click', ()=>{
+    const val = typeFallback.value.trim();
+    if(!val) return;
+    evaluate(val);
+  });
+
+  retryBtn.addEventListener('click', ()=>{
+    feedbackBox.classList.add('hidden');
+    micHint.textContent = 'Toque no microfone e fale a frase em inglês.';
+  });
+
+  // -------- Evaluation (word-level LCS diff) --------
+  function normalize(str){
+    return str
+      .toLowerCase()
+      .replace(/[.,!?;:]/g,'')
+      .replace(/’/g,"'")
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
+  }
+
+  function lcsMask(target, spoken){
+    // returns array same length as target: true if word matched in-order
+    const n = target.length, m = spoken.length;
+    const dp = Array.from({length:n+1}, ()=>new Array(m+1).fill(0));
+    for(let i=1;i<=n;i++){
+      for(let j=1;j<=m;j++){
+        if(target[i-1] === spoken[j-1]) dp[i][j] = dp[i-1][j-1]+1;
+        else dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+      }
+    }
+    const mask = new Array(n).fill(false);
+    let i=n, j=m;
+    while(i>0 && j>0){
+      if(target[i-1] === spoken[j-1]){
+        mask[i-1] = true; i--; j--;
+      } else if(dp[i-1][j] >= dp[i][j-1]){
+        i--;
+      } else {
+        j--;
+      }
+    }
+    return { mask, matched: dp[n][m] };
+  }
+
+  function evaluate(spokenRaw){
+    const line = dialogue[idx];
+    const targetWords = normalize(line.en);
+    const spokenWords = normalize(spokenRaw);
+    const { mask, matched } = lcsMask(targetWords, spokenWords);
+    const score = targetWords.length ? Math.round((matched/targetWords.length)*100) : 0;
+
+    scores.push(score);
+    updateAvg();
+
+    heardText.textContent = '"'+spokenRaw+'"';
+
+    scoreNum.textContent = score+'%';
+    scoreNum.className = 'score-num ' + (score>=85?'high':score>=60?'mid':'low');
+
+    let msg;
+    if(score>=90) msg = 'Excelente! Sua fala está muito próxima do modelo.';
+    else if(score>=75) msg = 'Muito bom! Só faltaram alguns detalhes.';
+    else if(score>=50) msg = 'Bom começo. Tente falar um pouco mais devagar e claro.';
+    else msg = 'Vamos de novo, com calma — ouça o modelo antes de tentar.';
+    scoreMsg.textContent = msg;
+
+    // render diff line using target words with matched/missed classes
+    diffLine.innerHTML = targetWords.map((w,i)=>{
+      const cls = mask[i] ? 'ok' : 'miss';
+      return '<span class="w '+cls+'">'+escapeHtml(w)+'</span>';
+    }).join(' ');
+
+    const missed = targetWords.filter((w,i)=>!mask[i]);
+    if(missed.length){
+      reviewBlock.classList.remove('hidden');
+      reviewWords.innerHTML = [...new Set(missed)].map(w=>'<span class="chip">'+escapeHtml(w)+'</span>').join('');
+    } else {
+      reviewBlock.classList.add('hidden');
+    }
+
+    feedbackBox.classList.remove('hidden');
+  }
+
+  function escapeHtml(s){
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function updateAvg(){
+    if(!scores.length){ avgScore.textContent = '—'; return; }
+    const avg = Math.round(scores.reduce((a,b)=>a+b,0)/scores.length);
+    avgScore.textContent = avg+'%';
+  }
+
+  // -------- End screen --------
+  function showEnd(){
+    practiceScreen.classList.add('hidden');
+    endScreen.classList.remove('hidden');
+    const avg = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : 0;
+    endScoreBig.textContent = scores.length ? avg+'%' : '✓';
+    if(scores.length === 0){
+      endTitle.textContent = 'Diálogo concluído!';
+      endMsg.textContent = 'Você percorreu todo o diálogo. Que tal trocar de personagem e praticar as falas do outro papel também?';
+    } else if(avg>=85){
+      endTitle.textContent = 'Diálogo concluído com excelência!';
+      endMsg.textContent = 'Sua média foi de '+avg+'%. Sua fluência nessa conversa está muito boa — hora de tentar um diálogo novo ou trocar de personagem.';
+    } else if(avg>=65){
+      endTitle.textContent = 'Diálogo concluído — bom trabalho!';
+      endMsg.textContent = 'Sua média foi de '+avg+'%. Pratique mais uma vez as falas destacadas em vermelho para fixar a pronúncia.';
+    } else {
+      endTitle.textContent = 'Diálogo concluído!';
+      endMsg.textContent = 'Sua média foi de '+avg+'%. Vale a pena repetir o diálogo ouvindo o modelo com atenção antes de cada fala.';
+    }
+  }
+
+})();
+</script>
+</body>
+</html>
