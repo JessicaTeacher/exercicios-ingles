@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>English Mindset — Prática Oral</title>
+<style>
+  :root{
+    --ink:#1B3A5C;
+    --ink-soft:#2f5478;
+    --paper:#FAF6EC;
+    --paper-line:#e4dcc8;
+    --gold:#C99A2E;
+    --gold-soft:#f1e1b8;
+    --coral:#C1553B;
+    --green:#3F7D58;
+    --green-soft:#e3efe6;
+    --coral-soft:#f6e5e0;
+    --gray:#8b8578;
+    font-size:16px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 33px, var(--paper-line) 34px),
+      var(--paper);
+    color:var(--ink);
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    padding:28px 18px 60px;
+  }
+  .sheet{
+    max-width:920px;
+    margin:0 auto;
+  }
+  header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    border-bottom:3px solid var(--ink);
+    padding-bottom:14px;
+    margin-bottom:22px;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .brand .mark{
+    width:44px;height:44px;
+    border-radius:9px;
+    background:linear-gradient(135deg, var(--ink), var(--ink-soft));
+    display:flex;align-items:center;justify-content:center;
+    color:var(--gold);
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight:700;
+    font-size:22px;
+    flex-shrink:0;
+  }
+  .brand h1{
+    font-family: Georgia, "Times New Roman", serif;
+    font-size:23px;
+    margin:0;
+    line-height:1.15;
+  }
+  .brand p{
+    margin:2px 0 0;
+    color:var(--ink-soft);
+    font-size:13px;
+    letter-spacing:.02em;
+  }
+  .teacher{
+    text-align:right;
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+  .teacher strong{color:var(--ink);}
+
+  .tabs{
+    display:flex;
+    gap:8px;
+    margin-bottom:20px;
+    flex-wrap:wrap;
+  }
+  .tab{
+    border:2px solid var(--ink);
+    background:transparent;
+    color:var(--ink);
+    padding:9px 16px;
+    border-radius:999px;
+    font-size:14.5px;
+    font-weight:600;
+    cursor:pointer;
+    font-family: inherit;
+  }
+  .tab.active{
+    background:var(--ink);
+    color:var(--paper);
+  }
+
+  .layout{
+    display:grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap:22px;
+  }
+  @media (max-width:760px){ .layout{grid-template-columns:1fr;} }
+
+  .card{
+    background:#fffdf8;
+    border:1px solid var(--paper-line);
+    border-radius:14px;
+    padding:20px;
+    box-shadow: 0 1px 0 var(--paper-line);
+  }
+  .card h2{
+    font-family: Georgia, "Times New Roman", serif;
+    font-size:16px;
+    margin:0 0 4px;
+    color:var(--ink);
+  }
+  .card .hint{
+    color:var(--gray);
+    font-size:13px;
+    margin:0 0 16px;
+  }
+
+  /* clock timer */
+  .clock-wrap{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:24px;
+    flex-wrap:wrap;
+  }
+  .clock{ position:relative; width:150px; height:150px; }
+  .clock svg{ width:100%; height:100%; transform:rotate(-90deg); }
+  .clock .ring-bg{ fill:none; stroke:var(--paper-line); stroke-width:9; }
+  .clock .ring-fg{ fill:none; stroke:var(--gold); stroke-width:9; stroke-linecap:round; transition: stroke-dashoffset .25s linear, stroke .3s; }
+  .clock .time{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    font-family: Georgia, serif;
+    font-size:30px; font-weight:700; color:var(--ink);
+  }
+
+  .controls{ display:flex; flex-direction:column; gap:10px; align-items:center; }
+  button.big{
+    font-family: inherit;
+    border:none;
+    cursor:pointer;
+    border-radius:999px;
+    padding:13px 26px;
+    font-size:15px;
+    font-weight:700;
+    display:flex; align-items:center; gap:9px;
+  }
+  button.start{ background:var(--ink); color:var(--paper); }
+  button.start:disabled{ background:var(--gray); cursor:default; }
+  button.stop{ background:var(--coral); color:#fff; }
+  button.reset{
+    background:transparent; border:1.5px solid var(--ink); color:var(--ink);
+    font-size:13px; padding:8px 16px; border-radius:999px; cursor:pointer; font-family:inherit; font-weight:600;
+  }
+  .mic-dot{
+    width:9px; height:9px; border-radius:50%; background:var(--coral);
+    display:inline-block; animation:pulse 1s infinite;
+  }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.25;} }
+  .status-line{ font-size:13px; color:var(--ink-soft); min-height:18px; text-align:center; }
+
+  .transcript{
+    margin-top:16px;
+    background:var(--paper);
+    border:1px dashed var(--paper-line);
+    border-radius:10px;
+    padding:12px 14px;
+    min-height:70px;
+    max-height:150px;
+    overflow-y:auto;
+    font-size:14px;
+    line-height:1.55;
+  }
+  .transcript .interim{ color:var(--gray); font-style:italic; }
+  .transcript p{ margin:0 0 6px; }
+
+  .chips{
+    display:flex; flex-wrap:wrap; gap:8px;
+  }
+  .chip{
+    border-radius:9px;
+    padding:8px 11px;
+    font-size:13.5px;
+    background:var(--paper);
+    border:1px solid var(--paper-line);
+    color:var(--ink-soft);
+    transition: all .25s;
+  }
+  .chip.ok{ background:var(--green-soft); border-color:var(--green); color:var(--green); font-weight:700; }
+  .chip.warn{ background:var(--coral-soft); border-color:var(--coral); color:var(--coral); font-weight:700; }
+
+  .pronoun-select{
+    display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;
+  }
+  .pronoun-select button{
+    font-family:inherit; cursor:pointer; border-radius:8px; padding:6px 12px; font-size:13px; font-weight:600;
+    border:1.5px solid var(--ink-soft); background:transparent; color:var(--ink-soft);
+  }
+  .pronoun-select button.sel{ background:var(--ink-soft); color:#fff; }
+
+  .report{
+    margin-top:6px;
+  }
+  .report .score{
+    font-family: Georgia, serif;
+    font-size:34px;
+    color:var(--ink);
+    margin:0;
+  }
+  .report .score span{ font-size:16px; color:var(--gray); font-family:inherit; }
+  .sentence-log{
+    margin-top:14px;
+    display:flex; flex-direction:column; gap:8px;
+  }
+  .sentence-item{
+    border-left:4px solid var(--paper-line);
+    padding:7px 12px;
+    background:var(--paper);
+    border-radius:0 8px 8px 0;
+    font-size:13.5px;
+  }
+  .sentence-item.ok{ border-left-color:var(--green); }
+  .sentence-item.warn{ border-left-color:var(--coral); }
+  .sentence-item .heard{ color:var(--ink); }
+  .sentence-item .note{ color:var(--ink-soft); font-size:12.5px; margin-top:3px; }
+
+  textarea.fallback{
+    width:100%; min-height:90px; border-radius:10px; border:1px solid var(--paper-line);
+    padding:10px 12px; font-family:inherit; font-size:14px; resize:vertical;
+  }
+  .fallback-note{
+    background:var(--gold-soft); border:1px solid var(--gold); border-radius:10px;
+    padding:10px 12px; font-size:13px; color:#6b5417; margin-bottom:14px;
+  }
+  .analyze-btn{
+    margin-top:8px; background:var(--ink); color:var(--paper); border:none; border-radius:999px;
+    padding:9px 18px; font-family:inherit; font-weight:700; cursor:pointer; font-size:13.5px;
+  }
+  footer{ text-align:center; color:var(--gray); font-size:12px; margin-top:30px; }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header>
+    <div class="brand">
+      <div class="mark">EM</div>
+      <div>
+        <h1>English Mindset</h1>
+        <p>Prática oral — Making Sentences</p>
+      </div>
+    </div>
+    <div class="teacher">Teacher: <strong>Jéssica Teixeira</strong></div>
+  </header>
+
+  <div class="tabs" id="tabs"></div>
+
+  <div class="layout">
+    <div class="card">
+      <h2 id="taskTitle">Forma afirmativa</h2>
+      <p class="hint" id="taskHint"></p>
+
+      <div id="pronounRow" class="pronoun-select" style="display:none;"></div>
+
+      <div class="clock-wrap">
+        <div class="clock">
+          <svg viewBox="0 0 120 120">
+            <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
+            <circle class="ring-fg" id="ring" cx="60" cy="60" r="52" stroke-dasharray="327" stroke-dashoffset="0"></circle>
+          </svg>
+          <div class="time" id="timeLeft">60</div>
+        </div>
+        <div class="controls">
+          <button class="big start" id="startBtn">🎤 Iniciar (60s)</button>
+          <button class="big stop" id="stopBtn" style="display:none;">■ Parar</button>
+          <button class="reset" id="resetBtn">Reiniciar rodada</button>
+        </div>
+      </div>
+      <p class="status-line" id="statusLine">Pronto para começar.</p>
+
+      <div id="fallbackArea" style="display:none;">
+        <div class="fallback-note">Este navegador não reconhece fala automaticamente. Digite abaixo as frases que você diria em voz alta (uma por linha) e clique em Analisar.</div>
+        <textarea class="fallback" id="fallbackText" placeholder="I take a shower every morning.&#10;She goes to school at seven."></textarea>
+        <button class="analyze-btn" id="analyzeBtn">Analisar frases</button>
+      </div>
+
+      <div class="transcript" id="transcript">
+        <p class="interim" id="interimLine">A transcrição aparecerá aqui enquanto você fala…</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Verbos da lição</h2>
+      <p class="hint">Toque cada verbo ao usá-lo corretamente na frase falada.</p>
+      <div class="chips" id="chips"></div>
+
+      <div class="report" id="report" style="display:none;">
+        <h2 style="margin-top:20px;">Feedback da rodada</h2>
+        <p class="score"><span id="scoreVal">0</span><span>/<span id="scoreTotal">0</span> itens usados corretamente</span></p>
+        <div class="sentence-log" id="sentenceLog"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>Ferramenta de prática oral · reconhecimento de fala local ao navegador · revise sempre com a professora</footer>
+</div>
+
+<script>
+/* ---------- Data from the lesson sheet ---------- */
+const VERB_ITEMS = [
+  {base:"take a shower", third:"takes a shower"},
+  {base:"go to school", third:"goes to school"},
+  {base:"go to pilates", third:"goes to pilates"},
+  {base:"cook lunch", third:"cooks lunch"},
+  {base:"exercise", third:"exercises"},
+  {base:"go to the therapies", third:"goes to the therapies"},
+  {base:"go to the supermarket", third:"goes to the supermarket"},
+  {base:"cook dinner", third:"cooks dinner"},
+  {base:"have breakfast", third:"has breakfast"},
+  {base:"go to the pharmacy", third:"goes to the pharmacy"},
+  {base:"read a book", third:"reads a book"},
+  {base:"cook orders", third:"cooks orders"},
+  {base:"make a cake", third:"makes a cake"},
+  {base:"have English classes", third:"has English classes"},
+  {base:"brush the teeth", third:"brushes the teeth"},
+  {base:"have lunch", third:"has lunch"},
+  {base:"have dinner", third:"has dinner"},
+  {base:"watch series", third:"watches series"},
+  {base:"watch TV", third:"watches TV"},
+  {base:"watch online videos", third:"watches online videos"},
+  {base:"sell products", third:"sells products"},
+  {base:"go to bed", third:"goes to bed"},
+  {base:"sleep", third:"sleeps"},
+  {base:"wake up", third:"wakes up"},
+  {base:"get up", third:"gets up"},
+  {base:"listen to music", third:"listens to music"},
+  {base:"clean the house", third:"cleans the house"},
+];
+
+const PRONOUNS = ["I","you","he","she","it","we","they"];
+const THIRD_PERSON = new Set(["he","she","it"]);
+const SHORT_TABLE = {
+  I:{aff:"yes i do", neg:"no i dont"},
+  you:{aff:"yes you do", neg:"no you dont"},
+  he:{aff:"yes he does", neg:"no he doesnt"},
+  she:{aff:"yes she does", neg:"no she doesnt"},
+  it:{aff:"yes it does", neg:"no it doesnt"},
+  we:{aff:"yes we do", neg:"no we dont"},
+  they:{aff:"yes they do", neg:"no they dont"},
+};
+
+const MODES = {
+  affirmative:{
+    label:"Forma afirmativa",
+    title:"Forma afirmativa",
+    hint:"Fale uma frase afirmativa para cada verbo, ex.: “I go to school every day.” Você tem 1 minuto para cobrir o máximo de verbos possível.",
+    usesPronoun:false,
+    itemsFor: () => VERB_ITEMS.map(v => ({key:v.base, label:v.base})),
+  },
+  interrogative:{
+    label:"Forma interrogativa",
+    title:"Forma interrogativa",
+    hint:"Transforme os verbos em perguntas, ex.: “Does she go to school?” Comece com Do/Does conforme o sujeito.",
+    usesPronoun:false,
+    itemsFor: () => VERB_ITEMS.map(v => ({key:v.base, label:v.base})),
+  },
+  shortAnswers:{
+    label:"Respostas curtas",
+    title:"Respostas curtas",
+    hint:"Responda com respostas curtas para cada pronome, nas formas afirmativa e negativa, ex.: “Yes, she does.” / “No, she doesn't.”",
+    usesPronoun:false,
+    itemsFor: () => PRONOUNS.flatMap(p => ([
+      {key:p+"-aff", label:"Yes, "+p+" ("+ (THIRD_PERSON.has(p)?"does":"do") +")"},
+      {key:p+"-neg", label:"No, "+p+" ("+ (THIRD_PERSON.has(p)?"doesn't":"don't") +")"},
+    ])),
+  },
+};
+
+let currentMode = "affirmative";
+let checklist = [];      // [{key,label,state:'pending'|'ok'|'warn'}]
+let sentenceLog = [];
+let timeLeft = 60;
+let timerId = null;
+let recognition = null;
+let listening = false;
+let manualStop = false;
+
+/* ---------- Tabs ---------- */
+const tabsEl = document.getElementById("tabs");
+Object.keys(MODES).forEach(key=>{
+  const b = document.createElement("button");
+  b.className = "tab" + (key===currentMode ? " active" : "");
+  b.textContent = MODES[key].label;
+  b.onclick = () => switchMode(key);
+  b.dataset.key = key;
+  tabsEl.appendChild(b);
+});
+
+function switchMode(key){
+  currentMode = key;
+  [...tabsEl.children].forEach(b => b.classList.toggle("active", b.dataset.key===key));
+  document.getElementById("taskTitle").textContent = MODES[key].title;
+  document.getElementById("taskHint").textContent = MODES[key].hint;
+  resetRound();
+}
+
+/* ---------- Checklist chips ---------- */
+function buildChecklist(){
+  checklist = MODES[currentMode].itemsFor().map(it => ({...it, state:"pending"}));
+  renderChips();
+}
+function renderChips(){
+  const wrap = document.getElementById("chips");
+  wrap.innerHTML = "";
+  checklist.forEach(item=>{
+    const c = document.createElement("div");
+    c.className = "chip" + (item.state==="ok" ? " ok" : item.state==="warn" ? " warn" : "");
+    c.textContent = item.label;
+    wrap.appendChild(c);
+  });
+}
+
+/* ---------- Timer / clock ring ---------- */
+const CIRC = 2 * Math.PI * 52;
+document.getElementById("ring").setAttribute("stroke-dasharray", CIRC.toFixed(1));
+function renderClock(){
+  document.getElementById("timeLeft").textContent = timeLeft;
+  const ring = document.getElementById("ring");
+  const frac = timeLeft/60;
+  ring.setAttribute("stroke-dashoffset", (CIRC*(1-frac)).toFixed(1));
+  ring.style.stroke = timeLeft <= 10 ? "var(--coral)" : "var(--gold)";
+}
+
+function resetRound(){
+  stopEverything();
+  timeLeft = 60;
+  sentenceLog = [];
+  manualStop = false;
+  renderClock();
+  buildChecklist();
+  document.getElementById("report").style.display = "none";
+  document.getElementById("transcript").innerHTML = '<p class="interim" id="interimLine">A transcrição aparecerá aqui enquanto você fala…</p>';
+  document.getElementById("statusLine").textContent = "Pronto para começar.";
+  document.getElementById("startBtn").style.display = "inline-flex";
+  document.getElementById("startBtn").disabled = false;
+  document.getElementById("stopBtn").style.display = "none";
+}
+
+/* ---------- Speech recognition setup ---------- */
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const supportsSpeech = !!SpeechRecognition;
+
+if(!supportsSpeech){
+  document.getElementById("fallbackArea").style.display = "block";
+  document.getElementById("startBtn").style.display = "none";
+}
+
+function createRecognition(){
+  const r = new SpeechRecognition();
+  r.lang = "en-US";
+  r.continuous = true;
+  r.interimResults = true;
+  r.onresult = (e)=>{
+    let interim = "";
+    for(let i=e.resultIndex; i<e.results.length; i++){
+      const res = e.results[i];
+      const text = res[0].transcript.trim();
+      if(res.isFinal){
+        if(text) logSentence(text);
+      } else {
+        interim += text + " ";
+      }
+    }
+    document.getElementById("interimLine").textContent = interim ? interim : "…ouvindo";
+  };
+  r.onerror = (e)=>{
+    if(e.error === "no-speech" || e.error === "audio-capture"){
+      // keep going, browser sometimes fires this on silence
+    } else if (e.error === "not-allowed"){
+      document.getElementById("statusLine").textContent = "Permissão de microfone negada. Habilite o microfone e tente novamente.";
+      stopEverything();
+    }
+  };
+  r.onend = ()=>{
+    if(listening && !manualStop && timeLeft>0){
+      try{ r.start(); }catch(err){}
+    }
+  };
+  return r;
+}
+
+function logSentence(rawText){
+  const analysis = analyzeUtterance(rawText);
+  sentenceLog.push({heard:rawText, ...analysis});
+  renderTranscriptLine(rawText, analysis.matched);
+  renderChips();
+}
+
+function renderTranscriptLine(text, matched){
+  const t = document.getElementById("transcript");
+  const p = document.createElement("p");
+  p.textContent = (matched ? "✓ " : "• ") + text;
+  p.style.color = matched ? "var(--green)" : "var(--ink)";
+  t.appendChild(p);
+  t.scrollTop = t.scrollHeight;
+}
+
+/* ---------- Analysis heuristics ---------- */
+function normalize(s){
+  return " " + s.toLowerCase().replace(/['’]/g,"").replace(/[^a-z0-9\s]/g," ").replace(/\s+/g," ").trim() + " ";
+}
+function phraseRegex(phrase){
+  const words = phrase.toLowerCase().split(" ");
+  return new RegExp("\\b" + words.join("\\b.{0,15}?\\b") + "\\b");
+}
+function findPronoun(norm){
+  for(const p of PRONOUNS){
+    if(new RegExp("\\b"+p.toLowerCase()+"\\b").test(norm)) return p;
+  }
+  return null;
+}
+
+function analyzeUtterance(raw){
+  const norm = normalize(raw);
+  if(currentMode === "shortAnswers"){
+    return analyzeShortAnswer(norm);
+  }
+  if(currentMode === "interrogative"){
+    return analyzeInterrogative(norm);
+  }
+  return analyzeAffirmative(norm);
+}
+
+function analyzeAffirmative(norm){
+  for(const item of checklist){
+    if(item.state === "ok") continue;
+    const verb = VERB_ITEMS.find(v => v.base === item.key);
+    const pronoun = findPronoun(norm);
+    const isThird = pronoun && THIRD_PERSON.has(pronoun);
+    const wantForm = isThird ? verb.third : verb.base;
+    const otherForm = isThird ? verb.base : verb.third;
+    if(phraseRegex(wantForm).test(norm)){
+      item.state = "ok";
+      return {matched:true, note:"Verbo \""+verb.base+"\" usado corretamente"+(pronoun?" com \""+pronoun+"\"":"")+"."};
+    }
+    if(phraseRegex(otherForm).test(norm)){
+      item.state = "warn";
+      return {matched:false, note:"Verbo \""+verb.base+"\" identificado, mas a conjugação não combina com o sujeito \""+(pronoun||"?")+"\"."};
+    }
+  }
+  return {matched:false, note:"Nenhum verbo da lista reconhecido nesta frase."};
+}
+
+function analyzeInterrogative(norm){
+  const startsDoes = /^\s*does\b/.test(norm.trim()+" ") || /^ does\b/.test(norm);
+  const startsDo = /^ do\b/.test(norm);
+  const pronoun = findPronoun(norm);
+  const isThird = pronoun && THIRD_PERSON.has(pronoun);
+  for(const item of checklist){
+    if(item.state === "ok") continue;
+    const verb = VERB_ITEMS.find(v => v.base === item.key);
+    if(phraseRegex(verb.base).test(norm)){
+      const auxOk = isThird ? startsDoes : startsDo;
+      if((startsDo || startsDoes) && auxOk){
+        item.state = "ok";
+        return {matched:true, note:"Pergunta bem formada com \""+(startsDoes?"Does":"Do")+"\" + \""+verb.base+"\"."};
+      }
+      item.state = "warn";
+      return {matched:false, note:"Verbo \""+verb.base+"\" identificado, mas falta Do/Does correto no início da pergunta."};
+    }
+  }
+  return {matched:false, note:"Nenhum verbo da lista reconhecido nesta frase."};
+}
+
+function analyzeShortAnswer(norm){
+  for(const item of checklist){
+    if(item.state === "ok") continue;
+    const [pronoun, kind] = item.key.split("-");
+    const expected = kind === "aff" ? SHORT_TABLE[pronoun].aff : SHORT_TABLE[pronoun].neg;
+    if(phraseRegex(expected).test(norm)){
+      item.state = "ok";
+      return {matched:true, note:"Resposta curta correta para \""+pronoun+"\"."};
+    }
+  }
+  // partial credit: right pronoun + yes/no but wrong do/does
+  for(const item of checklist){
+    if(item.state === "ok") continue;
+    const [pronoun, kind] = item.key.split("-");
+    const yn = kind === "aff" ? "yes" : "no";
+    if(norm.includes(" "+yn+" ") && norm.includes(" "+pronoun.toLowerCase()+" ")){
+      item.state = "warn";
+      return {matched:false, note:"Resposta para \""+pronoun+"\" identificada, mas o auxiliar (do/does) não confere."};
+    }
+  }
+  return {matched:false, note:"Nenhuma resposta curta da tabela reconhecida nesta frase."};
+}
+
+/* ---------- Timer control ---------- */
+function startTimer(){
+  timerId = setInterval(()=>{
+    timeLeft -= 1;
+    renderClock();
+    if(timeLeft <= 0){
+      finishRound();
+    }
+  }, 1000);
+}
+
+function stopEverything(){
+  listening = false;
+  manualStop = true;
+  if(timerId){ clearInterval(timerId); timerId = null; }
+  if(recognition){ try{ recognition.stop(); }catch(e){} }
+}
+
+function finishRound(){
+  stopEverything();
+  document.getElementById("startBtn").style.display = "inline-flex";
+  document.getElementById("startBtn").disabled = false;
+  document.getElementById("startBtn").textContent = "🎤 Nova rodada (60s)";
+  document.getElementById("stopBtn").style.display = "none";
+  document.getElementById("statusLine").textContent = "Rodada encerrada. Veja o feedback ao lado →";
+  showReport();
+}
+
+function showReport(){
+  const okCount = checklist.filter(i=>i.state==="ok").length;
+  document.getElementById("scoreVal").textContent = okCount;
+  document.getElementById("scoreTotal").textContent = checklist.length;
+  const log = document.getElementById("sentenceLog");
+  log.innerHTML = "";
+  if(sentenceLog.length === 0){
+    const p = document.createElement("div");
+    p.className = "sentence-item warn";
+    p.innerHTML = '<div class="heard">Nenhuma frase foi captada nesta rodada.</div><div class="note">Verifique o microfone e tente novamente.</div>';
+    log.appendChild(p);
+  }
+  sentenceLog.forEach(s=>{
+    const div = document.createElement("div");
+    div.className = "sentence-item " + (s.matched ? "ok" : "warn");
+    div.innerHTML = '<div class="heard">"'+s.heard+'"</div><div class="note">'+(s.matched?"✓ ":"⚠ ")+s.note+'</div>';
+    log.appendChild(div);
+  });
+  document.getElementById("report").style.display = "block";
+}
+
+/* ---------- Buttons ---------- */
+document.getElementById("startBtn").onclick = ()=>{
+  if(!supportsSpeech) return;
+  resetRoundKeepingButtonLabel();
+  manualStop = false;
+  listening = true;
+  recognition = createRecognition();
+  try{ recognition.start(); }catch(e){}
+  startTimer();
+  document.getElementById("startBtn").style.display = "none";
+  document.getElementById("stopBtn").style.display = "inline-flex";
+  document.getElementById("statusLine").innerHTML = '<span class="mic-dot"></span> Ouvindo… fale suas frases em inglês.';
+};
+
+function resetRoundKeepingButtonLabel(){
+  timeLeft = 60;
+  sentenceLog = [];
+  renderClock();
+  buildChecklist();
+  document.getElementById("report").style.display = "none";
+  document.getElementById("transcript").innerHTML = '<p class="interim" id="interimLine">A transcrição aparecerá aqui enquanto você fala…</p>';
+}
+
+document.getElementById("stopBtn").onclick = ()=>{
+  finishRound();
+};
+document.getElementById("resetBtn").onclick = resetRound;
+
+document.getElementById("analyzeBtn").onclick = ()=>{
+  const raw = document.getElementById("fallbackText").value.trim();
+  if(!raw) return;
+  buildChecklist();
+  sentenceLog = [];
+  document.getElementById("transcript").innerHTML = "";
+  const lines = raw.split(/\n|(?<=[.?!])\s+/).map(l=>l.trim()).filter(Boolean);
+  lines.forEach(line => logSentence(line));
+  document.getElementById("report").style.display = "block";
+  showReport();
+  document.getElementById("statusLine").textContent = "Análise concluída.";
+};
+
+/* ---------- Init ---------- */
+switchMode("affirmative");
+</script>
+</body>
+</html>
