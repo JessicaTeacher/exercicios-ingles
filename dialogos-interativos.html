@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diálogos em Inglês — Primeiro Encontro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #efede3;
+    --paper-raised: #f8f6ee;
+    --ink: #232b2e;
+    --ink-soft: #5c6669;
+    --line: #d9d4c4;
+
+    --c-intro: #c99a3f;
+    --c-intro-bg: #f7ecd3;
+    --c-origem: #2f6f6b;
+    --c-origem-bg: #e2eeec;
+    --c-prof: #b15a3e;
+    --c-prof-bg: #f5e5de;
+    --c-comida: #3a5a78;
+    --c-comida-bg: #e2e9ef;
+    --c-rotina: #74804a;
+    --c-rotina-bg: #eaeed9;
+
+    --font-display: "Fraunces", serif;
+    --font-body: "Inter", sans-serif;
+  }
+
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .app{
+    display:flex;
+    min-height: 100vh;
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    width: 280px;
+    flex-shrink:0;
+    padding: 28px 20px;
+    border-right: 1px solid var(--line);
+  }
+  .sidebar h1{
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.2;
+    margin: 0 0 6px;
+  }
+  .sidebar p.lede{
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    margin: 0 0 24px;
+    line-height: 1.5;
+  }
+
+  .dialog-list{
+    list-style:none;
+    margin:0; padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .dialog-card{
+    text-align:left;
+    width:100%;
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    cursor:pointer;
+    font-family: var(--font-body);
+    transition: border-color .15s ease, transform .1s ease;
+  }
+  .dialog-card:hover{ border-color: var(--ink-soft); }
+  .dialog-card.active{
+    border-color: var(--c-prof);
+    background: var(--c-prof-bg);
+  }
+  .dialog-card .names{
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 2px;
+  }
+  .dialog-card .places{
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+  }
+
+  .legend{
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+  }
+  .legend h2{
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin: 0 0 10px;
+    letter-spacing: 0.01em;
+  }
+  .legend-item{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size: 0.82rem;
+    margin-bottom: 7px;
+    color: var(--ink);
+  }
+  .dot{
+    width:9px; height:9px;
+    border-radius: 50%;
+    flex-shrink:0;
+  }
+
+  /* ---------- Main ---------- */
+  .main{
+    flex:1;
+    padding: 28px 32px 60px;
+    max-width: 860px;
+  }
+
+  .topbar{
+    display:flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 22px;
+  }
+  .topbar .heading .names{
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    font-weight: 600;
+    margin: 0 0 2px;
+  }
+  .topbar .heading .places{
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+  }
+
+  .controls{
+    display:flex;
+    gap: 10px;
+    align-items:center;
+    flex-wrap: wrap;
+  }
+  .toggle{
+    display:flex;
+    align-items:center;
+    gap: 8px;
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 6px 6px 6px 14px;
+    font-size: 0.82rem;
+  }
+  .switch{
+    position:relative;
+    width: 38px; height: 22px;
+    background: var(--line);
+    border-radius: 999px;
+    cursor:pointer;
+    transition: background .15s ease;
+    border:none;
+    flex-shrink:0;
+  }
+  .switch::after{
+    content:"";
+    position:absolute;
+    top:2px; left:2px;
+    width:18px; height:18px;
+    background: white;
+    border-radius:50%;
+    transition: transform .15s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,.25);
+  }
+  .switch.on{ background: var(--c-prof); }
+  .switch.on::after{ transform: translateX(16px); }
+
+  select#hiddenSpeaker{
+    border: none;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    color: var(--ink);
+    font-weight: 600;
+    cursor:pointer;
+  }
+  select#hiddenSpeaker:disabled{ color: var(--ink-soft); cursor: default; }
+
+  .reveal-all{
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-size: 0.82rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    color: var(--ink);
+    cursor:pointer;
+  }
+  .reveal-all:hover{ border-color: var(--ink-soft); }
+
+  /* ---------- Thread ---------- */
+  .thread{
+    display:flex;
+    flex-direction:column;
+    gap: 4px;
+  }
+
+  .turn{
+    display:flex;
+    gap: 10px;
+    max-width: 78%;
+  }
+  .turn.right{
+    align-self: flex-end;
+    flex-direction: row-reverse;
+  }
+
+  .avatar{
+    width: 30px; height:30px;
+    border-radius: 50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: white;
+    flex-shrink:0;
+    margin-top: 18px;
+  }
+
+  .bubble-wrap{ display:flex; flex-direction:column; gap:3px; }
+  .turn.right .bubble-wrap{ align-items:flex-end; }
+
+  .tag{
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 1px 0;
+  }
+
+  .bubble{
+    position:relative;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 0.92rem;
+    line-height: 1.45;
+    border: 1px solid transparent;
+    cursor: default;
+  }
+  .turn.left .bubble{ border-top-left-radius: 4px; }
+  .turn.right .bubble{ border-top-right-radius: 4px; }
+
+  .bubble .play-btn{
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:0;
+    margin-right: 6px;
+    color: inherit;
+    opacity: .55;
+    vertical-align: -2px;
+  }
+  .bubble .play-btn:hover{ opacity: 1; }
+
+  .bubble.hidden-line{
+    cursor:pointer;
+    color: transparent;
+    text-shadow: 0 0 8px rgba(35,43,46,.55);
+    user-select:none;
+  }
+  .bubble.hidden-line::after{
+    content: "toque para revelar";
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    text-shadow:none;
+    font-style: italic;
+  }
+
+  .bubble .mic-btn{
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:0;
+    margin-right: 6px;
+    color: inherit;
+    opacity: .55;
+    vertical-align: -2px;
+  }
+  .bubble .mic-btn:hover{ opacity: 1; }
+  .bubble .mic-btn.recording{
+    opacity: 1;
+    animation: mic-pulse 1s ease-in-out infinite;
+  }
+  @keyframes mic-pulse{
+    0%, 100%{ transform: scale(1); }
+    50%{ transform: scale(1.25); }
+  }
+
+  .pron-feedback{
+    display:none;
+    max-width: 340px;
+    padding: 9px 12px;
+    border-radius: 10px;
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+  .pron-feedback.visible{ display:block; }
+
+  .pron-status{ font-weight: 600; margin-bottom: 3px; }
+  .pron-status .pron-score{ font-weight: 700; }
+  .pron-status.great{ color: var(--c-rotina); }
+  .pron-status.good{ color: var(--c-origem); }
+  .pron-status.ok{ color: var(--c-intro); }
+  .pron-status.low{ color: var(--c-prof); }
+  .pron-status.error{ color: var(--c-prof); font-weight: 500; }
+
+  .pron-words{ margin-bottom: 4px; }
+  .pron-words .w-ok{ color: var(--c-rotina); font-weight: 600; }
+  .pron-words .w-missing{ color: var(--ink-soft); text-decoration: line-through; }
+
+  .pron-heard{
+    color: var(--ink-soft);
+    font-style: italic;
+    font-size: 0.76rem;
+  }
+
+  .unsupported-note{
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    margin: -8px 0 18px;
+  }
+
+  @media (max-width: 760px){
+    .app{ flex-direction:column; }
+    .sidebar{ width:auto; border-right:none; border-bottom:1px solid var(--line); }
+    .dialog-list{ flex-direction:row; flex-wrap:wrap; }
+    .dialog-card{ width: auto; flex: 1 1 45%; }
+    .legend{ display:none; }
+    .main{ padding: 22px 16px 50px; }
+    .turn{ max-width: 92%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar">
+    <h1>Primeiro encontro</h1>
+    <p class="lede">Cinco diálogos em inglês para praticar apresentações, rotina e pequenas conversas do dia a dia.</p>
+
+    <ul class="dialog-list" id="dialogList"></ul>
+
+    <div class="legend">
+      <h2>Temas da conversa</h2>
+      <div class="legend-item"><span class="dot" style="background:var(--c-intro)"></span>Apresentação</div>
+      <div class="legend-item"><span class="dot" style="background:var(--c-origem)"></span>Origem e idade</div>
+      <div class="legend-item"><span class="dot" style="background:var(--c-prof)"></span>Profissão e lazer</div>
+      <div class="legend-item"><span class="dot" style="background:var(--c-comida)"></span>Comida e bebida</div>
+      <div class="legend-item"><span class="dot" style="background:var(--c-rotina)"></span>Rotina diária</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="heading">
+        <div class="names" id="headNames"></div>
+        <div class="places" id="headPlaces"></div>
+      </div>
+
+      <div class="controls">
+        <div class="toggle">
+          <span>Modo prática</span>
+          <button class="switch" id="practiceSwitch" aria-label="Ativar modo prática"></button>
+        </div>
+        <div class="toggle">
+          <span>Esconder falas de</span>
+          <select id="hiddenSpeaker" disabled>
+            <option value="B" selected>Pessoa 2</option>
+            <option value="A">Pessoa 1</option>
+          </select>
+        </div>
+        <button class="reveal-all" id="revealAll">Revelar tudo</button>
+      </div>
+    </div>
+
+    <p class="unsupported-note" id="unsupportedNote" style="display:none;">Este navegador não tem reconhecimento de voz. Para praticar pronúncia com feedback, use o Chrome ou o Edge.</p>
+
+    <div class="thread" id="thread"></div>
+  </main>
+</div>
+
+<script>
+const CATEGORY_META = {
+  intro:  { label: "apresentação",       color: "var(--c-intro)",  bg: "var(--c-intro-bg)"  },
+  origem: { label: "origem e idade",     color: "var(--c-origem)", bg: "var(--c-origem-bg)" },
+  prof:   { label: "profissão e lazer",  color: "var(--c-prof)",   bg: "var(--c-prof-bg)"   },
+  comida: { label: "comida e bebida",    color: "var(--c-comida)", bg: "var(--c-comida-bg)" },
+  rotina: { label: "rotina diária",      color: "var(--c-rotina)",bg: "var(--c-rotina-bg)"  }
+};
+
+const dialogues = [
+  {
+    a: "Pedro", b: "Julia",
+    placeA: "São Paulo", placeB: "Rio de Janeiro",
+    turns: [
+      ["A","Hi! I'm Pedro. What's your name?","intro"],
+      ["B","Hi, Pedro! My name is Julia. Nice to meet you.","intro"],
+      ["A","Nice to meet you too, Julia. Where are you from?","origem"],
+      ["B","I'm from Brazil. I live in Rio de Janeiro. What about you?","origem"],
+      ["A","I'm from Brazil too, but I live in São Paulo. How old are you?","origem"],
+      ["B","I'm 32 years old. And you?","origem"],
+      ["A","I'm 35. What do you do?","prof"],
+      ["B","I'm a teacher. What about you?","prof"],
+      ["A","I'm an engineer. Do you like your job?","prof"],
+      ["B","Yes, I do! And I also like music.","prof"],
+      ["A","Really? What music do you like?","prof"],
+      ["B","I like pop music. What about you?","prof"],
+      ["A","I like rock music. And what's your favorite food?","comida"],
+      ["B","My favorite food is pizza. I love having pizza for dinner!","comida"],
+      ["A","Me too! Do you like coffee?","comida"],
+      ["B","Yes, I do. I usually have coffee for breakfast.","comida"],
+      ["A","What else do you have for breakfast?","comida"],
+      ["B","I usually have bread and fruit. What about you?","comida"],
+      ["A","I have eggs and coffee. What time do you wake up?","rotina"],
+      ["B","I wake up at 6:30 a.m. because I start work early. And you?","rotina"],
+      ["A","I wake up at 7 a.m. Do you work or study during the day?","rotina"],
+      ["B","I work during the day and study English at night. What do you do at night?","rotina"],
+      ["A","I usually have dinner, watch TV and rest.","rotina"],
+      ["B","What time do you go to bed?","rotina"],
+      ["A","I go to bed at about 11 p.m. And you?","rotina"],
+      ["B","I go to bed at 10:30 p.m.","rotina"],
+      ["A","It was nice talking to you, Julia!","intro"],
+      ["B","Nice talking to you too, Pedro! See you!","intro"]
+    ]
+  },
+  {
+    a: "Carlos", b: "Ana",
+    placeA: "Salvador", placeB: "Belo Horizonte",
+    turns: [
+      ["A","Hi! I'm Carlos. What's your name?","intro"],
+      ["B","Hi, Carlos! My name is Ana. Nice to meet you.","intro"],
+      ["A","Nice to meet you too, Ana. Where are you from?","origem"],
+      ["B","I'm from Brazil. I live in Belo Horizonte. What about you?","origem"],
+      ["A","I'm from Brazil too, but I live in Salvador. How old are you?","origem"],
+      ["B","I'm 28 years old. And you?","origem"],
+      ["A","I'm 40. What do you do?","prof"],
+      ["B","I'm a nurse. What about you?","prof"],
+      ["A","I'm a doctor. Do you like your job?","prof"],
+      ["B","Yes, I do! And I also like music.","prof"],
+      ["A","Really? What music do you like?","prof"],
+      ["B","I like MPB. What about you?","prof"],
+      ["A","I like classical music. And what's your favorite food?","comida"],
+      ["B","My favorite food is pão de queijo. I love having it for breakfast!","comida"],
+      ["A","Nice! Do you like coffee?","comida"],
+      ["B","Yes, I do. I usually have tea for breakfast, actually.","comida"],
+      ["A","What else do you have for breakfast?","comida"],
+      ["B","I usually have toast and cheese. What about you?","comida"],
+      ["A","I have coffee and toast. What time do you wake up?","rotina"],
+      ["B","I wake up at 6:45 a.m. And you?","rotina"],
+      ["A","I wake up at 6 a.m. Do you work or study during the day?","rotina"],
+      ["B","I work during the day and I don't study at night. I just relax. What do you do at night?","rotina"],
+      ["A","I usually read a book and rest.","rotina"],
+      ["B","What time do you go to bed?","rotina"],
+      ["A","I go to bed at about 10 p.m. And you?","rotina"],
+      ["B","I go to bed at 11:30 p.m.","rotina"],
+      ["A","It was nice talking to you, Ana!","intro"],
+      ["B","Nice talking to you too, Carlos! See you!","intro"]
+    ]
+  },
+  {
+    a: "Miguel", b: "Sofia",
+    placeA: "Lisboa", placeB: "Porto",
+    turns: [
+      ["A","Hi! I'm Miguel. What's your name?","intro"],
+      ["B","Hi, Miguel! My name is Sofia. Nice to meet you.","intro"],
+      ["A","Nice to meet you too, Sofia. Where are you from?","origem"],
+      ["B","I'm from Portugal. I live in Porto. What about you?","origem"],
+      ["A","I'm from Portugal too, but I live in Lisbon. How old are you?","origem"],
+      ["B","I'm 38 years old. And you?","origem"],
+      ["A","I'm 45. What do you do?","prof"],
+      ["B","I'm a journalist. What about you?","prof"],
+      ["A","I'm an architect. Do you like your job?","prof"],
+      ["B","Yes, I do! And I also like music.","prof"],
+      ["A","Really? What music do you like?","prof"],
+      ["B","I like jazz. What about you?","prof"],
+      ["A","I like fado. And what's your favorite food?","comida"],
+      ["B","My favorite food is caldo verde. I love having it for dinner!","comida"],
+      ["A","Me too! Do you like coffee?","comida"],
+      ["B","Yes, I do. I usually have tea for breakfast, though.","comida"],
+      ["A","What else do you have for breakfast?","comida"],
+      ["B","I usually have toast and jam. What about you?","comida"],
+      ["A","I have a bica and a pastel de nata. What time do you wake up?","rotina"],
+      ["B","I wake up at 6:30 a.m. And you?","rotina"],
+      ["A","I wake up at 7 a.m. Do you work or study during the day?","rotina"],
+      ["B","I work during the day and write articles at night. What do you do at night?","rotina"],
+      ["A","I usually watch a series and rest.","rotina"],
+      ["B","What time do you go to bed?","rotina"],
+      ["A","I go to bed at about 11 p.m. And you?","rotina"],
+      ["B","I go to bed at midnight.","rotina"],
+      ["A","It was nice talking to you, Sofia!","intro"],
+      ["B","Nice talking to you too, Miguel! See you!","intro"]
+    ]
+  },
+  {
+    a: "Lucas", b: "Beatriz",
+    placeA: "Curitiba", placeB: "Fortaleza",
+    turns: [
+      ["A","Hi! I'm Lucas. What's your name?","intro"],
+      ["B","Hi, Lucas! My name is Beatriz. Nice to meet you.","intro"],
+      ["A","Nice to meet you too, Beatriz. Where are you from?","origem"],
+      ["B","I'm from Brazil. I live in Fortaleza. What about you?","origem"],
+      ["A","I'm from Brazil too, but I live in Curitiba. How old are you?","origem"],
+      ["B","I'm 26 years old. And you?","origem"],
+      ["A","I'm 22. What do you do?","prof"],
+      ["B","I'm a graphic designer. What about you?","prof"],
+      ["A","I'm a university student. Do you like your job?","prof"],
+      ["B","Yes, I do! And I also like music.","prof"],
+      ["A","Really? What music do you like?","prof"],
+      ["B","I like indie rock. What about you?","prof"],
+      ["A","I like electronic music. And what's your favorite food?","comida"],
+      ["B","My favorite food is tapioca. I love having it for breakfast!","comida"],
+      ["A","Nice! Do you like coffee?","comida"],
+      ["B","Yes, but I usually have juice for breakfast.","comida"],
+      ["A","What else do you have for breakfast?","comida"],
+      ["B","I usually have fruit and yogurt. What about you?","comida"],
+      ["A","I have coffee and cereal. What time do you wake up?","rotina"],
+      ["B","I wake up at 7 a.m. And you?","rotina"],
+      ["A","I wake up at 8 a.m., because my classes start later. Do you work or study during the day?","rotina"],
+      ["B","I work during the day and do yoga at night. What do you do at night?","rotina"],
+      ["A","I study during the day and work part-time at night.","rotina"],
+      ["B","What time do you go to bed?","rotina"],
+      ["A","I go to bed at about 1 a.m. And you?","rotina"],
+      ["B","I go to bed at 10:30 p.m.","rotina"],
+      ["A","It was nice talking to you, Beatriz!","intro"],
+      ["B","Nice talking to you too, Lucas! See you!","intro"]
+    ]
+  },
+  {
+    a: "Rafael", b: "Camila",
+    placeA: "Recife", placeB: "Manaus",
+    turns: [
+      ["A","Hi! I'm Rafael. What's your name?","intro"],
+      ["B","Hi, Rafael! My name is Camila. Nice to meet you.","intro"],
+      ["A","Nice to meet you too, Camila. Where are you from?","origem"],
+      ["B","I'm from Brazil. I live in Manaus. What about you?","origem"],
+      ["A","I'm from Brazil too, but I live in Recife. How old are you?","origem"],
+      ["B","I'm 33 years old. And you?","origem"],
+      ["A","I'm 50. What do you do?","prof"],
+      ["B","I'm a biologist. What about you?","prof"],
+      ["A","I'm a chef. Do you like your job?","prof"],
+      ["B","Yes, I do! And I also like music.","prof"],
+      ["A","Really? What music do you like?","prof"],
+      ["B","I like forró. What about you?","prof"],
+      ["A","I like samba. And what's your favorite food?","comida"],
+      ["B","My favorite food is tacacá. I love having it for lunch!","comida"],
+      ["A","Nice! Do you like coffee?","comida"],
+      ["B","Yes, I do. I usually have juice for breakfast, though.","comida"],
+      ["A","What else do you have for breakfast?","comida"],
+      ["B","I usually have tapioca and fruit. What about you?","comida"],
+      ["A","I have coffee and cuscuz. What time do you wake up?","rotina"],
+      ["B","I wake up at 6 a.m. And you?","rotina"],
+      ["A","I wake up at 5 a.m., because I start work very early. Do you work or study during the day?","rotina"],
+      ["B","I do fieldwork in the forest during the day. What do you do at night?","rotina"],
+      ["A","I usually rest after a long day at the restaurant.","rotina"],
+      ["B","What time do you go to bed?","rotina"],
+      ["A","I go to bed at about 9:30 p.m. And you?","rotina"],
+      ["B","I read a bit and go to bed at 10 p.m.","rotina"],
+      ["A","It was nice talking to you, Camila!","intro"],
+      ["B","Nice talking to you too, Rafael! See you!","intro"]
+    ]
+  }
+];
+
+let current = 0;
+let practiceMode = false;
+let hiddenSpeaker = "B";
+let revealed = new Set();
+const canSpeak = "speechSynthesis" in window;
+let voiceA = null;
+let voiceB = null;
+
+function pickVoices(){
+  if(!canSpeak) return;
+  const voices = window.speechSynthesis.getVoices().filter(v => v.lang && v.lang.toLowerCase().startsWith("en"));
+  if(voices.length === 0) return;
+
+  const maleHints = ["male","david","daniel","alex","fred","james","george","tom","guy","mark","aaron","arthur","ryan","matthew"];
+  const femaleHints = ["female","zira","susan","samantha","victoria","karen","tessa","moira","fiona","kate","salli","joanna","emma","amy"];
+
+  const findByHints = (hints, exclude) => voices.find(v => {
+    const n = v.name.toLowerCase();
+    return hints.some(h => n.includes(h)) && v !== exclude;
+  });
+
+  voiceA = findByHints(maleHints, null) || voices[0];
+  voiceB = findByHints(femaleHints, voiceA) || voices.find(v => v !== voiceA) || voices[0];
+}
+
+if(canSpeak){
+  pickVoices();
+  window.speechSynthesis.onvoiceschanged = pickVoices;
+}
+
+const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+const canRecognize = !!SpeechRecognitionCtor;
+let activeRecognition = null;
+let activeMicBtn = null;
+
+function normalizeWords(text){
+  return text.toLowerCase().replace(/[.,!?;:"'’]/g, "").split(/\s+/).filter(Boolean);
+}
+
+function diffWords(target, spoken){
+  const a = normalizeWords(target);
+  const b = normalizeWords(spoken);
+  const n = a.length, m = b.length;
+  const dp = Array.from({length: n + 1}, () => new Array(m + 1).fill(0));
+  for(let i = n - 1; i >= 0; i--){
+    for(let j = m - 1; j >= 0; j--){
+      dp[i][j] = a[i] === b[j] ? dp[i+1][j+1] + 1 : Math.max(dp[i+1][j], dp[i][j+1]);
+    }
+  }
+  let i = 0, j = 0;
+  const result = [];
+  while(i < n && j < m){
+    if(a[i] === b[j]){ result.push({word: a[i], status: "ok"}); i++; j++; }
+    else if(dp[i+1][j] >= dp[i][j+1]){ result.push({word: a[i], status: "missing"}); i++; }
+    else { j++; }
+  }
+  while(i < n){ result.push({word: a[i], status: "missing"}); i++; }
+  return { result, matched: dp[0][0], total: n };
+}
+
+function renderPronFeedback(feedbackEl, target, said){
+  const { result, matched, total } = diffWords(target, said);
+  const score = total ? Math.round((matched / total) * 100) : 0;
+  let verdict, vClass;
+  if(score >= 90){ verdict = "Excelente pronúncia!"; vClass = "great"; }
+  else if(score >= 70){ verdict = "Muito bom, quase lá!"; vClass = "good"; }
+  else if(score >= 40){ verdict = "Continue praticando."; vClass = "ok"; }
+  else { verdict = "Tente de novo — ouça o áudio primeiro."; vClass = "low"; }
+
+  const wordsHtml = result.map(w => `<span class="w-${w.status}">${w.word}</span>`).join(" ");
+  feedbackEl.innerHTML =
+    `<div class="pron-status ${vClass}">${verdict} <span class="pron-score">${score}%</span></div>` +
+    `<div class="pron-words">${wordsHtml}</div>` +
+    `<div class="pron-heard">Você disse: "${said}"</div>`;
+  feedbackEl.classList.add("visible");
+}
+
+function startRecognition(targetText, micBtn, feedbackEl){
+  if(!canRecognize) return;
+  if(activeRecognition){
+    activeRecognition.abort();
+    if(activeMicBtn) activeMicBtn.classList.remove("recording");
+  }
+  const recognition = new SpeechRecognitionCtor();
+  recognition.lang = "en-US";
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+  activeRecognition = recognition;
+  activeMicBtn = micBtn;
+
+  micBtn.classList.add("recording");
+  feedbackEl.classList.add("visible");
+  feedbackEl.innerHTML = `<span class="pron-status">Ouvindo…</span>`;
+
+  recognition.onresult = (e) => {
+    const said = e.results[0][0].transcript;
+    renderPronFeedback(feedbackEl, targetText, said);
+  };
+  recognition.onerror = (e) => {
+    let msg = "Não foi possível entender. Tente novamente.";
+    if(e.error === "not-allowed" || e.error === "service-not-allowed") msg = "Permita o uso do microfone para praticar a pronúncia.";
+    if(e.error === "no-speech") msg = "Não ouvi nada. Tente falar de novo.";
+    feedbackEl.innerHTML = `<span class="pron-status error">${msg}</span>`;
+  };
+  recognition.onend = () => {
+    micBtn.classList.remove("recording");
+    if(activeRecognition === recognition) activeRecognition = null;
+  };
+  try{
+    recognition.start();
+  }catch(err){
+    feedbackEl.innerHTML = `<span class="pron-status error">Não foi possível iniciar o microfone.</span>`;
+    micBtn.classList.remove("recording");
+  }
+}
+
+const dialogListEl = document.getElementById("dialogList");
+const threadEl = document.getElementById("thread");
+const headNames = document.getElementById("headNames");
+const headPlaces = document.getElementById("headPlaces");
+const practiceSwitch = document.getElementById("practiceSwitch");
+const hiddenSelect = document.getElementById("hiddenSpeaker");
+const revealAllBtn = document.getElementById("revealAll");
+
+function initials(name){ return name.charAt(0).toUpperCase(); }
+
+function renderSidebar(){
+  dialogListEl.innerHTML = "";
+  dialogues.forEach((d, i) => {
+    const li = document.createElement("li");
+    const btn = document.createElement("button");
+    btn.className = "dialog-card" + (i === current ? " active" : "");
+    btn.innerHTML = `<div class="names">${d.a} &amp; ${d.b}</div><div class="places">${d.placeA} ↔ ${d.placeB}</div>`;
+    btn.addEventListener("click", () => {
+      current = i;
+      revealed = new Set();
+      renderSidebar();
+      renderThread();
+    });
+    li.appendChild(btn);
+    dialogListEl.appendChild(li);
+  });
+}
+
+function speak(text, speaker){
+  if(!canSpeak) return;
+  try{
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    const chosen = speaker === "A" ? voiceA : voiceB;
+    if(chosen){
+      u.voice = chosen;
+      u.lang = chosen.lang;
+    } else {
+      u.lang = "en-US";
+    }
+    u.rate = 0.95;
+    window.speechSynthesis.speak(u);
+  }catch(e){ /* speech not available, ignore */ }
+}
+
+function renderThread(){
+  const d = dialogues[current];
+  headNames.textContent = `${d.a} & ${d.b}`;
+  headPlaces.textContent = `${d.placeA} ↔ ${d.placeB}`;
+
+  threadEl.innerHTML = "";
+  d.turns.forEach((turn, idx) => {
+    const [speaker, text, cat] = turn;
+    const meta = CATEGORY_META[cat];
+    const isRight = speaker === "B";
+    const name = isRight ? d.b : d.a;
+
+    const turnEl = document.createElement("div");
+    turnEl.className = "turn " + (isRight ? "right" : "left");
+
+    const avatar = document.createElement("div");
+    avatar.className = "avatar";
+    avatar.style.background = meta.color;
+    avatar.textContent = initials(name);
+
+    const wrap = document.createElement("div");
+    wrap.className = "bubble-wrap";
+
+    const tag = document.createElement("div");
+    tag.className = "tag";
+    tag.style.color = meta.color;
+    tag.textContent = meta.label;
+
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+    bubble.style.background = meta.bg;
+    bubble.style.color = "var(--ink)";
+    bubble.style.borderColor = meta.color + "33";
+
+    const isHiddenTurn = practiceMode && speaker === hiddenSpeaker && !revealed.has(idx);
+
+    if(isHiddenTurn){
+      bubble.classList.add("hidden-line");
+      bubble.textContent = text;
+      bubble.addEventListener("click", () => {
+        revealed.add(idx);
+        renderThread();
+      });
+    } else {
+      if(canSpeak){
+        const playBtn = document.createElement("button");
+        playBtn.className = "play-btn";
+        playBtn.innerHTML = "🔊";
+        playBtn.setAttribute("aria-label", "Ouvir esta fala");
+        playBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          speak(text, speaker);
+        });
+        bubble.appendChild(playBtn);
+      }
+      if(canRecognize){
+        const micBtn = document.createElement("button");
+        micBtn.className = "mic-btn";
+        micBtn.innerHTML = "🎤";
+        micBtn.setAttribute("aria-label", "Praticar esta fala com o microfone");
+        bubble.appendChild(micBtn);
+      }
+      bubble.appendChild(document.createTextNode(text));
+    }
+
+    wrap.appendChild(tag);
+    wrap.appendChild(bubble);
+
+    if(!isHiddenTurn && canRecognize){
+      const feedback = document.createElement("div");
+      feedback.className = "pron-feedback";
+      wrap.appendChild(feedback);
+      const micBtn = bubble.querySelector(".mic-btn");
+      if(micBtn){
+        micBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          startRecognition(text, micBtn, feedback);
+        });
+      }
+    }
+
+    turnEl.appendChild(avatar);
+    turnEl.appendChild(wrap);
+    threadEl.appendChild(turnEl);
+  });
+}
+
+practiceSwitch.addEventListener("click", () => {
+  practiceMode = !practiceMode;
+  revealed = new Set();
+  practiceSwitch.classList.toggle("on", practiceMode);
+  hiddenSelect.disabled = !practiceMode;
+  renderThread();
+});
+
+hiddenSelect.addEventListener("change", (e) => {
+  hiddenSpeaker = e.target.value;
+  revealed = new Set();
+  renderThread();
+});
+
+revealAllBtn.addEventListener("click", () => {
+  const d = dialogues[current];
+  d.turns.forEach((_, idx) => revealed.add(idx));
+  renderThread();
+});
+
+if(!canRecognize){
+  document.getElementById("unsupportedNote").style.display = "block";
+}
+
+renderSidebar();
+renderThread();
+</script>
+
+</body>
+</html>
