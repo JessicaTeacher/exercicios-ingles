@@ -1,0 +1,956 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simple Present — Painel de Prática</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F6F4EC;
+    --panel:#FFFFFF;
+    --ink:#20242B;
+    --ink-soft:#565F5A;
+    --plum:#5B4B8A;
+    --plum-dark:#3E3363;
+    --gold:#E0A63A;
+    --teal:#2E7D6B;
+    --sage:#E7E4F1;
+    --line:rgba(32,36,43,0.14);
+    --ok:#2E7D6B;
+    --bad:#B44536;
+    --radius:20px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#191726;
+      --panel:#241F38;
+      --ink:#EEEAF7;
+      --ink-soft:#B6AFD0;
+      --plum:#B29CF0;
+      --plum-dark:#D2C2FF;
+      --gold:#F0BE58;
+      --teal:#7FCBB6;
+      --sage:#2C2745;
+      --line:rgba(238,234,247,0.16);
+      --ok:#7FCBB6;
+      --bad:#E9876A;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#191726; --panel:#241F38; --ink:#EEEAF7; --ink-soft:#B6AFD0;
+    --plum:#B29CF0; --plum-dark:#D2C2FF; --gold:#F0BE58; --teal:#7FCBB6;
+    --sage:#2C2745; --line:rgba(238,234,247,0.16); --ok:#7FCBB6; --bad:#E9876A;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg);color:var(--ink);font-family:'Work Sans',system-ui,-apple-system,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  h1,h2,h3{font-family:'Fraunces',Georgia,serif;font-weight:600;margin:0 0 .4em 0;letter-spacing:-0.01em;}
+  button{font-family:inherit;}
+  :focus-visible{outline:3px solid var(--gold);outline-offset:2px;}
+  @media (prefers-reduced-motion: reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important;}}
+
+  .app{max-width:900px;margin:0 auto;padding:0 20px 64px;}
+
+  header.topbar{padding:28px 0 18px;position:sticky;top:0;z-index:20;background:linear-gradient(var(--bg) 78%, transparent);backdrop-filter:blur(2px);}
+  .brand{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:16px;}
+  .brand .mark{font-family:'Fraunces',serif;font-style:italic;font-weight:500;font-size:1.85rem;color:var(--plum-dark);}
+  .brand h1{font-size:1.5rem;}
+  .brand p{margin:2px 0 0;color:var(--ink-soft);font-size:.92rem;}
+
+  nav.tabs{display:flex;gap:8px;flex-wrap:wrap;}
+  .tabbtn{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:9px 16px 10px;border-radius:999px 999px 999px 4px;font-size:.88rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;transition:background .15s ease,color .15s ease,border-color .15s ease;}
+  .tabbtn .dot{width:7px;height:7px;border-radius:50%;background:var(--line);flex:none;}
+  .tabbtn[aria-selected="true"]{background:var(--plum-dark);border-color:var(--plum-dark);color:#fff;}
+  .tabbtn[aria-selected="true"] .dot{background:var(--gold);}
+  .tabbtn:not([aria-selected="true"]):hover{border-color:var(--plum-dark);}
+
+  .view{display:none;}
+  .view.active{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+
+  .hero{background:var(--plum-dark);color:#fff;border-radius:28px 28px 28px 6px;padding:32px 30px;margin-bottom:26px;position:relative;overflow:hidden;}
+  .hero h2{color:#fff;font-size:1.7rem;max-width:22ch;}
+  .hero p{color:rgba(255,255,255,.85);max-width:48ch;font-size:.98rem;}
+  .hero .tag{display:inline-block;background:rgba(255,255,255,.16);padding:4px 12px;border-radius:999px;font-size:.78rem;font-weight:600;margin-bottom:14px;color:var(--gold);}
+  .bubble-deco{position:absolute;right:-30px;top:-30px;width:170px;height:170px;border-radius:50% 50% 8% 50%;background:rgba(224,166,58,.2);}
+
+  .skillgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px;}
+  @media (max-width:560px){.skillgrid{grid-template-columns:1fr;}}
+  .skillcard{background:var(--panel);border:1px solid var(--line);border-radius:18px 18px 18px 4px;padding:18px 18px 16px;cursor:pointer;transition:border-color .15s ease,transform .15s ease;text-align:left;}
+  .skillcard:hover{border-color:var(--plum-dark);transform:translateY(-2px);}
+  .skillcard .icon{font-size:1.5rem;}
+  .skillcard h3{font-size:1.08rem;margin:8px 0 4px;}
+  .skillcard p{margin:0 0 12px;font-size:.86rem;color:var(--ink-soft);}
+  .barbg{height:7px;border-radius:6px;background:var(--sage);overflow:hidden;}
+  .barfg{height:100%;background:var(--gold);border-radius:6px;width:0%;transition:width .4s ease;}
+  .barlabel{font-size:.76rem;color:var(--ink-soft);margin-top:6px;}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px 22px 20px;margin-bottom:20px;}
+  .card h3{font-size:1.1rem;}
+  .muted{color:var(--ink-soft);font-size:.9rem;}
+
+  .btn{border:none;background:var(--plum-dark);color:#fff;padding:10px 18px;border-radius:999px;font-weight:600;font-size:.88rem;cursor:pointer;transition:opacity .15s ease;}
+  .btn:hover{opacity:.88;}
+  .btn:disabled{opacity:.5;cursor:not-allowed;}
+  .btn.secondary{background:transparent;border:1px solid var(--line);color:var(--ink);}
+  .btnrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px;}
+
+  .dialogue{display:flex;flex-direction:column;gap:8px;margin:14px 0;}
+  .line{max-width:80%;padding:9px 14px;border-radius:14px;font-size:.94rem;position:relative;}
+  .line.bia{align-self:flex-start;background:var(--sage);border-bottom-left-radius:4px;}
+  .line.rafael{align-self:flex-end;background:var(--plum-dark);color:#fff;border-bottom-right-radius:4px;}
+  .line .who{display:block;font-size:.7rem;font-weight:700;letter-spacing:.02em;opacity:.7;margin-bottom:2px;}
+  .line.playing{box-shadow:0 0 0 2px var(--gold) inset;}
+
+  .qcard{border-top:1px solid var(--line);padding:16px 0;}
+  .qcard:first-of-type{border-top:none;}
+  .qtext{font-weight:600;margin:0 0 10px;display:flex;gap:8px;}
+  .qnum{flex:none;width:22px;height:22px;border-radius:50%;background:var(--sage);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;}
+  .opts{display:flex;flex-direction:column;gap:7px;margin-left:30px;}
+  .opt{display:flex;gap:9px;align-items:flex-start;padding:8px 10px;border-radius:10px;border:1px solid var(--line);cursor:pointer;font-size:.9rem;}
+  .opt:hover{border-color:var(--plum-dark);}
+  .opt.correct{border-color:var(--ok);background:rgba(46,125,107,.1);}
+  .opt.incorrect{border-color:var(--bad);background:rgba(180,69,54,.1);}
+  .qfeedback{margin:8px 0 0 30px;font-size:.85rem;color:var(--ink-soft);}
+  .qfeedback.ok{color:var(--ok);}
+  .qfeedback.bad{color:var(--bad);}
+
+  .fillrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 0;border-top:1px solid var(--line);}
+  .fillrow:first-of-type{border-top:none;}
+  .fillrow input[type=text], textarea, input[type=text].wide{font-family:inherit;border:1px solid var(--line);border-radius:10px;padding:8px 11px;font-size:.9rem;background:var(--bg);color:var(--ink);}
+  textarea{width:100%;min-height:110px;resize:vertical;margin-top:8px;}
+  .fillicon{font-size:.85rem;width:20px;text-align:center;}
+
+  .transrow{border-top:1px solid var(--line);padding:14px 0;}
+  .transrow:first-of-type{border-top:none;}
+  .transrow .base{font-weight:600;margin-bottom:8px;}
+  .transrow .pair{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;margin-bottom:6px;}
+  .transrow label{font-size:.8rem;color:var(--ink-soft);width:78px;flex:none;}
+
+  .scorepill{display:inline-flex;align-items:center;gap:6px;background:var(--sage);padding:5px 12px;border-radius:999px;font-size:.82rem;font-weight:600;margin-top:8px;}
+
+  .aiout{margin-top:12px;padding:14px 15px;border-radius:12px;background:var(--sage);font-size:.9rem;white-space:pre-wrap;display:none;}
+  .aiout.show{display:block;}
+  .aiout.pending{color:var(--ink-soft);font-style:italic;}
+
+  .microw{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px;}
+  .mic-status{font-size:.84rem;color:var(--ink-soft);}
+  .transcript{margin-top:10px;padding:10px 13px;border-radius:10px;border:1px dashed var(--line);font-size:.9rem;min-height:20px;}
+  .note{font-size:.8rem;color:var(--ink-soft);background:var(--bg);border:1px solid var(--line);padding:8px 11px;border-radius:10px;margin-top:8px;}
+  .kicker{font-size:.78rem;font-weight:700;color:var(--plum-dark);letter-spacing:.02em;}
+  footer{text-align:center;color:var(--ink-soft);font-size:.8rem;padding-top:30px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="mark">S.P.</span>
+      <div>
+        <h1>Simple Present</h1>
+        <p>afirmativa, negativa e interrogativa · do / don't · does / doesn't · regra da 3ª pessoa</p>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Seções de prática">
+      <button class="tabbtn" role="tab" data-tab="home" aria-selected="true"><span class="dot"></span>Painel</button>
+      <button class="tabbtn" role="tab" data-tab="listening" aria-selected="false"><span class="dot"></span>🎧 Listening</button>
+      <button class="tabbtn" role="tab" data-tab="reading" aria-selected="false"><span class="dot"></span>📖 Reading</button>
+      <button class="tabbtn" role="tab" data-tab="writing" aria-selected="false"><span class="dot"></span>✍️ Writing</button>
+      <button class="tabbtn" role="tab" data-tab="speaking" aria-selected="false"><span class="dot"></span>🗣️ Speaking</button>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ============ HOME ============ -->
+    <section id="panel-home" class="view active">
+      <div class="hero">
+        <div class="bubble-deco" aria-hidden="true"></div>
+        <span class="tag">Unidade de prática</span>
+        <h2>Rotinas, hábitos e verdades gerais em inglês.</h2>
+        <p>Pratique o Simple Present nas quatro habilidades: frases afirmativas, negativas e interrogativas, o uso de do/don't e does/doesn't, e as regras de ortografia da terceira pessoa do singular (-s, -es, -ies, verbos irregulares).</p>
+      </div>
+
+      <div class="skillgrid">
+        <button class="skillcard" data-goto="listening">
+          <div class="icon">🎧</div>
+          <h3>Listening</h3>
+          <p>Ouça Bia e Rafael falando sobre a rotina diária deles.</p>
+          <div class="barbg"><div class="barfg" id="bar-listening"></div></div>
+          <div class="barlabel" id="lbl-listening">Ainda não iniciado</div>
+        </button>
+        <button class="skillcard" data-goto="reading">
+          <div class="icon">📖</div>
+          <h3>Reading</h3>
+          <p>Leia sobre a rotina da professora Marina e treine a regra do -s.</p>
+          <div class="barbg"><div class="barfg" id="bar-reading"></div></div>
+          <div class="barlabel" id="lbl-reading">Ainda não iniciado</div>
+        </button>
+        <button class="skillcard" data-goto="writing">
+          <div class="icon">✍️</div>
+          <h3>Writing</h3>
+          <p>Escreva e transforme frases afirmativas em negativas e perguntas.</p>
+          <div class="barbg"><div class="barfg" id="bar-writing"></div></div>
+          <div class="barlabel" id="lbl-writing">Ainda não iniciado</div>
+        </button>
+        <button class="skillcard" data-goto="speaking">
+          <div class="icon">🗣️</div>
+          <h3>Speaking</h3>
+          <p>Fale sobre sua rotina e treine os sons do -s final (/s/, /z/, /ɪz/).</p>
+          <div class="barbg"><div class="barfg" id="bar-speaking"></div></div>
+          <div class="barlabel" id="lbl-speaking">Ainda não iniciado</div>
+        </button>
+      </div>
+
+      <div class="card">
+        <span class="kicker">RESUMO</span>
+        <h3>Feedback geral sobre seu desempenho</h3>
+        <p class="muted">Depois de praticar pelo menos duas seções, peça um retorno personalizado que junta tudo o que você fez até aqui.</p>
+        <div class="btnrow">
+          <button class="btn" id="btn-overall-feedback">Gerar feedback geral</button>
+          <button class="btn secondary" id="btn-reset">Reiniciar progresso</button>
+        </div>
+        <div class="aiout" id="overall-feedback-out"></div>
+      </div>
+    </section>
+
+    <!-- ============ LISTENING ============ -->
+    <section id="panel-listening" class="view">
+      <span class="kicker">LISTENING</span>
+      <h2>Ouça o diálogo</h2>
+      <p class="muted">Bia e Rafael conversam sobre a rotina diária deles. Clique em "Ouvir diálogo completo" ou toque em cada fala para ouvi-la individualmente.</p>
+
+      <div class="card">
+        <div class="btnrow">
+          <button class="btn" id="btn-play-all">▶ Ouvir diálogo completo</button>
+          <button class="btn secondary" id="btn-slow">🐢 Velocidade normal</button>
+          <button class="btn secondary" id="btn-stop-audio">■ Parar</button>
+        </div>
+        <div class="dialogue" id="dialogue-box"></div>
+        <p class="note" id="tts-note" style="display:none;">Este navegador não parece suportar leitura em voz alta. Você ainda pode ler o diálogo e fazer os exercícios.</p>
+      </div>
+
+      <div class="card">
+        <h3>Compreensão — escolha a alternativa correta</h3>
+        <div id="listening-mcq"></div>
+        <div class="btnrow"><button class="btn" id="btn-check-listening">Verificar respostas</button></div>
+        <div id="listening-score"></div>
+      </div>
+
+      <div class="card">
+        <h3>Complete com do, does, don't ou doesn't</h3>
+        <div id="listening-fill"></div>
+        <div class="btnrow"><button class="btn" id="btn-check-fill-listening">Verificar</button></div>
+        <div id="listening-fill-score"></div>
+      </div>
+    </section>
+
+    <!-- ============ READING ============ -->
+    <section id="panel-reading" class="view">
+      <span class="kicker">READING</span>
+      <h2>Leia o texto</h2>
+      <div class="card"><p id="reading-text" style="font-size:1rem;"></p></div>
+
+      <div class="card">
+        <h3>Compreensão do texto</h3>
+        <div id="reading-mcq"></div>
+        <div class="btnrow"><button class="btn" id="btn-check-reading">Verificar respostas</button></div>
+        <div id="reading-score"></div>
+      </div>
+
+      <div class="card">
+        <h3>Regra da 3ª pessoa: escreva a forma correta do verbo (he/she/it)</h3>
+        <p class="muted">Lembre-se: a maioria dos verbos recebe -s (play → plays); verbos terminados em ch, sh, ss, x, o recebem -es (watch → watches, go → goes); consoante + y vira -ies (study → studies); have é irregular (have → has).</p>
+        <div id="reading-fill"></div>
+        <div class="btnrow"><button class="btn" id="btn-check-fill-reading">Verificar</button></div>
+        <div id="reading-fill-score"></div>
+      </div>
+    </section>
+
+    <!-- ============ WRITING ============ -->
+    <section id="panel-writing" class="view">
+      <span class="kicker">WRITING</span>
+      <h2>Escreva e receba feedback</h2>
+
+      <div class="card">
+        <h3>1. A sua rotina e a de outra pessoa</h3>
+        <p class="muted">Escreva 3 frases afirmativas sobre a sua própria rotina (usando I) e 2 frases afirmativas sobre a rotina de um familiar ou amigo (usando he/she), prestando atenção à regra do -s da terceira pessoa.</p>
+        <textarea id="w1" placeholder="Ex.: I wake up at 7 a.m. / My mother works at a hospital."></textarea>
+        <div class="btnrow"><button class="btn" id="btn-feedback-w1">Receber feedback da IA</button></div>
+        <div class="aiout" id="out-w1"></div>
+      </div>
+
+      <div class="card">
+        <h3>2. Transforme as frases</h3>
+        <p class="muted">Escreva a forma negativa e a forma interrogativa (pergunta) de cada frase afirmativa.</p>
+        <div id="transform-box"></div>
+        <div class="btnrow">
+          <button class="btn" id="btn-check-transform">Verificar</button>
+          <button class="btn secondary" id="btn-feedback-transform">Feedback extra da IA</button>
+        </div>
+        <div id="transform-score"></div>
+        <div class="aiout" id="out-transform"></div>
+      </div>
+
+      <div class="card">
+        <h3>3. A rotina de um amigo</h3>
+        <p class="muted">Escreva um parágrafo curto (5 a 6 frases) descrevendo a rotina diária de um amigo ou familiar. Inclua pelo menos 2 frases afirmativas, 1 negativa e 1 pergunta, todas no Simple Present.</p>
+        <textarea id="w3" placeholder="My friend John usually..." style="min-height:160px;"></textarea>
+        <div class="btnrow"><button class="btn" id="btn-feedback-w3">Receber feedback da IA</button></div>
+        <div class="aiout" id="out-w3"></div>
+      </div>
+    </section>
+
+    <!-- ============ SPEAKING ============ -->
+    <section id="panel-speaking" class="view">
+      <span class="kicker">SPEAKING</span>
+      <h2>Fale e receba feedback</h2>
+      <p class="muted">Esta seção tem três etapas: aquecimento de pronúncia, perguntas rápidas e um monólogo cronometrado sobre a sua rotina.</p>
+      <p class="note" id="stt-note" style="display:none;">Este navegador não parece suportar reconhecimento de voz. Use os campos de texto para digitar o que você diria em voz alta.</p>
+
+      <div class="card">
+        <h3>1. Aquecimento — os três sons do -s final</h3>
+        <p class="muted">A terminação -s/-es da terceira pessoa pode soar como <strong>/s/</strong>, <strong>/z/</strong> ou <strong>/ɪz/</strong>, dependendo do som final do verbo. Ouça o modelo e repita cada frase em voz alta, prestando atenção ao som destacado.</p>
+        <div id="roleplay-box"></div>
+      </div>
+
+      <div class="card">
+        <h3>2. Perguntas rápidas</h3>
+        <p class="muted">Cinco perguntas diferentes — algumas pedem resposta curta (yes/no), outras pedem uma frase completa. Ouça, responda em voz alta e peça feedback.</p>
+        <div id="quickqa-box"></div>
+      </div>
+
+      <div class="card">
+        <h3>3. Monólogo cronometrado</h3>
+        <p class="muted">Fale por até 45 segundos descrevendo a sua rotina diária. Tente usar pelo menos uma frase afirmativa, uma negativa e uma pergunta (pode ser uma pergunta que você mesmo faria a alguém), tudo no Simple Present.</p>
+        <div class="btnrow">
+          <button class="btn" id="btn-mono-start">🎙️ Começar (45s)</button>
+          <button class="btn secondary" id="btn-mono-stop" disabled>■ Parar agora</button>
+          <span class="mic-status" id="mono-timer"></span>
+        </div>
+        <div class="transcript" id="mono-transcript">Sua fala transcrita aparecerá aqui…</div>
+        <textarea id="mono-text" placeholder="Ou digite aqui o que você diria no seu monólogo" style="min-height:90px;"></textarea>
+        <div class="btnrow"><button class="btn" id="btn-feedback-mono">Receber feedback da IA</button></div>
+        <div class="aiout" id="out-mono"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>Painel de prática — Simple Present</footer>
+</div>
+
+<script>
+/* ============ CONTENT DATA ============ */
+const dialogueLines = [
+  {who:'bia', name:'Bia', text:"Hi Rafael! What time do you usually wake up on weekdays?"},
+  {who:'rafael', name:'Rafael', text:"I wake up at 6:30. I don't like waking up early, but I have school."},
+  {who:'bia', name:'Bia', text:"Really? I wake up at 7:00. Does your sister go to school too?"},
+  {who:'rafael', name:'Rafael', text:"No, she doesn't. She studies at home — she's homeschooled."},
+  {who:'bia', name:'Bia', text:"That's interesting! What does she do in the mornings?"},
+  {who:'rafael', name:'Rafael', text:"She reads books and practices the piano."},
+  {who:'bia', name:'Bia', text:"Wow, sounds productive! Do you walk to school?"},
+  {who:'rafael', name:'Rafael', text:"No, I don't. I take the bus. It takes twenty minutes."},
+  {who:'bia', name:'Bia', text:"I see. Well, have a great day at school!"},
+  {who:'rafael', name:'Rafael', text:"Thanks! You too."}
+];
+
+const lQuestions = [
+  {q:"What time does Rafael wake up?", options:["6:00","6:30","7:00","7:30"], correct:1, explain:"Rafael says: \"I wake up at 6:30.\""},
+  {q:"Does Rafael's sister go to school?", options:["Yes, she does","No, she doesn't","Sometimes","The dialogue doesn't say"], correct:1, explain:"Rafael says: \"No, she doesn't. She studies at home.\""},
+  {q:"What does Rafael's sister do in the mornings?", options:["She watches TV","She reads books and practices the piano","She goes to school","She sleeps"], correct:1, explain:"Rafael says: \"She reads books and practices the piano.\""},
+  {q:"How does Rafael get to school?", options:["He walks","He takes the bus","His mom drives him","He rides a bike"], correct:1, explain:"Rafael says: \"No, I don't. I take the bus.\""},
+  {q:"Which line is a negative sentence with 'doesn't'?", options:["\"I wake up at 6:30.\"","\"No, she doesn't.\"","\"What time do you...?\"","\"Thanks! You too.\""], correct:1, explain:"\"Doesn't\" is used in third-person negative sentences (she doesn't)."}
+];
+
+const lFill = [
+  {sentence:"“What time ___ you usually wake up on weekdays?”", answers:["do"]},
+  {sentence:"“___ your sister go to school too?”", answers:["does"]},
+  {sentence:"“No, she ___.”", answers:["doesn't","doesnt"]},
+  {sentence:"“___ you walk to school?”", answers:["do"]},
+  {sentence:"“No, I ___.”", answers:["don't","dont"]}
+];
+
+const readingText = "Marina is an English teacher. She works at a language school in São Paulo. She usually gets up at 6 a.m. and has breakfast with her family. She doesn't drive to work; she takes the train instead. Her classes start at 8 a.m. and finish at 5 p.m. She doesn't like waking up early, but she loves teaching. After work, she goes to the gym three times a week. On weekends, she doesn't work — she relaxes and watches movies with her husband.";
+
+const rQuestions = [
+  {q:"How does Marina get to work?", options:["By car","By train","By bus","On foot"], correct:1, explain:"The text says: \"She doesn't drive to work; she takes the train instead.\""},
+  {q:"What time do Marina's classes start?", options:["6 a.m.","7 a.m.","8 a.m.","9 a.m."], correct:2, explain:"\"Her classes start at 8 a.m.\""},
+  {q:"What does Marina do after work?", options:["She goes shopping","She goes to the gym","She goes to sleep","She goes to the cinema"], correct:1, explain:"\"After work, she goes to the gym three times a week.\""},
+  {q:"Which sentence from the text is negative?", options:["\"She works at a language school.\"","\"She doesn't like waking up early.\"","\"Her classes start at 8 a.m.\"","\"She loves teaching.\""], correct:1, explain:"It uses \"doesn't\" + the base verb — the negative form of the simple present."}
+];
+
+const thirdPersonItems = [
+  {base:"play", answer:"plays"},
+  {base:"study", answer:"studies"},
+  {base:"go", answer:"goes"},
+  {base:"watch", answer:"watches"},
+  {base:"have", answer:"has"},
+  {base:"fix", answer:"fixes"}
+];
+
+const transformItems = [
+  {base:"She watches TV every night.", neg:/she\s+doesn'?t\s+watch\s+tv\s+every\s+night/i, q:/does\s+she\s+watch\s+tv\s+every\s+night/i},
+  {base:"They play soccer on Sundays.", neg:/they\s+don'?t\s+play\s+soccer\s+on\s+sundays/i, q:/do\s+they\s+play\s+soccer\s+on\s+sundays/i},
+  {base:"He has lunch at school.", neg:/he\s+doesn'?t\s+have\s+lunch\s+at\s+school/i, q:/does\s+he\s+have\s+lunch\s+at\s+school/i},
+  {base:"We go to the gym on Mondays.", neg:/we\s+don'?t\s+go\s+to\s+the\s+gym\s+on\s+mondays/i, q:/do\s+we\s+go\s+to\s+the\s+gym\s+on\s+mondays/i}
+];
+
+const roleplayLines = [
+  {text:"She works in a hospital.", hint:"-s soa como /s/", group:"/s/"},
+  {text:"My father cooks dinner every night.", hint:"-s soa como /s/", group:"/s/"},
+  {text:"He plays football on Saturdays.", hint:"-s soa como /z/", group:"/z/"},
+  {text:"He goes to bed early.", hint:"-es soa como /z/", group:"/z/"},
+  {text:"She watches the news every night.", hint:"-es soa como /ɪz/", group:"/ɪz/"},
+  {text:"My sister washes the dishes after lunch.", hint:"-es soa como /ɪz/", group:"/ɪz/"}
+];
+
+const quickQuestions = [
+  {q:"What time do you usually wake up on weekends?", type:"wh"},
+  {q:"Do you like studying English?", type:"yn"},
+  {q:"Does your best friend live near you?", type:"yn"},
+  {q:"What does your father or mother do for a living?", type:"wh"},
+  {q:"How often do you exercise?", type:"wh"}
+];
+
+/* ============ STATE ============ */
+const STORAGE_KEY = 'sp_progress_v1';
+function loadState(){
+  try{ const raw = localStorage.getItem(STORAGE_KEY); if(raw) return JSON.parse(raw); }catch(e){}
+  return {listening:0, reading:0, writing:0, speaking:0};
+}
+function saveState(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){} }
+let state = loadState();
+
+function setProgress(key, pct){
+  state[key] = Math.max(state[key]||0, pct);
+  saveState();
+  refreshDashboard();
+}
+function refreshDashboard(){
+  ['listening','reading','writing','speaking'].forEach(k=>{
+    const bar = document.getElementById('bar-'+k);
+    const lbl = document.getElementById('lbl-'+k);
+    const pct = state[k]||0;
+    if(bar) bar.style.width = pct+'%';
+    if(lbl) lbl.textContent = pct===0 ? 'Ainda não iniciado' : (pct>=100 ? 'Concluído' : pct+'% concluído');
+  });
+}
+
+/* ============ TABS ============ */
+const tabs = document.querySelectorAll('.tabbtn');
+tabs.forEach(btn=> btn.addEventListener('click', ()=> switchTab(btn.dataset.tab)));
+document.querySelectorAll('[data-goto]').forEach(el=> el.addEventListener('click', ()=> switchTab(el.dataset.goto)));
+function switchTab(name){
+  tabs.forEach(b=> b.setAttribute('aria-selected', b.dataset.tab===name ? 'true':'false'));
+  document.querySelectorAll('.view').forEach(v=> v.classList.toggle('active', v.id==='panel-'+name));
+  window.speechSynthesis && window.speechSynthesis.cancel();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ============ TTS ============ */
+let ttsRate = 1;
+const MALE_HINTS = ['male','david','mark','daniel','alex','fred','tom','george','james','ryan','justin','guy','eric','oliver'];
+const FEMALE_HINTS = ['female','zira','susan','karen','moira','tessa','samantha','victoria','fiona','kate','amy','emma','ava','joanna','salli','kimberly','allison','serena','nicky'];
+function findVoiceByHints(voices, hints){ return voices.find(v => hints.some(h => v.name.toLowerCase().includes(h))) || null; }
+function pickVoices(){
+  const all = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+  const en = all.filter(v => v.lang && v.lang.toLowerCase().startsWith('en'));
+  const pool = en.length ? en : all;
+  return { male: findVoiceByHints(pool, MALE_HINTS), female: findVoiceByHints(pool, FEMALE_HINTS), fallback: pool.find(v=>v.lang==='en-US') || pool[0] || null };
+}
+/* who: 'bia' (feminina), 'rafael' (masculina), ou omitido (neutra) */
+function speak(text, onend, who){
+  if(!('speechSynthesis' in window)){
+    document.getElementById('tts-note').style.display = 'block';
+    if(onend) onend();
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = ttsRate;
+  const {male, female, fallback} = pickVoices();
+  let voice = fallback, pitch = 1;
+  if(who === 'rafael'){ voice = male || fallback; pitch = male ? 1 : 0.78; }
+  else if(who === 'bia'){ voice = female || fallback; pitch = female ? 1 : 1.25; }
+  if(voice) u.voice = voice;
+  u.pitch = pitch;
+  if(onend) u.onend = onend;
+  window.speechSynthesis.speak(u);
+}
+if(!('speechSynthesis' in window)){ document.getElementById('tts-note').style.display = 'block'; }
+
+/* ---- dialogue rendering + playback ---- */
+const dialogueBox = document.getElementById('dialogue-box');
+dialogueLines.forEach((l, i)=>{
+  const div = document.createElement('div');
+  div.className = 'line ' + l.who;
+  div.dataset.idx = i;
+  div.innerHTML = '<span class="who">'+l.name+'</span>'+l.text;
+  div.style.cursor = 'pointer';
+  div.title = 'Toque para ouvir esta fala';
+  div.addEventListener('click', ()=>{
+    document.querySelectorAll('.line').forEach(x=>x.classList.remove('playing'));
+    div.classList.add('playing');
+    speak(l.text, ()=> div.classList.remove('playing'), l.who);
+  });
+  dialogueBox.appendChild(div);
+});
+let playAllIdx = 0;
+function playAll(){
+  if(playAllIdx >= dialogueLines.length){ playAllIdx = 0; return; }
+  document.querySelectorAll('.line').forEach(x=>x.classList.remove('playing'));
+  const el = dialogueBox.children[playAllIdx];
+  el.classList.add('playing');
+  el.scrollIntoView({block:'nearest', behavior:'smooth'});
+  speak(dialogueLines[playAllIdx].text, ()=>{
+    el.classList.remove('playing');
+    playAllIdx++;
+    playAll();
+  }, dialogueLines[playAllIdx].who);
+}
+document.getElementById('btn-play-all').addEventListener('click', ()=>{ playAllIdx=0; playAll(); setProgress('listening', Math.max(state.listening,20)); });
+document.getElementById('btn-stop-audio').addEventListener('click', ()=>{ window.speechSynthesis && window.speechSynthesis.cancel(); playAllIdx = dialogueLines.length; });
+document.getElementById('btn-slow').addEventListener('click', function(){
+  ttsRate = ttsRate===1 ? 0.75 : 1;
+  this.textContent = ttsRate===1 ? '🐢 Velocidade normal' : '🐢 Velocidade lenta (ativa)';
+});
+
+/* ============ MCQ builder ============ */
+function buildMCQ(container, questions, namePrefix){
+  container.innerHTML = '';
+  questions.forEach((item, idx)=>{
+    const card = document.createElement('div');
+    card.className = 'qcard';
+    card.dataset.idx = idx;
+    let optsHtml = item.options.map((opt,i)=> '<label class="opt"><input type="radio" name="'+namePrefix+idx+'" value="'+i+'"><span>'+opt+'</span></label>').join('');
+    card.innerHTML = '<p class="qtext"><span class="qnum">'+(idx+1)+'</span>'+item.q+'</p><div class="opts">'+optsHtml+'</div><p class="qfeedback" hidden></p>';
+    container.appendChild(card);
+  });
+}
+function checkMCQ(container, questions, scoreOut, progressKey){
+  let correctCount = 0;
+  container.querySelectorAll('.qcard').forEach(card=>{
+    const idx = +card.dataset.idx;
+    const item = questions[idx];
+    const checked = card.querySelector('input:checked');
+    const fb = card.querySelector('.qfeedback');
+    card.querySelectorAll('.opt').forEach(o=>o.classList.remove('correct','incorrect'));
+    if(!checked){ fb.hidden=false; fb.className='qfeedback bad'; fb.textContent='Selecione uma alternativa.'; return; }
+    const val = +checked.value;
+    const optLabel = checked.closest('.opt');
+    if(val === item.correct){
+      correctCount++;
+      optLabel.classList.add('correct');
+      fb.className='qfeedback ok'; fb.textContent='✓ Correto! '+item.explain;
+    } else {
+      optLabel.classList.add('incorrect');
+      card.querySelectorAll('.opt')[item.correct].classList.add('correct');
+      fb.className='qfeedback bad'; fb.textContent='✗ Não é essa. '+item.explain;
+    }
+    fb.hidden = false;
+  });
+  scoreOut.innerHTML = '<span class="scorepill">Você acertou '+correctCount+' de '+questions.length+'</span>';
+  if(progressKey) setProgress(progressKey, Math.round((correctCount/questions.length)*100));
+  return correctCount;
+}
+const listeningMcqBox = document.getElementById('listening-mcq');
+buildMCQ(listeningMcqBox, lQuestions, 'lq');
+document.getElementById('btn-check-listening').addEventListener('click', ()=> checkMCQ(listeningMcqBox, lQuestions, document.getElementById('listening-score'), 'listening'));
+
+const readingMcqBox = document.getElementById('reading-mcq');
+buildMCQ(readingMcqBox, rQuestions, 'rq');
+document.getElementById('btn-check-reading').addEventListener('click', ()=> checkMCQ(readingMcqBox, rQuestions, document.getElementById('reading-score'), 'reading'));
+document.getElementById('reading-text').textContent = readingText;
+
+/* ============ Fill-in exercises ============ */
+function buildFill(container, items, labelKey, answerKey){
+  container.innerHTML = '';
+  items.forEach((item, idx)=>{
+    const row = document.createElement('div');
+    row.className = 'fillrow';
+    row.dataset.idx = idx;
+    row.innerHTML = '<span class="qnum">'+(idx+1)+'</span><span>'+item[labelKey]+'</span><input type="text" placeholder="palavra"><span class="fillicon" hidden></span>';
+    container.appendChild(row);
+  });
+}
+function checkFill(container, items, scoreOut, getAnswers, progressKey){
+  let correct = 0;
+  container.querySelectorAll('.fillrow').forEach(row=>{
+    const idx = +row.dataset.idx;
+    const item = items[idx];
+    const icon = row.querySelector('.fillicon');
+    const val = row.querySelector('input').value.trim().toLowerCase();
+    const answers = getAnswers(item).map(a=>a.toLowerCase());
+    const ok = answers.includes(val);
+    icon.hidden = false;
+    icon.textContent = ok ? '✓' : '✗';
+    icon.style.color = ok ? 'var(--ok)' : 'var(--bad)';
+    if(ok) correct++;
+  });
+  scoreOut.innerHTML = '<span class="scorepill">Você acertou '+correct+' de '+items.length+'</span>';
+  if(progressKey) setProgress(progressKey, Math.round((correct/items.length)*100));
+}
+buildFill(document.getElementById('listening-fill'), lFill, 'sentence');
+document.getElementById('btn-check-fill-listening').addEventListener('click', ()=>{
+  checkFill(document.getElementById('listening-fill'), lFill, document.getElementById('listening-fill-score'), it=>it.answers, 'listening');
+});
+
+const thirdPersonRows = document.getElementById('reading-fill');
+thirdPersonItems.forEach((item, idx)=>{
+  const row = document.createElement('div');
+  row.className = 'fillrow';
+  row.dataset.idx = idx;
+  row.innerHTML = '<span class="qnum">'+(idx+1)+'</span><span>'+item.base+' → he/she/it ___</span><input type="text" placeholder="forma correta"><span class="fillicon" hidden></span>';
+  thirdPersonRows.appendChild(row);
+});
+document.getElementById('btn-check-fill-reading').addEventListener('click', ()=>{
+  checkFill(thirdPersonRows, thirdPersonItems, document.getElementById('reading-fill-score'), it=>[it.answer], 'reading');
+});
+
+/* ---- Transform exercise (writing #2) ---- */
+const transformBox = document.getElementById('transform-box');
+transformItems.forEach((item, idx)=>{
+  const row = document.createElement('div');
+  row.className = 'transrow';
+  row.dataset.idx = idx;
+  row.innerHTML =
+    '<p class="base">'+(idx+1)+'. "'+item.base+'"</p>'+
+    '<div class="pair"><label>Negativa:</label><input type="text" data-neg placeholder="Write the negative form"><span class="fillicon" data-negicon hidden></span></div>'+
+    '<div class="pair"><label>Pergunta:</label><input type="text" data-q placeholder="Write the question form"><span class="fillicon" data-qicon hidden></span></div>';
+  transformBox.appendChild(row);
+});
+document.getElementById('btn-check-transform').addEventListener('click', ()=>{
+  let correct = 0, total = transformItems.length*2;
+  transformBox.querySelectorAll('.transrow').forEach(row=>{
+    const idx = +row.dataset.idx;
+    const item = transformItems[idx];
+    const negInput = row.querySelector('[data-neg]');
+    const qInput = row.querySelector('[data-q]');
+    const negIcon = row.querySelector('[data-negicon]');
+    const qIcon = row.querySelector('[data-qicon]');
+    const negOk = item.neg.test(negInput.value.trim());
+    const qOk = item.q.test(qInput.value.trim());
+    negIcon.hidden=false; negIcon.textContent = negOk?'✓':'✗'; negIcon.style.color = negOk?'var(--ok)':'var(--bad)';
+    qIcon.hidden=false; qIcon.textContent = qOk?'✓':'✗'; qIcon.style.color = qOk?'var(--ok)':'var(--bad)';
+    if(negOk) correct++;
+    if(qOk) correct++;
+  });
+  document.getElementById('transform-score').innerHTML = '<span class="scorepill">Você acertou '+correct+' de '+total+'</span>';
+  setProgress('writing', Math.max(state.writing, Math.round((correct/total)*45)));
+});
+
+/* ============ Claude "sample" capability ============ */
+let sampleFn = null;
+async function initClaude(){
+  const deadline = Date.now() + 10000;
+  while(Date.now() < deadline){
+    if(window.claude && typeof window.claude.use === 'function'){
+      try{ sampleFn = await window.claude.use('sample'); }catch(e){ sampleFn = null; }
+      return;
+    }
+    await new Promise(r=>setTimeout(r, 250));
+  }
+}
+initClaude();
+
+async function askAI(promptText, button, outEl){
+  outEl.classList.add('show','pending');
+  outEl.textContent = 'Analisando sua resposta…';
+  const original = button.textContent;
+  button.disabled = true; button.textContent = 'Analisando…';
+  if(!sampleFn){ await initClaude(); }
+  if(!sampleFn){
+    outEl.classList.remove('pending');
+    outEl.textContent = 'O feedback por IA não está disponível nesta visualização no momento. Você pode revisar sua resposta comparando com as regras do Simple Present (do/don\'t, does/doesn\'t, -s da terceira pessoa).';
+    button.disabled = false; button.textContent = original;
+    return null;
+  }
+  try{
+    const res = await sampleFn(promptText, {modelTier:'default'});
+    outEl.classList.remove('pending');
+    outEl.textContent = res.text;
+    return res.text;
+  }catch(err){
+    outEl.classList.remove('pending');
+    outEl.textContent = 'Não foi possível obter o feedback agora. Tente novamente em instantes.';
+    return null;
+  }finally{
+    button.disabled = false; button.textContent = original;
+  }
+}
+function extractScore(text){
+  if(!text) return null;
+  const m = text.match(/nota:?\s*(\d+(?:[.,]\d+)?)\s*\/\s*10/i);
+  if(m) return parseFloat(m[1].replace(',','.'));
+  return null;
+}
+
+/* ---- Writing AI feedback ---- */
+document.getElementById('btn-feedback-w1').addEventListener('click', async ()=>{
+  const text = document.getElementById('w1').value.trim();
+  const out = document.getElementById('out-w1');
+  if(!text){ out.classList.add('show'); out.textContent='Escreva suas frases antes de pedir feedback.'; return; }
+  const prompt = "Você é um professor de inglês avaliando um aluno brasileiro do ensino fundamental/médio sobre Simple Present. "+
+    "O aluno deveria escrever 3 frases afirmativas sobre sua própria rotina (com I) e 2 frases afirmativas sobre a rotina de outra pessoa (com he/she), no Simple Present. "+
+    "Resposta do aluno:\n\""+text+"\"\n\n"+
+    "Responda em português. Na primeira linha escreva apenas 'Nota: X/10'. Depois pule uma linha e dê um feedback curto (até 90 palavras) sobre: (1) se a conjugação está correta, especialmente a regra do -s/-es da terceira pessoa nas frases com he/she, (2) erros específicos com a correção, (3) uma sugestão de melhoria. Seja encorajador.";
+  const res = await askAI(prompt, document.getElementById('btn-feedback-w1'), out);
+  const score = extractScore(res);
+  setProgress('writing', Math.max(state.writing, score!=null ? Math.round(score*10*0.3) : 30));
+});
+
+document.getElementById('btn-feedback-transform').addEventListener('click', async ()=>{
+  const pairs = Array.from(transformBox.querySelectorAll('.transrow')).map((row,i)=>{
+    return transformItems[i].base+' -> negativa: "'+row.querySelector('[data-neg]').value.trim()+'" | pergunta: "'+row.querySelector('[data-q]').value.trim()+'"';
+  });
+  const out = document.getElementById('out-transform');
+  const prompt = "Um aluno brasileiro transformou frases afirmativas do Simple Present em formas negativas e interrogativas. "+
+    "Respostas do aluno:\n"+pairs.join('\n')+"\n\n"+
+    "Responda em português, em até 80 palavras, comentando o uso correto de do/don't e does/doesn't, a concordância com a terceira pessoa (has/have) e apontando erros específicos com a correção. Não use nota, só o comentário.";
+  await askAI(prompt, document.getElementById('btn-feedback-transform'), out);
+});
+
+document.getElementById('btn-feedback-w3').addEventListener('click', async ()=>{
+  const text = document.getElementById('w3').value.trim();
+  const out = document.getElementById('out-w3');
+  if(!text){ out.classList.add('show'); out.textContent='Escreva o parágrafo antes de pedir feedback.'; return; }
+  const prompt = "Um aluno brasileiro escreveu um parágrafo em inglês sobre a rotina de um amigo, que deveria conter pelo menos 2 frases afirmativas, 1 negativa e 1 pergunta, todas no Simple Present. "+
+    "Texto do aluno:\n\""+text+"\"\n\n"+
+    "Responda em português. Na primeira linha escreva apenas 'Nota: X/10'. Depois pule uma linha e diga: (1) se os três tipos de frase pedidos aparecem (aponte o que falta, se algo faltar), (2) até 2 erros de conjugação ou de uso de do/does com a correção, (3) um elogio específico. Máximo 100 palavras no total do feedback.";
+  const res = await askAI(prompt, document.getElementById('btn-feedback-w3'), out);
+  const score = extractScore(res);
+  setProgress('writing', Math.max(state.writing, score!=null ? Math.min(100, 55+Math.round(score*4)) : 70));
+});
+
+/* ============ Speech recognition (Speaking) ============ */
+const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+if(!SpeechRecognitionCtor){ document.getElementById('stt-note').style.display = 'block'; }
+function makeRecognizer(onResult, onStatus){
+  if(!SpeechRecognitionCtor) return null;
+  const rec = new SpeechRecognitionCtor();
+  rec.lang = 'en-US';
+  rec.interimResults = false;
+  rec.maxAlternatives = 1;
+  rec.onresult = (e)=>{ onResult(e.results[0][0].transcript); };
+  rec.onerror = (e)=>{ onStatus('Erro no microfone ('+e.error+'). Use o campo de texto abaixo.'); };
+  rec.onend = ()=>{ onStatus(''); };
+  return rec;
+}
+
+
+
+/* ---- Warm-up: -s ending pronunciation, grouped by sound ---- */
+const roleplayBox = document.getElementById('roleplay-box');
+let lastGroup = null;
+roleplayLines.forEach((item, idx)=>{
+  if(item.group !== lastGroup){
+    lastGroup = item.group;
+    const groupHead = document.createElement('p');
+    groupHead.className = 'kicker';
+    groupHead.style.marginTop = idx===0 ? '0' : '18px';
+    groupHead.textContent = 'Som ' + item.group;
+    roleplayBox.appendChild(groupHead);
+  }
+  const wrap = document.createElement('div');
+  wrap.className = 'card';
+  wrap.style.background = 'var(--bg)';
+  wrap.style.margin = '0 0 14px';
+  wrap.innerHTML =
+    '<p style="font-weight:600;">"'+item.text+'" <span class="muted">('+item.hint+')</span></p>'+
+    '<div class="btnrow">'+
+      '<button class="btn secondary" data-play="'+idx+'">🔊 Ouvir modelo</button>'+
+      '<button class="btn" data-rec="'+idx+'">🎙️ Repetir em voz alta</button>'+
+    '</div>'+
+    '<span class="mic-status" data-status="'+idx+'"></span>'+
+    '<input type="text" class="wide" data-text="'+idx+'" placeholder="Ou digite o que você disse" style="width:100%;margin-top:8px;">'+
+    '<div class="transcript" data-transcript="'+idx+'">—</div>'+
+    '<div class="btnrow"><button class="btn secondary" data-feedback="'+idx+'">Feedback da IA</button></div>'+
+    '<div class="aiout" data-out="'+idx+'"></div>';
+  roleplayBox.appendChild(wrap);
+
+  wrap.querySelector('[data-play]').addEventListener('click', ()=> speak(item.text));
+  wrap.querySelector('[data-rec]').addEventListener('click', function(){
+    const statusEl = wrap.querySelector('[data-status="'+idx+'"]');
+    const transcriptEl = wrap.querySelector('[data-transcript="'+idx+'"]');
+    const textInput = wrap.querySelector('[data-text="'+idx+'"]');
+    if(!SpeechRecognitionCtor){ statusEl.textContent = 'Microfone não suportado — digite abaixo.'; return; }
+    statusEl.textContent = '🔴 Gravando…';
+    const rec = makeRecognizer(
+      (text)=>{ transcriptEl.textContent = text; textInput.value = text; statusEl.textContent = 'Gravação concluída.'; },
+      (msg)=>{ if(msg) statusEl.textContent = msg; }
+    );
+    try{ rec.start(); }catch(e){ statusEl.textContent = 'Não foi possível acessar o microfone.'; }
+  });
+
+  wrap.querySelector('[data-feedback]').addEventListener('click', async function(){
+    const textInput = wrap.querySelector('[data-text="'+idx+'"]');
+    const transcriptEl = wrap.querySelector('[data-transcript="'+idx+'"]');
+    const said = textInput.value.trim() || (transcriptEl.textContent!=='—' ? transcriptEl.textContent.trim() : '');
+    const out = wrap.querySelector('[data-out="'+idx+'"]');
+    if(!said){ out.classList.add('show'); out.textContent = 'Grave ou digite antes de pedir feedback.'; return; }
+    const origWords = item.text.toLowerCase().replace(/[^a-z' ]/g,'').split(/\s+/).filter(Boolean);
+    const saidWords = said.toLowerCase().replace(/[^a-z' ]/g,'').split(/\s+/).filter(Boolean);
+    const matched = origWords.filter(w=>saidWords.includes(w)).length;
+    const pct = Math.round((matched/origWords.length)*100);
+    const prompt = "Frase-modelo em inglês (Simple Present, 3ª pessoa): \""+item.text+"\", cuja terminação -s/-es "+item.hint+". O que o sistema de reconhecimento de voz captou da fala do aluno: \""+said+"\" (correspondência aproximada de palavras: "+pct+"%). "+
+      "Responda em português, em até 60 palavras: diga o que parece ter saído diferente do modelo e dê uma dica prática sobre como pronunciar essa terminação -s/-es específica.";
+    await askAI(prompt, wrap.querySelector('[data-feedback]'), out);
+    updateSpeakingProgress();
+  });
+});
+
+/* ---- Quick Q&A ---- */
+const quickqaBox = document.getElementById('quickqa-box');
+const quickqaDone = new Set();
+quickQuestions.forEach((item, idx)=>{
+  const wrap = document.createElement('div');
+  wrap.className = 'card';
+  wrap.style.background = 'var(--bg)';
+  wrap.style.margin = '0 0 14px';
+  wrap.innerHTML =
+    '<p style="font-weight:600;">'+(idx+1)+'. <span style="font-weight:400;font-style:italic;">"'+item.q+'"</span> '+
+      '<span class="muted">('+(item.type==='yn' ? 'responda com yes/no + short answer' : 'responda com uma frase completa')+')</span></p>'+
+    '<div class="btnrow"><button class="btn secondary" data-play="'+idx+'">🔊 Ouvir pergunta</button></div>'+
+    '<div class="microw">'+
+      '<button class="btn" data-rec="'+idx+'">🎙️ Gravar resposta</button>'+
+      '<span class="mic-status" data-status="'+idx+'"></span>'+
+    '</div>'+
+    '<input type="text" class="wide" data-text="'+idx+'" placeholder="Ou digite aqui sua resposta em inglês" style="width:100%;margin-top:8px;">'+
+    '<div class="transcript" data-transcript="'+idx+'">Sua fala transcrita aparecerá aqui…</div>'+
+    '<div class="btnrow"><button class="btn" data-feedback="'+idx+'">Receber feedback da IA</button></div>'+
+    '<div class="aiout" data-out="'+idx+'"></div>';
+  quickqaBox.appendChild(wrap);
+
+  wrap.querySelector('[data-play]').addEventListener('click', ()=> speak(item.q));
+  wrap.querySelector('[data-rec]').addEventListener('click', function(){
+    const statusEl = wrap.querySelector('[data-status="'+idx+'"]');
+    const transcriptEl = wrap.querySelector('[data-transcript="'+idx+'"]');
+    const textInput = wrap.querySelector('[data-text="'+idx+'"]');
+    if(!SpeechRecognitionCtor){ statusEl.textContent = 'Microfone não suportado — digite abaixo.'; return; }
+    statusEl.textContent = '🔴 Gravando… fale agora.';
+    const rec = makeRecognizer(
+      (text)=>{ transcriptEl.textContent = text; textInput.value = text; statusEl.textContent = 'Gravação concluída.'; },
+      (msg)=>{ if(msg) statusEl.textContent = msg; }
+    );
+    try{ rec.start(); }catch(e){ statusEl.textContent = 'Não foi possível acessar o microfone.'; }
+  });
+
+  wrap.querySelector('[data-feedback]').addEventListener('click', async function(){
+    const textInput = wrap.querySelector('[data-text="'+idx+'"]');
+    const transcriptEl = wrap.querySelector('[data-transcript="'+idx+'"]');
+    const answer = textInput.value.trim() || (transcriptEl.textContent!=='Sua fala transcrita aparecerá aqui…' ? transcriptEl.textContent.trim() : '');
+    const out = wrap.querySelector('[data-out="'+idx+'"]');
+    if(!answer){ out.classList.add('show'); out.textContent = 'Grave ou digite sua resposta antes de pedir feedback.'; return; }
+    const prompt = "Um aluno brasileiro respondeu em voz alta (transcrita abaixo) à pergunta '"+item.q+"', que espera uma resposta no Simple Present"+(item.type==='yn' ? " (idealmente incluindo uma short answer, como 'Yes, I do.' ou 'No, she doesn't.')" : "")+". "+
+      "Resposta transcrita: \""+answer+"\"\n\n"+
+      "Responda em português, em até 70 palavras: (1) diga se a resposta está gramaticalmente correta no Simple Present (conjugação, do/does, short answer se for o caso), (2) aponte erros específicos com a correção, (3) uma sugestão para tornar a resposta mais natural. Lembre que é uma transcrição de fala, então avalie conteúdo e gramática, não pronúncia.";
+    await askAI(prompt, wrap.querySelector('[data-feedback]'), out);
+    quickqaDone.add(idx);
+    updateSpeakingProgress();
+  });
+});
+
+/* ---- Timed monologue ---- */
+let monoRecognizer = null;
+let monoTimerId = null;
+let monoSecondsLeft = 45;
+let monoActive = false;
+let monoFinalText = '';
+
+function updateMonoTimerLabel(){
+  document.getElementById('mono-timer').textContent = monoActive ? ('⏱ '+monoSecondsLeft+'s restantes') : '';
+}
+function stopMonologue(){
+  monoActive = false;
+  if(monoTimerId){ clearInterval(monoTimerId); monoTimerId = null; }
+  if(monoRecognizer){ try{ monoRecognizer.stop(); }catch(e){} }
+  document.getElementById('btn-mono-start').disabled = false;
+  document.getElementById('btn-mono-stop').disabled = true;
+  updateMonoTimerLabel();
+}
+document.getElementById('btn-mono-start').addEventListener('click', function(){
+  const transcriptEl = document.getElementById('mono-transcript');
+  const textArea = document.getElementById('mono-text');
+  if(!SpeechRecognitionCtor){
+    transcriptEl.textContent = 'Microfone não suportado neste navegador — digite seu monólogo no campo abaixo.';
+    return;
+  }
+  monoFinalText = '';
+  monoSecondsLeft = 45;
+  monoActive = true;
+  this.disabled = true;
+  document.getElementById('btn-mono-stop').disabled = false;
+  updateMonoTimerLabel();
+  transcriptEl.textContent = '🔴 Gravando… fale sobre a sua rotina.';
+
+  monoRecognizer = new SpeechRecognitionCtor();
+  monoRecognizer.lang = 'en-US';
+  monoRecognizer.continuous = true;
+  monoRecognizer.interimResults = true;
+  monoRecognizer.onresult = (e)=>{
+    let interim = '';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal) monoFinalText += e.results[i][0].transcript + ' ';
+      else interim += e.results[i][0].transcript;
+    }
+    transcriptEl.textContent = (monoFinalText + interim).trim() || '…';
+    textArea.value = monoFinalText.trim();
+  };
+  monoRecognizer.onerror = (e)=>{ transcriptEl.textContent = 'Erro no microfone ('+e.error+'). Use o campo de texto abaixo.'; };
+  monoRecognizer.onend = ()=>{ if(monoActive){ try{ monoRecognizer.start(); }catch(e){} } };
+  try{ monoRecognizer.start(); }catch(e){ transcriptEl.textContent = 'Não foi possível acessar o microfone.'; monoActive=false; }
+
+  monoTimerId = setInterval(()=>{
+    monoSecondsLeft--;
+    updateMonoTimerLabel();
+    if(monoSecondsLeft<=0) stopMonologue();
+  }, 1000);
+});
+document.getElementById('btn-mono-stop').addEventListener('click', stopMonologue);
+
+document.getElementById('btn-feedback-mono').addEventListener('click', async ()=>{
+  const typed = document.getElementById('mono-text').value.trim();
+  const out = document.getElementById('out-mono');
+  if(!typed){ out.classList.add('show'); out.textContent = 'Grave ou digite seu monólogo antes de pedir feedback.'; return; }
+  const prompt = "Um aluno brasileiro fez um monólogo curto em inglês (transcrito abaixo) descrevendo a própria rotina diária, praticando o Simple Present (frases afirmativas, negativas e perguntas). "+
+    "Transcrição: \""+typed+"\"\n\n"+
+    "Responda em português. Na primeira linha escreva apenas 'Nota: X/10'. Depois pule uma linha e avalie em até 100 palavras: (1) se ele usou corretamente frases afirmativas, negativas e/ou perguntas no Simple Present (aponte o que usou e o que faltou), (2) até 2 erros de gramática ou conjugação com a correção, (3) um elogio específico sobre o conteúdo ou a fluência.";
+  const res = await askAI(prompt, document.getElementById('btn-feedback-mono'), out);
+  const score = extractScore(res);
+  setProgress('speaking', Math.max(state.speaking, score!=null ? Math.min(100, 60+Math.round(score*4)) : 75));
+});
+
+function updateSpeakingProgress(){
+  const warmupPct = Math.round((document.querySelectorAll('#roleplay-box .aiout.show').length / roleplayLines.length) * 35);
+  const qaPct = Math.round((quickqaDone.size / quickQuestions.length) * 35);
+  setProgress('speaking', warmupPct + qaPct);
+}
+
+/* ============ Overall feedback ============ */
+document.getElementById('btn-overall-feedback').addEventListener('click', async ()=>{
+  const out = document.getElementById('overall-feedback-out');
+  const summary = "Progresso do aluno (0-100%): Listening "+ (state.listening||0) +"%, Reading "+ (state.reading||0) +"%, Writing "+ (state.writing||0) +"%, Speaking "+ (state.speaking||0) +"%.";
+  const prompt = "Você é um professor de inglês. Um aluno brasileiro praticou uma unidade sobre 'Simple Present' (afirmativa, negativa, interrogativa, do/don't, does/doesn't e a regra da terceira pessoa) em quatro habilidades. "+
+    summary+"\n\n"+
+    "Escreva em português um feedback geral motivador de até 90 palavras: (1) destaque a habilidade mais forte e a que precisa de mais prática, com base nos números, (2) dê 2 sugestões concretas de próximos passos de estudo sobre Simple Present.";
+  await askAI(prompt, document.getElementById('btn-overall-feedback'), out);
+});
+
+document.getElementById('btn-reset').addEventListener('click', ()=>{
+  if(!confirm('Isso vai apagar seu progresso salvo neste dispositivo. Continuar?')) return;
+  state = {listening:0, reading:0, writing:0, speaking:0};
+  saveState();
+  refreshDashboard();
+  document.getElementById('overall-feedback-out').classList.remove('show');
+});
+
+refreshDashboard();
+</script>
+</body>
+</html>
