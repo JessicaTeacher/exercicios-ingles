@@ -1,0 +1,983 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Questions & Communication — Painel de Prática</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FBF7EE;
+    --panel:#FFFFFF;
+    --ink:#1C2B33;
+    --ink-soft:#4A5A61;
+    --teal:#2F6B62;
+    --teal-dark:#1F4A42;
+    --gold:#E3A83B;
+    --coral:#D9694C;
+    --sage:#E3EEE3;
+    --line:rgba(28,43,51,0.14);
+    --ok:#2F6B62;
+    --bad:#B4453A;
+    --radius:20px;
+    --shadow:0 1px 0 rgba(28,43,51,0.05);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#12211D;
+      --panel:#1B322C;
+      --ink:#F0ECE1;
+      --ink-soft:#B9C7BF;
+      --teal:#7CBBAC;
+      --teal-dark:#9AD0C1;
+      --gold:#F0BE58;
+      --coral:#E9876A;
+      --sage:#20392F;
+      --line:rgba(240,236,225,0.16);
+      --ok:#7CBBAC;
+      --bad:#E9876A;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#12211D;
+    --panel:#1B322C;
+    --ink:#F0ECE1;
+    --ink-soft:#B9C7BF;
+    --teal:#7CBBAC;
+    --teal-dark:#9AD0C1;
+    --gold:#F0BE58;
+    --coral:#E9876A;
+    --sage:#20392F;
+    --line:rgba(240,236,225,0.16);
+    --ok:#7CBBAC;
+    --bad:#E9876A;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Work Sans', system-ui, -apple-system, sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces', Georgia, serif;
+    font-weight:600;
+    margin:0 0 .4em 0;
+    letter-spacing:-0.01em;
+  }
+  a{color:var(--teal-dark);}
+  button{font-family:inherit;}
+  :focus-visible{outline:3px solid var(--gold); outline-offset:2px;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
+  }
+
+  .app{max-width:900px;margin:0 auto;padding:0 20px 64px;}
+
+  /* ---- Header ---- */
+  header.topbar{
+    padding:28px 0 18px;
+    position:sticky;top:0;z-index:20;
+    background:linear-gradient(var(--bg) 78%, transparent);
+    backdrop-filter:blur(2px);
+  }
+  .brand{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:16px;}
+  .brand .mark{
+    font-family:'Fraunces',serif;font-style:italic;font-weight:500;
+    font-size:1.85rem;color:var(--teal-dark);
+  }
+  .brand h1{font-size:1.5rem;}
+  .brand p{margin:2px 0 0; color:var(--ink-soft); font-size:.92rem;}
+
+  nav.tabs{display:flex;gap:8px;flex-wrap:wrap;}
+  .tabbtn{
+    border:1px solid var(--line);
+    background:var(--panel);
+    color:var(--ink);
+    padding:9px 16px 10px;
+    border-radius:999px 999px 999px 4px;
+    font-size:.88rem;
+    font-weight:600;
+    cursor:pointer;
+    display:flex;align-items:center;gap:7px;
+    transition:background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .tabbtn .dot{width:7px;height:7px;border-radius:50%;background:var(--line);flex:none;}
+  .tabbtn[aria-selected="true"]{
+    background:var(--teal-dark);
+    border-color:var(--teal-dark);
+    color:#fff;
+  }
+  .tabbtn[aria-selected="true"] .dot{background:var(--gold);}
+  .tabbtn:not([aria-selected="true"]):hover{border-color:var(--teal-dark);}
+
+  /* ---- Views ---- */
+  .view{display:none;}
+  .view.active{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+
+  .hero{
+    background:var(--teal-dark);
+    color:#fff;
+    border-radius:28px 28px 28px 6px;
+    padding:32px 30px;
+    margin-bottom:26px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero h2{color:#fff;font-size:1.7rem;max-width:20ch;}
+  .hero p{color:rgba(255,255,255,.82);max-width:46ch;font-size:.98rem;}
+  .hero .tag{
+    display:inline-block;background:rgba(255,255,255,.14);
+    padding:4px 12px;border-radius:999px;font-size:.78rem;font-weight:600;
+    margin-bottom:14px; color:var(--gold);
+  }
+  .bubble-deco{
+    position:absolute;right:-30px;top:-30px;width:170px;height:170px;
+    border-radius:50% 50% 8% 50%;background:rgba(227,168,59,.18);
+  }
+
+  .skillgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px;}
+  @media (max-width:560px){.skillgrid{grid-template-columns:1fr;}}
+  .skillcard{
+    background:var(--panel);border:1px solid var(--line);
+    border-radius:18px 18px 18px 4px;
+    padding:18px 18px 16px;
+    cursor:pointer;
+    transition:border-color .15s ease, transform .15s ease;
+    text-align:left;
+  }
+  .skillcard:hover{border-color:var(--teal-dark);transform:translateY(-2px);}
+  .skillcard .icon{font-size:1.5rem;}
+  .skillcard h3{font-size:1.08rem;margin:8px 0 4px;}
+  .skillcard p{margin:0 0 12px;font-size:.86rem;color:var(--ink-soft);}
+  .barbg{height:7px;border-radius:6px;background:var(--sage);overflow:hidden;}
+  .barfg{height:100%;background:var(--gold);border-radius:6px;width:0%;transition:width .4s ease;}
+  .barlabel{font-size:.76rem;color:var(--ink-soft);margin-top:6px;}
+
+  .card{
+    background:var(--panel);border:1px solid var(--line);
+    border-radius:18px;padding:22px 22px 20px;margin-bottom:20px;
+  }
+  .card h3{font-size:1.1rem;}
+  .muted{color:var(--ink-soft);font-size:.9rem;}
+
+  .btn{
+    border:none;background:var(--teal-dark);color:#fff;
+    padding:10px 18px;border-radius:999px;font-weight:600;font-size:.88rem;
+    cursor:pointer;transition:opacity .15s ease;
+  }
+  .btn:hover{opacity:.88;}
+  .btn:disabled{opacity:.5;cursor:not-allowed;}
+  .btn.secondary{background:transparent;border:1px solid var(--line);color:var(--ink);}
+  .btn.gold{background:var(--gold);color:#33260a;}
+  .btnrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px;}
+
+  /* dialogue */
+  .dialogue{display:flex;flex-direction:column;gap:8px;margin:14px 0;}
+  .line{
+    max-width:80%;padding:9px 14px;border-radius:14px;font-size:.94rem;position:relative;
+  }
+  .line.julia{align-self:flex-start;background:var(--sage);border-bottom-left-radius:4px;}
+  .line.pedro{align-self:flex-end;background:var(--teal-dark);color:#fff;border-bottom-right-radius:4px;}
+  .line .who{display:block;font-size:.7rem;font-weight:700;letter-spacing:.02em;opacity:.7;margin-bottom:2px;}
+  .line.playing{box-shadow:0 0 0 2px var(--gold) inset;}
+
+  .qcard{border-top:1px solid var(--line);padding:16px 0;}
+  .qcard:first-of-type{border-top:none;}
+  .qtext{font-weight:600;margin:0 0 10px;display:flex;gap:8px;}
+  .qnum{
+    flex:none;width:22px;height:22px;border-radius:50%;background:var(--sage);
+    display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;
+  }
+  .opts{display:flex;flex-direction:column;gap:7px;margin-left:30px;}
+  .opt{
+    display:flex;gap:9px;align-items:flex-start;padding:8px 10px;border-radius:10px;
+    border:1px solid var(--line);cursor:pointer;font-size:.9rem;
+  }
+  .opt:hover{border-color:var(--teal-dark);}
+  .opt.correct{border-color:var(--ok);background:rgba(47,107,98,.1);}
+  .opt.incorrect{border-color:var(--bad);background:rgba(180,69,58,.1);}
+  .qfeedback{margin:8px 0 0 30px;font-size:.85rem;color:var(--ink-soft);}
+  .qfeedback.ok{color:var(--ok);}
+  .qfeedback.bad{color:var(--bad);}
+
+  .fillrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 0;border-top:1px solid var(--line);}
+  .fillrow:first-of-type{border-top:none;}
+  .fillrow input[type=text], .fillrow select, textarea, input[type=text].wide{
+    font-family:inherit;border:1px solid var(--line);border-radius:10px;
+    padding:8px 11px;font-size:.9rem;background:var(--bg);color:var(--ink);
+  }
+  textarea{width:100%;min-height:110px;resize:vertical;margin-top:8px;}
+  .fillicon{font-size:.85rem;width:20px;text-align:center;}
+
+  .scorepill{
+    display:inline-flex;align-items:center;gap:6px;background:var(--sage);
+    padding:5px 12px;border-radius:999px;font-size:.82rem;font-weight:600;margin-top:8px;
+  }
+
+  .aiout{
+    margin-top:12px;padding:14px 15px;border-radius:12px;background:var(--sage);
+    font-size:.9rem;white-space:pre-wrap;display:none;
+  }
+  .aiout.show{display:block;}
+  .aiout.pending{color:var(--ink-soft);font-style:italic;}
+
+  .microw{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px;}
+  .mic-status{font-size:.84rem;color:var(--ink-soft);}
+  .transcript{
+    margin-top:10px;padding:10px 13px;border-radius:10px;border:1px dashed var(--line);
+    font-size:.9rem;min-height:20px;
+  }
+  .note{
+    font-size:.8rem;color:var(--ink-soft);background:var(--bg);border:1px solid var(--line);
+    padding:8px 11px;border-radius:10px;margin-top:8px;
+  }
+  hr.sep{border:none;border-top:1px solid var(--line);margin:22px 0;}
+  .flex-between{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+  .kicker{font-size:.78rem;font-weight:700;color:var(--teal-dark);text-transform:none;letter-spacing:.02em;}
+  footer{text-align:center;color:var(--ink-soft);font-size:.8rem;padding-top:30px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="mark">Q&C</span>
+      <div>
+        <h1>Questions and Communication</h1>
+        <p>WH-questions · short answers · reaction expressions · diálogo · compreensão de texto</p>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Seções de prática">
+      <button class="tabbtn" role="tab" data-tab="home" aria-selected="true"><span class="dot"></span>Painel</button>
+      <button class="tabbtn" role="tab" data-tab="listening" aria-selected="false"><span class="dot"></span>🎧 Listening</button>
+      <button class="tabbtn" role="tab" data-tab="reading" aria-selected="false"><span class="dot"></span>📖 Reading</button>
+      <button class="tabbtn" role="tab" data-tab="writing" aria-selected="false"><span class="dot"></span>✍️ Writing</button>
+      <button class="tabbtn" role="tab" data-tab="speaking" aria-selected="false"><span class="dot"></span>🗣️ Speaking</button>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ============ HOME / DASHBOARD ============ -->
+    <section id="panel-home" class="view active">
+      <div class="hero">
+        <div class="bubble-deco" aria-hidden="true"></div>
+        <span class="tag">Unidade de prática</span>
+        <h2>Faça perguntas melhores, tenha conversas melhores.</h2>
+        <p>Este painel treina as quatro habilidades — ouvir, ler, escrever e falar — em torno de WH-questions, respostas curtas e expressões de reação em inglês. Cada seção corrige automaticamente ou usa a Claude para te dar feedback.</p>
+      </div>
+
+      <div class="skillgrid">
+        <button class="skillcard" data-goto="listening">
+          <div class="icon">🎧</div>
+          <h3>Listening</h3>
+          <p>Ouça o diálogo de Julia e Pedro e responda às perguntas de compreensão.</p>
+          <div class="barbg"><div class="barfg" id="bar-listening"></div></div>
+          <div class="barlabel" id="lbl-listening">Ainda não iniciado</div>
+        </button>
+        <button class="skillcard" data-goto="reading">
+          <div class="icon">📖</div>
+          <h3>Reading</h3>
+          <p>Leia o texto sobre comunicação e complete os exercícios de compreensão.</p>
+          <div class="barbg"><div class="barfg" id="bar-reading"></div></div>
+          <div class="barlabel" id="lbl-reading">Ainda não iniciado</div>
+        </button>
+        <button class="skillcard" data-goto="writing">
+          <div class="icon">✍️</div>
+          <h3>Writing</h3>
+          <p>Escreva perguntas, respostas curtas e um diálogo — com feedback da IA.</p>
+          <div class="barbg"><div class="barfg" id="bar-writing"></div></div>
+          <div class="barlabel" id="lbl-writing">Ainda não iniciado</div>
+        </button>
+        <button class="skillcard" data-goto="speaking">
+          <div class="icon">🗣️</div>
+          <h3>Speaking</h3>
+          <p>Responda em voz alta e treine o diálogo — com feedback da IA.</p>
+          <div class="barbg"><div class="barfg" id="bar-speaking"></div></div>
+          <div class="barlabel" id="lbl-speaking">Ainda não iniciado</div>
+        </button>
+      </div>
+
+      <div class="card">
+        <span class="kicker">RESUMO</span>
+        <h3>Feedback geral sobre seu desempenho</h3>
+        <p class="muted">Depois de praticar pelo menos duas seções, peça um retorno personalizado que junta tudo o que você fez até aqui.</p>
+        <div class="btnrow">
+          <button class="btn" id="btn-overall-feedback">Gerar feedback geral</button>
+          <button class="btn secondary" id="btn-reset">Reiniciar progresso</button>
+        </div>
+        <div class="aiout" id="overall-feedback-out"></div>
+      </div>
+    </section>
+
+    <!-- ============ LISTENING ============ -->
+    <section id="panel-listening" class="view">
+      <span class="kicker">LISTENING</span>
+      <h2>Ouça o diálogo</h2>
+      <p class="muted">Julia e Pedro conversam sobre os planos de fim de semana. Clique em "Ouvir diálogo completo" ou toque em cada fala para ouvi-la individualmente.</p>
+
+      <div class="card">
+        <div class="btnrow">
+          <button class="btn" id="btn-play-all">▶ Ouvir diálogo completo</button>
+          <button class="btn secondary" id="btn-slow">🐢 Velocidade normal</button>
+          <button class="btn secondary" id="btn-stop-audio">■ Parar</button>
+        </div>
+        <div class="dialogue" id="dialogue-box"></div>
+        <p class="note" id="tts-note" style="display:none;">Este navegador não parece suportar leitura em voz alta (Web Speech API). Você ainda pode ler o diálogo e fazer os exercícios.</p>
+      </div>
+
+      <div class="card">
+        <h3>Compreensão — escolha a alternativa correta</h3>
+        <div id="listening-mcq"></div>
+        <div class="btnrow">
+          <button class="btn" id="btn-check-listening">Verificar respostas</button>
+        </div>
+        <div id="listening-score"></div>
+      </div>
+
+      <div class="card">
+        <h3>Complete com a palavra WH- correta</h3>
+        <p class="muted">Ouça a fala novamente se precisar e complete a lacuna (what, which, where, how...).</p>
+        <div id="listening-fill"></div>
+        <div class="btnrow">
+          <button class="btn" id="btn-check-fill-listening">Verificar</button>
+        </div>
+        <div id="listening-fill-score"></div>
+      </div>
+    </section>
+
+    <!-- ============ READING ============ -->
+    <section id="panel-reading" class="view">
+      <span class="kicker">READING</span>
+      <h2>Leia o texto</h2>
+      <div class="card">
+        <p id="reading-text" style="font-size:1rem;"></p>
+      </div>
+
+      <div class="card">
+        <h3>Compreensão do texto</h3>
+        <div id="reading-mcq"></div>
+        <div class="btnrow">
+          <button class="btn" id="btn-check-reading">Verificar respostas</button>
+        </div>
+        <div id="reading-score"></div>
+      </div>
+
+      <div class="card">
+        <h3>Qual WH-word completa a pergunta?</h3>
+        <div id="reading-fill"></div>
+        <div class="btnrow">
+          <button class="btn" id="btn-check-fill-reading">Verificar</button>
+        </div>
+        <div id="reading-fill-score"></div>
+      </div>
+    </section>
+
+    <!-- ============ WRITING ============ -->
+    <section id="panel-writing" class="view">
+      <span class="kicker">WRITING</span>
+      <h2>Escreva e receba feedback</h2>
+
+      <div class="card">
+        <h3>1. Perguntas para conhecer alguém novo</h3>
+        <p class="muted">Imagine que um(a) estudante de intercâmbio chegou à sua escola. Escreva 4 WH-questions para conhecê-lo(a) melhor.</p>
+        <textarea id="w1" placeholder="Ex.: Where are you from?"></textarea>
+        <div class="btnrow">
+          <button class="btn" id="btn-feedback-w1">Receber feedback da IA</button>
+        </div>
+        <div class="aiout" id="out-w1"></div>
+      </div>
+
+      <div class="card">
+        <h3>2. Respostas curtas (short answers)</h3>
+        <p class="muted">Escreva a resposta curta indicada entre parênteses para cada pergunta.</p>
+        <div id="writing-shortanswers"></div>
+        <div class="btnrow">
+          <button class="btn" id="btn-check-sa">Verificar</button>
+          <button class="btn secondary" id="btn-feedback-sa">Feedback extra da IA</button>
+        </div>
+        <div id="sa-score"></div>
+        <div class="aiout" id="out-sa"></div>
+      </div>
+
+      <div class="card">
+        <h3>3. Um pequeno diálogo</h3>
+        <p class="muted">Escreva um diálogo curto (6 a 10 linhas) entre você e um(a) amigo(a) combinando algo. Use pelo menos 2 WH-questions, 1 short answer e 2 expressões de reação (Really?, That's great!, No way!...).</p>
+        <textarea id="w3" placeholder="You: ...&#10;Your friend: ..." style="min-height:160px;"></textarea>
+        <div class="btnrow">
+          <button class="btn" id="btn-feedback-w3">Receber feedback da IA</button>
+        </div>
+        <div class="aiout" id="out-w3"></div>
+      </div>
+    </section>
+
+    <!-- ============ SPEAKING ============ -->
+    <section id="panel-speaking" class="view">
+      <span class="kicker">SPEAKING</span>
+      <h2>Fale e receba feedback</h2>
+      <p class="note" id="stt-note" style="display:none;">Este navegador não parece suportar reconhecimento de voz. Use o campo de texto para digitar o que você diria em voz alta.</p>
+
+      <div class="card">
+        <h3>1. Responda em voz alta</h3>
+        <p class="muted">Toque em "Ouvir pergunta" e depois grave sua resposta.</p>
+        <div class="btnrow">
+          <button class="btn secondary" id="btn-ask-sp1">🔊 Ouvir pergunta</button>
+        </div>
+        <p style="font-style:italic;">"What do you usually do on weekends?"</p>
+        <div class="microw">
+          <button class="btn" id="btn-rec-sp1">🎙️ Gravar resposta</button>
+          <span class="mic-status" id="status-sp1"></span>
+        </div>
+        <input type="text" class="wide" id="text-sp1" placeholder="Ou digite aqui sua resposta em inglês" style="width:100%;margin-top:8px;">
+        <div class="transcript" id="transcript-sp1">Sua fala transcrita aparecerá aqui…</div>
+        <div class="btnrow">
+          <button class="btn" id="btn-feedback-sp1">Receber feedback da IA</button>
+        </div>
+        <div class="aiout" id="out-sp1"></div>
+      </div>
+
+      <div class="card">
+        <h3>2. Role-play — leia as falas de Pedro</h3>
+        <p class="muted">Ouça o modelo e depois repita a fala em voz alta (ou digite). O painel checa se as palavras reconhecidas batem com a fala original.</p>
+        <div id="roleplay-box"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>Painel de prática — Questions and Communication</footer>
+</div>
+
+<script>
+/* ============ CONTENT DATA ============ */
+const dialogueLines = [
+  {who:'julia', name:'Julia', text:"Hi Pedro! What are you doing this weekend?"},
+  {who:'pedro', name:'Pedro', text:"I'm going to a concert with my sister."},
+  {who:'julia', name:'Julia', text:"Really? Which band are you going to see?"},
+  {who:'pedro', name:'Pedro', text:"The Killers. I love their music!"},
+  {who:'julia', name:'Julia', text:"That's awesome! Where is the concert?"},
+  {who:'pedro', name:'Pedro', text:"It's at the Allianz Parque."},
+  {who:'julia', name:'Julia', text:"How are you getting there?"},
+  {who:'pedro', name:'Pedro', text:"We're taking the subway."},
+  {who:'julia', name:'Julia', text:"Sounds like a great plan! Do you have the tickets already?"},
+  {who:'pedro', name:'Pedro', text:"Yes, we do. We bought them last month."},
+  {who:'julia', name:'Julia', text:"Have fun!"},
+  {who:'pedro', name:'Pedro', text:"Thanks! What about you? Do you have any plans?"},
+  {who:'julia', name:'Julia', text:"Not really. I'm just going to relax at home."},
+  {who:'pedro', name:'Pedro', text:"That sounds nice too!"}
+];
+
+const lQuestions = [
+  {q:"What is Pedro doing this weekend?", options:["Going to a movie","Going to a concert","Going to a party","Studying at home"], correct:1, explain:"Pedro says: \"I'm going to a concert with my sister.\""},
+  {q:"Which band is he going to see?", options:["Coldplay","The Killers","U2","Imagine Dragons"], correct:1, explain:"Pedro answers: \"The Killers. I love their music!\""},
+  {q:"Where is the concert?", options:["Maracanã","Allianz Parque","Morumbi","Ibirapuera"], correct:1, explain:"Pedro says: \"It's at the Allianz Parque.\""},
+  {q:"How are Pedro and his sister getting there?", options:["By car","By bus","By subway","On foot"], correct:2, explain:"Pedro says: \"We're taking the subway.\""},
+  {q:"Which line shows Julia reacting with surprise and interest?", options:["\"That's terrible!\"","\"Really? Which band...?\"","\"I don't care.\"","\"Why would you do that?\""], correct:1, explain:"\"Really?\" is a reaction expression showing surprise/interest."}
+];
+
+const lFill = [
+  {sentence:"“___ are you doing this weekend?”", answers:["what"]},
+  {sentence:"“___ band are you going to see?”", answers:["which"]},
+  {sentence:"“___ is the concert?”", answers:["where"]},
+  {sentence:"“___ are you getting there?”", answers:["how"]}
+];
+
+const readingText = "Good communicators ask good questions. When you meet someone new, WH-questions like What, Where, and Why help you learn more about them and keep the conversation going. Short answers — like \"Yes, I do\" or \"No, I'm not\" — are useful when you want to reply quickly without repeating the whole question. But conversations need more than questions and short answers: reaction expressions such as \"Really?\", \"That's great!\", or \"I'm sorry to hear that\" show that you are listening and that you care about what the other person is saying. Next time you talk to someone, try to ask at least three WH-questions and react naturally to their answers. You'll notice the conversation feels more alive and friendly.";
+
+const rQuestions = [
+  {q:"Why are WH-questions useful when meeting someone new?", options:["They make the conversation shorter","They help you learn more about the person","They are easier than short answers","They replace reaction expressions"], correct:1, explain:"The text says WH-questions \"help you learn more about them and keep the conversation going.\""},
+  {q:"When are short answers useful, according to the text?", options:["When you want to end the conversation","When you want to reply quickly without repeating the question","When you don't understand the question","When you are asking a question"], correct:1, explain:"Short answers are \"useful when you want to reply quickly without repeating the whole question.\""},
+  {q:"What do reaction expressions show?", options:["That you are bored","That you are listening and care","That you disagree","That you want to change the subject"], correct:1, explain:"Reaction expressions \"show that you are listening and that you care\"."},
+  {q:"What does the text suggest doing in your next conversation?", options:["Avoid asking questions","Ask at least three WH-questions and react naturally","Only give short answers","Speak louder"], correct:1, explain:"The text suggests: \"try to ask at least three WH-questions and react naturally to their answers.\""}
+];
+
+const rFill = [
+  {sentence:"___ is your best friend?", answer:"who"},
+  {sentence:"___ do you usually have lunch?", answer:"where"},
+  {sentence:"___ don't you like horror movies?", answer:"why"},
+  {sentence:"___ does the movie start?", answer:"when"}
+];
+const whOptions = ["Who","What","Where","When","Why","How"];
+
+const saItems = [
+  {q:"Do you play video games?", instruction:"(negative short answer)", check:t=>/\bno,?\s+i\s+don'?t\b/i.test(t.trim())},
+  {q:"Is your school big?", instruction:"(affirmative short answer)", check:t=>/\byes,?\s+it\s+is\b/i.test(t.trim())},
+  {q:"Can you speak French?", instruction:"(negative short answer)", check:t=>/\bno,?\s+i\s+can'?t\b/i.test(t.trim())},
+  {q:"Are your parents at home right now?", instruction:"(affirmative short answer)", check:t=>/\byes,?\s+they\s+are\b/i.test(t.trim())}
+];
+
+const roleplayLines = [
+  "I'm going to a concert with my sister.",
+  "The Killers. I love their music!",
+  "It's at the Allianz Parque.",
+  "We're taking the subway."
+];
+
+/* ============ STATE ============ */
+const STORAGE_KEY = 'qc_progress_v1';
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return {listening:0, reading:0, writing:0, speaking:0, notes:[]};
+}
+function saveState(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){} }
+let state = loadState();
+
+function setProgress(key, pct, label){
+  state[key] = Math.max(state[key]||0, pct);
+  saveState();
+  refreshDashboard();
+}
+function refreshDashboard(){
+  ['listening','reading','writing','speaking'].forEach(k=>{
+    const bar = document.getElementById('bar-'+k);
+    const lbl = document.getElementById('lbl-'+k);
+    const pct = state[k]||0;
+    if(bar) bar.style.width = pct+'%';
+    if(lbl) lbl.textContent = pct===0 ? 'Ainda não iniciado' : (pct>=100 ? 'Concluído' : pct+'% concluído');
+  });
+}
+
+/* ============ TABS ============ */
+const tabs = document.querySelectorAll('.tabbtn');
+tabs.forEach(btn=>{
+  btn.addEventListener('click', ()=> switchTab(btn.dataset.tab));
+});
+document.querySelectorAll('[data-goto]').forEach(el=>{
+  el.addEventListener('click', ()=> switchTab(el.dataset.goto));
+});
+function switchTab(name){
+  tabs.forEach(b=> b.setAttribute('aria-selected', b.dataset.tab===name ? 'true':'false'));
+  document.querySelectorAll('.view').forEach(v=> v.classList.toggle('active', v.id==='panel-'+name));
+  window.speechSynthesis && window.speechSynthesis.cancel();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ============ TTS ============ */
+let ttsRate = 1;
+const MALE_HINTS = ['male','david','mark','daniel','alex','fred','tom','george','james','ryan','justin','guy','eric','oliver'];
+const FEMALE_HINTS = ['female','zira','susan','karen','moira','tessa','samantha','victoria','fiona','kate','amy','emma','ava','joanna','salli','kimberly','allison','serena','nicky'];
+function findVoiceByHints(voices, hints){
+  return voices.find(v => hints.some(h => v.name.toLowerCase().includes(h))) || null;
+}
+function pickVoices(){
+  const all = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+  const en = all.filter(v => v.lang && v.lang.toLowerCase().startsWith('en'));
+  const pool = en.length ? en : all;
+  return {
+    male: findVoiceByHints(pool, MALE_HINTS),
+    female: findVoiceByHints(pool, FEMALE_HINTS),
+    fallback: pool.find(v=>v.lang==='en-US') || pool[0] || null
+  };
+}
+/* who: 'julia' (feminina), 'pedro' (masculina), ou omitido (neutra) */
+function speak(text, onend, who){
+  if(!('speechSynthesis' in window)){
+    document.getElementById('tts-note').style.display = 'block';
+    if(onend) onend();
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = ttsRate;
+  const {male, female, fallback} = pickVoices();
+  let voice = fallback, pitch = 1;
+  if(who === 'pedro'){ voice = male || fallback; pitch = male ? 1 : 0.78; }
+  else if(who === 'julia'){ voice = female || fallback; pitch = female ? 1 : 1.25; }
+  if(voice) u.voice = voice;
+  u.pitch = pitch;
+  if(onend) u.onend = onend;
+  window.speechSynthesis.speak(u);
+}
+if('speechSynthesis' in window){
+  window.speechSynthesis.onvoiceschanged = ()=>{};
+} else {
+  document.getElementById('tts-note').style.display = 'block';
+}
+
+/* ---- dialogue rendering + playback ---- */
+const dialogueBox = document.getElementById('dialogue-box');
+dialogueLines.forEach((l, i)=>{
+  const div = document.createElement('div');
+  div.className = 'line ' + l.who;
+  div.dataset.idx = i;
+  div.innerHTML = '<span class="who">'+l.name+'</span>'+l.text;
+  div.style.cursor = 'pointer';
+  div.title = 'Toque para ouvir esta fala';
+  div.addEventListener('click', ()=>{
+    document.querySelectorAll('.line').forEach(x=>x.classList.remove('playing'));
+    div.classList.add('playing');
+    speak(l.text, ()=> div.classList.remove('playing'), l.who);
+  });
+  dialogueBox.appendChild(div);
+});
+let playAllIdx = 0;
+function playAll(){
+  if(playAllIdx >= dialogueLines.length){ playAllIdx = 0; return; }
+  document.querySelectorAll('.line').forEach(x=>x.classList.remove('playing'));
+  const el = dialogueBox.children[playAllIdx];
+  el.classList.add('playing');
+  el.scrollIntoView({block:'nearest', behavior:'smooth'});
+  speak(dialogueLines[playAllIdx].text, ()=>{
+    el.classList.remove('playing');
+    playAllIdx++;
+    playAll();
+  }, dialogueLines[playAllIdx].who);
+}
+document.getElementById('btn-play-all').addEventListener('click', ()=>{ playAllIdx=0; playAll(); setProgress('listening', Math.max(state.listening,20)); });
+document.getElementById('btn-stop-audio').addEventListener('click', ()=>{ window.speechSynthesis && window.speechSynthesis.cancel(); playAllIdx = dialogueLines.length; });
+document.getElementById('btn-slow').addEventListener('click', function(){
+  ttsRate = ttsRate===1 ? 0.75 : 1;
+  this.textContent = ttsRate===1 ? '🐢 Velocidade normal' : '🐢 Velocidade lenta (ativa)';
+});
+
+/* ============ MCQ builder (generic) ============ */
+function buildMCQ(container, questions, namePrefix){
+  container.innerHTML = '';
+  questions.forEach((item, idx)=>{
+    const card = document.createElement('div');
+    card.className = 'qcard';
+    card.dataset.idx = idx;
+    let optsHtml = item.options.map((opt,i)=>
+      '<label class="opt"><input type="radio" name="'+namePrefix+idx+'" value="'+i+'"><span>'+opt+'</span></label>'
+    ).join('');
+    card.innerHTML =
+      '<p class="qtext"><span class="qnum">'+(idx+1)+'</span>'+item.q+'</p>'+
+      '<div class="opts">'+optsHtml+'</div>'+
+      '<p class="qfeedback" hidden></p>';
+    container.appendChild(card);
+  });
+}
+function checkMCQ(container, questions, scoreOut, progressKey){
+  let correctCount = 0;
+  container.querySelectorAll('.qcard').forEach(card=>{
+    const idx = +card.dataset.idx;
+    const item = questions[idx];
+    const checked = card.querySelector('input:checked');
+    const fb = card.querySelector('.qfeedback');
+    card.querySelectorAll('.opt').forEach(o=>o.classList.remove('correct','incorrect'));
+    if(!checked){
+      fb.hidden = false; fb.className='qfeedback bad'; fb.textContent = 'Selecione uma alternativa.';
+      return;
+    }
+    const val = +checked.value;
+    const optLabel = checked.closest('.opt');
+    if(val === item.correct){
+      correctCount++;
+      optLabel.classList.add('correct');
+      fb.className='qfeedback ok'; fb.textContent = '✓ Correto! '+item.explain;
+    } else {
+      optLabel.classList.add('incorrect');
+      card.querySelectorAll('.opt')[item.correct].classList.add('correct');
+      fb.className='qfeedback bad'; fb.textContent = '✗ Não é essa. '+item.explain;
+    }
+    fb.hidden = false;
+  });
+  scoreOut.innerHTML = '<span class="scorepill">Você acertou '+correctCount+' de '+questions.length+'</span>';
+  if(progressKey) setProgress(progressKey, Math.round((correctCount/questions.length)*100));
+  return correctCount;
+}
+
+/* ---- Listening MCQ ---- */
+const listeningMcqBox = document.getElementById('listening-mcq');
+buildMCQ(listeningMcqBox, lQuestions, 'lq');
+document.getElementById('btn-check-listening').addEventListener('click', ()=>{
+  checkMCQ(listeningMcqBox, lQuestions, document.getElementById('listening-score'), 'listening');
+});
+
+/* ---- Reading MCQ ---- */
+const readingMcqBox = document.getElementById('reading-mcq');
+buildMCQ(readingMcqBox, rQuestions, 'rq');
+document.getElementById('btn-check-reading').addEventListener('click', ()=>{
+  checkMCQ(readingMcqBox, rQuestions, document.getElementById('reading-score'), 'reading');
+});
+document.getElementById('reading-text').textContent = readingText;
+
+/* ============ Fill-in exercises ============ */
+function buildFill(container, items, hasSelect){
+  container.innerHTML = '';
+  items.forEach((item, idx)=>{
+    const row = document.createElement('div');
+    row.className = 'fillrow';
+    row.dataset.idx = idx;
+    if(hasSelect){
+      let optsHtml = '<option value="">--</option>' + whOptions.map(o=>'<option value="'+o.toLowerCase()+'">'+o+'</option>').join('');
+      row.innerHTML = '<span class="qnum">'+(idx+1)+'</span><span>'+item.sentence+'</span><select>'+optsHtml+'</select><span class="fillicon" hidden></span>';
+    } else {
+      row.innerHTML = '<span class="qnum">'+(idx+1)+'</span><span>'+item.sentence+'</span><input type="text" placeholder="palavra"><span class="fillicon" hidden></span>';
+    }
+    container.appendChild(row);
+  });
+}
+function checkFill(container, items, scoreOut, hasSelect, progressKey){
+  let correct = 0;
+  container.querySelectorAll('.fillrow').forEach(row=>{
+    const idx = +row.dataset.idx;
+    const item = items[idx];
+    const icon = row.querySelector('.fillicon');
+    let val;
+    if(hasSelect){ val = row.querySelector('select').value.trim().toLowerCase(); }
+    else{ val = row.querySelector('input').value.trim().toLowerCase(); }
+    const answers = item.answers || [item.answer];
+    const ok = answers.includes(val);
+    icon.hidden = false;
+    icon.textContent = ok ? '✓' : '✗';
+    icon.style.color = ok ? 'var(--ok)' : 'var(--bad)';
+    if(ok) correct++;
+  });
+  scoreOut.innerHTML = '<span class="scorepill">Você acertou '+correct+' de '+items.length+'</span>';
+  if(progressKey) setProgress(progressKey, Math.round((correct/items.length)*100));
+}
+buildFill(document.getElementById('listening-fill'), lFill, false);
+document.getElementById('btn-check-fill-listening').addEventListener('click', ()=>{
+  checkFill(document.getElementById('listening-fill'), lFill, document.getElementById('listening-fill-score'), false, 'listening');
+});
+buildFill(document.getElementById('reading-fill'), rFill, true);
+document.getElementById('btn-check-fill-reading').addEventListener('click', ()=>{
+  checkFill(document.getElementById('reading-fill'), rFill, document.getElementById('reading-fill-score'), true, 'reading');
+});
+
+/* ---- Short answers (writing #2) ---- */
+const saBox = document.getElementById('writing-shortanswers');
+saItems.forEach((item, idx)=>{
+  const row = document.createElement('div');
+  row.className = 'fillrow';
+  row.dataset.idx = idx;
+  row.innerHTML = '<span class="qnum">'+(idx+1)+'</span><span>'+item.q+' <em style="color:var(--ink-soft);">'+item.instruction+'</em></span><input type="text" placeholder="Yes, ... / No, ..."><span class="fillicon" hidden></span>';
+  saBox.appendChild(row);
+});
+document.getElementById('btn-check-sa').addEventListener('click', ()=>{
+  let correct = 0;
+  saBox.querySelectorAll('.fillrow').forEach(row=>{
+    const idx = +row.dataset.idx;
+    const item = saItems[idx];
+    const input = row.querySelector('input');
+    const icon = row.querySelector('.fillicon');
+    const ok = item.check(input.value);
+    icon.hidden = false;
+    icon.textContent = ok ? '✓' : '✗';
+    icon.style.color = ok ? 'var(--ok)' : 'var(--bad)';
+    if(ok) correct++;
+  });
+  document.getElementById('sa-score').innerHTML = '<span class="scorepill">Você acertou '+correct+' de '+saItems.length+'</span>';
+  setProgress('writing', Math.max(state.writing, Math.round((correct/saItems.length)*40)));
+});
+
+/* ============ Claude "sample" capability ============ */
+let sampleFn = null;
+let claudeInitTried = false;
+async function initClaude(){
+  claudeInitTried = true;
+  const deadline = Date.now() + 10000;
+  while(Date.now() < deadline){
+    if(window.claude && typeof window.claude.use === 'function'){
+      try{ sampleFn = await window.claude.use('sample'); }catch(e){ sampleFn = null; }
+      return;
+    }
+    await new Promise(r=>setTimeout(r, 250));
+  }
+}
+initClaude();
+
+async function askAI(promptText, button, outEl){
+  outEl.classList.add('show','pending');
+  outEl.textContent = 'Analisando sua resposta…';
+  const original = button.textContent;
+  button.disabled = true; button.textContent = 'Analisando…';
+  if(!sampleFn){
+    // dá mais uma chance, caso o recurso tenha ficado pronto depois do carregamento inicial
+    await initClaude();
+  }
+  if(!sampleFn){
+    outEl.classList.remove('pending');
+    outEl.textContent = 'O feedback por IA não está disponível nesta visualização no momento. Você pode revisar sua resposta comparando com o conteúdo da unidade (WH-questions, short answers, reaction expressions).';
+    button.disabled = false; button.textContent = original;
+    return null;
+  }
+  try{
+    const res = await sampleFn(promptText, {modelTier:'default'});
+    outEl.classList.remove('pending');
+    outEl.textContent = res.text;
+    return res.text;
+  }catch(err){
+    outEl.classList.remove('pending');
+    outEl.textContent = 'Não foi possível obter o feedback agora. Tente novamente em instantes.';
+    return null;
+  }finally{
+    button.disabled = false; button.textContent = original;
+  }
+}
+function extractScore(text){
+  if(!text) return null;
+  const m = text.match(/nota:?\s*(\d+(?:[.,]\d+)?)\s*\/\s*10/i);
+  if(m) return parseFloat(m[1].replace(',','.'));
+  return null;
+}
+
+/* ---- Writing AI feedback ---- */
+document.getElementById('btn-feedback-w1').addEventListener('click', async ()=>{
+  const text = document.getElementById('w1').value.trim();
+  const out = document.getElementById('out-w1');
+  if(!text){ out.classList.add('show'); out.textContent='Escreva suas perguntas antes de pedir feedback.'; return; }
+  const prompt = "Você é um professor de inglês avaliando um aluno brasileiro do ensino fundamental/médio. "+
+    "O aluno deveria escrever 4 WH-questions para conhecer um novo colega de intercâmbio. "+
+    "Resposta do aluno:\n\""+text+"\"\n\n"+
+    "Responda em português. Na primeira linha escreva apenas 'Nota: X/10'. "+
+    "Depois pule uma linha e dê um feedback curto (até 90 palavras) sobre: (1) se são de fato WH-questions bem formadas (ordem palavra-auxiliar-sujeito), (2) erros de gramática específicos com a correção, (3) uma sugestão de melhoria. Seja encorajador.";
+  const res = await askAI(prompt, document.getElementById('btn-feedback-w1'), out);
+  const score = extractScore(res);
+  setProgress('writing', Math.max(state.writing, score!=null ? Math.round(score*10*0.33) : 33));
+});
+
+document.getElementById('btn-feedback-sa').addEventListener('click', async ()=>{
+  const answers = Array.from(saBox.querySelectorAll('input')).map((inp,i)=>saItems[i].q+' -> '+inp.value.trim());
+  const out = document.getElementById('out-sa');
+  const prompt = "Um aluno brasileiro respondeu a perguntas de sim/não em inglês usando short answers (respostas curtas). "+
+    "Respostas do aluno:\n"+answers.join('\n')+"\n\n"+
+    "Responda em português, em até 70 palavras, comentando a concordância do auxiliar (do/does, is/are, can) e do sujeito nas respostas curtas, apontando erros específicos com a correção. Não use nota, só o comentário.";
+  await askAI(prompt, document.getElementById('btn-feedback-sa'), out);
+});
+
+document.getElementById('btn-feedback-w3').addEventListener('click', async ()=>{
+  const text = document.getElementById('w3').value.trim();
+  const out = document.getElementById('out-w3');
+  if(!text){ out.classList.add('show'); out.textContent='Escreva o diálogo antes de pedir feedback.'; return; }
+  const prompt = "Um aluno brasileiro escreveu um diálogo em inglês que deveria conter pelo menos 2 WH-questions, 1 short answer e 2 reaction expressions (como Really?, That's great!, No way!). "+
+    "Diálogo do aluno:\n\""+text+"\"\n\n"+
+    "Responda em português. Na primeira linha escreva apenas 'Nota: X/10'. Depois pule uma linha e diga: (1) se os três elementos pedidos aparecem (aponte quais faltam, se algum faltar), (2) até 2 erros de gramática com a correção, (3) um elogio específico. Máximo 100 palavras no total do feedback.";
+  const res = await askAI(prompt, document.getElementById('btn-feedback-w3'), out);
+  const score = extractScore(res);
+  setProgress('writing', Math.max(state.writing, score!=null ? Math.min(100, 60+Math.round(score*4)) : 70));
+});
+
+/* ============ Speech recognition (Speaking) ============ */
+const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+if(!SpeechRecognitionCtor){ document.getElementById('stt-note').style.display = 'block'; }
+
+function makeRecognizer(onResult, onStatus){
+  if(!SpeechRecognitionCtor) return null;
+  const rec = new SpeechRecognitionCtor();
+  rec.lang = 'en-US';
+  rec.interimResults = false;
+  rec.maxAlternatives = 1;
+  rec.onresult = (e)=>{ onResult(e.results[0][0].transcript); };
+  rec.onerror = (e)=>{ onStatus('Erro no microfone ('+e.error+'). Use o campo de texto abaixo.'); };
+  rec.onend = ()=>{ onStatus(''); };
+  return rec;
+}
+
+document.getElementById('btn-ask-sp1').addEventListener('click', ()=> speak("What do you usually do on weekends?"));
+
+let recSp1 = null;
+document.getElementById('btn-rec-sp1').addEventListener('click', function(){
+  const statusEl = document.getElementById('status-sp1');
+  const transcriptEl = document.getElementById('transcript-sp1');
+  if(!SpeechRecognitionCtor){
+    statusEl.textContent = 'Microfone não suportado — digite sua resposta abaixo.';
+    return;
+  }
+  statusEl.textContent = '🔴 Gravando… fale agora.';
+  recSp1 = makeRecognizer(
+    (text)=>{ transcriptEl.textContent = text; document.getElementById('text-sp1').value = text; statusEl.textContent = 'Gravação concluída.'; },
+    (msg)=>{ if(msg) statusEl.textContent = msg; }
+  );
+  try{ recSp1.start(); }catch(e){ statusEl.textContent = 'Não foi possível acessar o microfone.'; }
+});
+
+document.getElementById('btn-feedback-sp1').addEventListener('click', async ()=>{
+  const typed = document.getElementById('text-sp1').value.trim();
+  const transcript = document.getElementById('transcript-sp1').textContent.trim();
+  const answer = typed || (transcript && transcript!=='Sua fala transcrita aparecerá aqui…' ? transcript : '');
+  const out = document.getElementById('out-sp1');
+  if(!answer){ out.classList.add('show'); out.textContent='Grave ou digite sua resposta antes de pedir feedback.'; return; }
+  const prompt = "Um aluno brasileiro respondeu em voz alta (transcrita abaixo) à pergunta 'What do you usually do on weekends?'. "+
+    "Resposta transcrita: \""+answer+"\"\n\n"+
+    "Responda em português, em até 80 palavras: (1) diga se a resposta faz sentido e responde à pergunta, (2) aponte 1-2 erros de gramática ou vocabulário com a correção, (3) sugira uma forma um pouco mais rica de responder. Lembre educadamente que, por ser uma transcrição de fala, você não está avaliando a pronúncia, só o conteúdo e a gramática.";
+  await askAI(prompt, document.getElementById('btn-feedback-sp1'), out);
+  setProgress('speaking', Math.max(state.speaking, 50));
+});
+
+/* ---- Roleplay ---- */
+const roleplayBox = document.getElementById('roleplay-box');
+roleplayLines.forEach((line, idx)=>{
+  const wrap = document.createElement('div');
+  wrap.className = 'card';
+  wrap.style.background = 'var(--bg)';
+  wrap.style.margin = '0 0 14px';
+  wrap.innerHTML =
+    '<p style="font-weight:600;">Fala '+(idx+1)+': <span style="font-weight:400;font-style:italic;">"'+line+'"</span></p>'+
+    '<div class="btnrow">'+
+      '<button class="btn secondary" data-play="'+idx+'">🔊 Ouvir modelo</button>'+
+      '<button class="btn" data-rec="'+idx+'">🎙️ Repetir em voz alta</button>'+
+    '</div>'+
+    '<span class="mic-status" data-status="'+idx+'"></span>'+
+    '<input type="text" class="wide" data-text="'+idx+'" placeholder="Ou digite o que você disse" style="width:100%;margin-top:8px;">'+
+    '<div class="transcript" data-transcript="'+idx+'">—</div>'+
+    '<div class="btnrow"><button class="btn secondary" data-feedback="'+idx+'">Feedback da IA</button></div>'+
+    '<div class="aiout" data-out="'+idx+'"></div>';
+  roleplayBox.appendChild(wrap);
+
+  wrap.querySelector('[data-play]').addEventListener('click', ()=> speak(line, null, 'pedro'));
+  wrap.querySelector('[data-rec]').addEventListener('click', function(){
+    const statusEl = wrap.querySelector('[data-status="'+idx+'"]');
+    const transcriptEl = wrap.querySelector('[data-transcript="'+idx+'"]');
+    const textInput = wrap.querySelector('[data-text="'+idx+'"]');
+    if(!SpeechRecognitionCtor){ statusEl.textContent = 'Microfone não suportado — digite abaixo.'; return; }
+    statusEl.textContent = '🔴 Gravando…';
+    const rec = makeRecognizer(
+      (text)=>{ transcriptEl.textContent = text; textInput.value = text; statusEl.textContent = 'Gravação concluída.'; },
+      (msg)=>{ if(msg) statusEl.textContent = msg; }
+    );
+    try{ rec.start(); }catch(e){ statusEl.textContent = 'Não foi possível acessar o microfone.'; }
+  });
+
+  wrap.querySelector('[data-feedback]').addEventListener('click', async function(){
+    const textInput = wrap.querySelector('[data-text="'+idx+'"]');
+    const transcriptEl = wrap.querySelector('[data-transcript="'+idx+'"]');
+    const said = textInput.value.trim() || (transcriptEl.textContent!=='—' ? transcriptEl.textContent.trim() : '');
+    const out = wrap.querySelector('[data-out="'+idx+'"]');
+    if(!said){ out.classList.add('show'); out.textContent = 'Grave ou digite antes de pedir feedback.'; return; }
+    const origWords = line.toLowerCase().replace(/[^a-z' ]/g,'').split(/\s+/).filter(Boolean);
+    const saidWords = said.toLowerCase().replace(/[^a-z' ]/g,'').split(/\s+/).filter(Boolean);
+    const matched = origWords.filter(w=>saidWords.includes(w)).length;
+    const pct = Math.round((matched/origWords.length)*100);
+    const prompt = "Frase-modelo em inglês: \""+line+"\". O que o sistema de reconhecimento de voz captou da fala do aluno: \""+said+"\" (correspondência aproximada de palavras: "+pct+"%). "+
+      "Responda em português, em até 60 palavras: diga o que parece ter saído diferente do modelo (palavras faltando, trocadas ou na ordem errada) e dê uma dica prática de pronúncia ou entonação para essa frase específica.";
+    await askAI(prompt, wrap.querySelector('[data-feedback]'), out);
+    setProgress('speaking', Math.max(state.speaking, 60 + Math.round(idx*10)));
+  });
+});
+
+/* ============ Overall feedback ============ */
+document.getElementById('btn-overall-feedback').addEventListener('click', async ()=>{
+  const out = document.getElementById('overall-feedback-out');
+  const summary = "Progresso do aluno (0-100%): Listening "+ (state.listening||0) +"%, Reading "+ (state.reading||0) +"%, Writing "+ (state.writing||0) +"%, Speaking "+ (state.speaking||0) +"%.";
+  const prompt = "Você é um professor de inglês. Um aluno brasileiro praticou uma unidade sobre 'Questions and Communication' (WH-questions, short answers, reaction expressions, diálogo e compreensão de texto) em quatro habilidades. "+
+    summary+"\n\n"+
+    "Escreva em português um feedback geral motivador de até 90 palavras: (1) destaque a habilidade mais forte e a que precisa de mais prática, com base nos números, (2) dê 2 sugestões concretas de próximos passos de estudo sobre o conteúdo da unidade.";
+  await askAI(prompt, document.getElementById('btn-overall-feedback'), out);
+});
+
+document.getElementById('btn-reset').addEventListener('click', ()=>{
+  if(!confirm('Isso vai apagar seu progresso salvo neste dispositivo. Continuar?')) return;
+  state = {listening:0, reading:0, writing:0, speaking:0, notes:[]};
+  saveState();
+  refreshDashboard();
+  document.getElementById('overall-feedback-out').classList.remove('show');
+});
+
+refreshDashboard();
+</script>
+</body>
+</html>
