@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Raio-X English Mindset</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#eef3f8;--card:#fff;--ink:#0f2a43;--mut:#5a6f84;--line:#d6e0ea;--acc:#0b8f7e;--accink:#fff;
+--c1:#d23f58;--c2:#d98e11;--c3:#2d74d6;--c4:#1a9a68;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c1824;--card:#14263a;--ink:#e8f0f8;--mut:#93a8bc;--line:#26405a;--acc:#2cc4ae;--accink:#06201c;--c1:#f0708a;--c2:#f0b43e;--c3:#6aa5f5;--c4:#42c98f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0c1824;--card:#14263a;--ink:#e8f0f8;--mut:#93a8bc;--line:#26405a;--acc:#2cc4ae;--accink:#06201c;--c1:#f0708a;--c2:#f0b43e;--c3:#6aa5f5;--c4:#42c98f;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Segoe UI",system-ui,-apple-system,Roboto,sans-serif}
+main{max-width:620px;margin:0 auto;padding:20px 16px 48px}
+h1{font:700 1.7rem/1.2 Georgia,"Times New Roman",serif;margin:.2em 0 .4em}
+h2{font:700 1.35rem/1.25 Georgia,serif;margin:.2em 0 .3em}
+p{margin:.4em 0}.mut{color:var(--mut)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin:14px 0}
+label{display:block;font-weight:600;margin:14px 0 4px}
+input[type=text],input[type=tel]{width:100%;font:inherit;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+button{font:inherit;cursor:pointer}
+.btn{display:block;width:100%;border:0;border-radius:12px;padding:14px;font-weight:700;background:var(--acc);color:var(--accink);margin-top:18px}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+:focus-visible{outline:3px solid var(--c3);outline-offset:2px}
+.prog{height:8px;background:var(--line);border-radius:8px;overflow:hidden;margin:6px 0 2px}
+.prog i{display:block;height:100%;background:var(--acc);transition:width .4s}
+.q{padding:14px 0;border-top:1px solid var(--line)}.q:first-of-type{border-top:0}
+.scale{display:grid;grid-template-columns:repeat(11,1fr);gap:3px;margin-top:8px}
+.scale button{padding:9px 0;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font-weight:600;font-size:.9rem}
+.scale button[aria-pressed=true]{background:var(--acc);color:var(--accink);border-color:var(--acc)}
+.ends{display:flex;justify-content:space-between;font-size:.78rem;color:var(--mut);margin-top:3px}
+.badge{display:inline-block;padding:4px 12px;border-radius:20px;font-weight:700;font-size:.9rem;color:#fff}
+.l1{background:var(--c1)}.l2{background:var(--c2)}.l3{background:var(--c3)}.l4{background:var(--c4)}
+.l2{color:#1b1200}.dark .l2{color:#1b1200}
+.big{font:700 3rem/1 Georgia,serif}
+.bar{height:12px;background:var(--line);border-radius:6px;overflow:hidden;margin:4px 0 12px}
+.bar i{display:block;height:100%;border-radius:6px}
+.row{display:flex;justify-content:space-between;gap:10px;font-size:.95rem}
+.tip{border-left:4px solid var(--acc);padding:6px 12px;margin-top:14px;background:var(--bg);border-radius:0 8px 8px 0}
+.ring{width:150px;height:150px;margin:8px auto;display:block}
+.hide{display:none}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+// ====== CONFIGURAÇÃO: coloque aqui o seu WhatsApp (DDI+DDD+número, só dígitos). Ex.: 5521999998888 ======
+var WHATSAPP_NUMBER = "";
+// =========================================================================================================
+
+var S = [
+ {n:"GRAMÁTICA",tip:"Comece com frases curtas e completas (sujeito + verbo + complemento). Estrutura antes de velocidade.",q:["Consigo formar frases simples em inglês sem traduzir palavra por palavra.","Entendo e aplico estruturas básicas: presente, passado e perguntas.","Reconheço quando uma frase está gramaticalmente errada.","Consigo reorganizar uma frase para que ela faça sentido em inglês.","Uso estruturas completas, não apenas palavras soltas, ao me comunicar."]},
+ {n:"VOCABULÁRIO",tip:"Aprenda em blocos (chunks), como make a decision, e não palavras soltas. Eles chegam prontos na hora de falar.",q:["Consigo lembrar palavras em inglês sem recorrer ao português.","Conheço vocabulário suficiente para falar sobre minha rotina.","Entendo palavras comuns em contextos reais, como filmes, músicas e conversas.","Uso expressões completas/chunks, como make a decision, e não só palavras isoladas.","Consigo aprender e relembrar novas palavras com facilidade."]},
+ {n:"CONVERSAÇÃO",tip:"Fale em voz alta todos os dias, mesmo sozinha. A fluência nasce de repetição com intenção.",q:["Consigo iniciar uma conversa simples em inglês.","Consigo manter uma conversa sem travar completamente.","Sinto-me confortável tentando falar, mesmo errando.","Consigo responder perguntas básicas com naturalidade.","Consigo me posicionar em inglês: opinião, sentimentos e necessidades."]},
+ {n:"COMPREENSÃO ORAL",tip:"Ouça pouco, mas todo dia, e releia o mesmo áudio. Seu ouvido se treina com repetição.",q:["Entendo o contexto geral de áudios em inglês.","Consigo identificar palavras-chave enquanto escuto.","Entendo inglês sem precisar traduzir mentalmente o tempo todo.","Consigo acompanhar falas em velocidade natural, mesmo sem entender tudo.","Sinto-me confortável ouvindo inglês com diferentes sotaques."]},
+ {n:"ESCRITA",tip:"Escreva 3 frases por dia sobre a sua rotina e revise. Escrever organiza o pensamento para falar.",q:["Consigo escrever frases simples corretamente.","Consigo organizar ideias em pequenos textos.","Uso conectivos básicos, como and, but e because, corretamente.","Consigo escrever sobre minha rotina ou experiências.","Reviso e corrijo meus próprios erros com certa autonomia."]},
+ {n:"ESTRUTURAÇÃO DE IDEIAS",tip:"Treine o caminho: ideia principal, um motivo, um exemplo. Simples e em ordem já comunica muito.",q:["Consigo pensar no que quero dizer antes de falar.","Consigo organizar ideias em sequência lógica.","Não travo por excesso de pensamento ou perfeccionismo.","Consigo simplificar o que quero comunicar.","Consigo adaptar minha fala mesmo sem saber todas as palavras."]},
+ {n:"ROTINA DE ESTUDOS E PRÁTICA",tip:"Troque maratonas por 15 minutos diários ligados à sua rotina. Constância vence intensidade.",q:["Tenho uma rotina consistente de contato com o inglês.","Revisito conteúdos, não apenas vejo uma vez.","Pratico inglês com coisas que fazem parte da minha rotina.","Consigo manter foco durante meus estudos.","Sinto evolução com a prática que estou fazendo."]},
+ {n:"MENTALIDADE",tip:"Registre pequenas vitórias toda semana. Evolução que você enxerga vira motivação para continuar.",q:["Acredito que sou capaz de aprender inglês.","Consigo lidar com erros sem travar emocionalmente.","Permito-me tentar falar, mesmo sem estar perfeito.","Sinto menos medo de julgamento ao usar o inglês.","Sinto que estou em evolução, não em estagnação."]}
+];
+var LV = [
+ {k:1,t:"Bloqueio crítico",c:"l1",col:"var(--c1)",m:"Aqui está o seu maior ponto de virada. {s} é onde o bloqueio aparece hoje, e é justamente onde você vai sentir o progresso mais rápido. Bloqueio não é incapacidade, é falta de método e de prática guiada. Você deu o primeiro passo ao olhar para isso com honestidade."},
+ {k:2,t:"Base frágil",c:"l2",col:"var(--c2)",m:"Você já tem uma base em {s}. Ela só precisa de firmeza. Com prática guiada e constância, isso vira confiança em pouco tempo."},
+ {k:3,t:"Em desenvolvimento",c:"l3",col:"var(--c3)",m:"Muito bom! {s} já está em desenvolvimento. Você está perto de transformar isso em um ponto forte. Falta pouco, siga firme."},
+ {k:4,t:"Forte",c:"l4",col:"var(--c4)",m:"Excelente! {s} é um ponto forte seu. Use essa força como alavanca para destravar as outras áreas."}
+];
+function lvS(t){return t<=25?LV[0]:t<=35?LV[1]:t<=45?LV[2]:LV[3]}
+function lvG(t){return t<=200?LV[0]:t<=280?LV[1]:t<=360?LV[2]:LV[3]}
+function sum(a){return a.reduce(function(x,y){return x+y},0)}
+function cap(s){return s.charAt(0)+s.slice(1).toLowerCase()}
+
+var st = {step:-1, name:"", phone:"", ans:S.map(function(s){return s.q.map(function(){return null})}), showFb:false};
+var app = document.getElementById("app");
+
+function render(){
+  var h="";
+  if(st.step===-1) h=intro();
+  else if(st.step<S.length) h = st.showFb ? feedback() : questions();
+  else h=final();
+  app.innerHTML=h; window.scrollTo(0,0);
+}
+function intro(){
+  return '<h1>Raio-X English Mindset</h1><p class="mut">Um diagnóstico rápido de 8 áreas do seu inglês. Você dá uma nota de 0 a 10 para cada afirmação, e ao fim de cada etapa recebe um retorno sobre onde você está agora.</p>'+
+  '<div class="card"><label for="nm">Como você se chama?</label><input id="nm" type="text" autocomplete="name" placeholder="Seu nome" value="'+esc(st.name)+'">'+
+  '<label for="ph">Seu WhatsApp (para eu te chamar depois)</label><input id="ph" type="tel" inputmode="tel" autocomplete="tel" placeholder="(21) 99999-9999" value="'+esc(st.phone)+'">'+
+  '<p class="mut" style="font-size:.85rem">Responda com sinceridade: não existe nota certa, existe ponto de partida. Leva uns 5 minutos.</p>'+
+  '<button class="btn" id="go">Começar meu Raio-X</button></div>';
+}
+function questions(){
+  var s=S[st.step], a=st.ans[st.step], done=a.every(function(v){return v!==null});
+  var h='<div class="row mut"><span>Etapa '+(st.step+1)+' de '+S.length+'</span><span>'+cap(s.n)+'</span></div><div class="prog"><i style="width:'+(st.step/S.length*100)+'%"></i></div>';
+  h+='<div class="card"><h2>'+cap(s.n)+'</h2>';
+  s.q.forEach(function(q,i){
+    h+='<div class="q"><p>'+q+'</p><div class="scale" role="group" aria-label="Nota de 0 a 10">';
+    for(var n=0;n<=10;n++) h+='<button data-q="'+i+'" data-v="'+n+'" aria-pressed="'+(a[i]===n)+'">'+n+'</button>';
+    h+='</div><div class="ends"><span>0 = nada</span><span>10 = totalmente</span></div></div>';
+  });
+  h+='<button class="btn" id="next" '+(done?'':'disabled')+'>'+(done?'Ver meu retorno desta etapa':'Responda as 5 afirmações')+'</button>';
+  if(st.step>0) h+='<button class="btn ghost" id="back">Voltar</button>';
+  return h+'</div>';
+}
+function feedback(){
+  var s=S[st.step], t=sum(st.ans[st.step]), l=lvS(t), last=st.step===S.length-1;
+  return '<div class="prog"><i style="width:'+((st.step+1)/S.length*100)+'%"></i></div>'+
+  '<div class="card"><p class="mut">'+cap(s.n)+'</p><div class="big">'+t+'<span class="mut" style="font-size:1.2rem">/50</span></div>'+
+  '<p><span class="badge '+l.c+'">'+l.t+'</span></p><p>'+l.m.replace("{s}",cap(s.n))+'</p>'+
+  '<div class="tip"><b>Primeiro passo:</b> '+s.tip+'</div>'+
+  '<button class="btn" id="cont">'+(last?'Ver meu resultado completo':'Continuar')+'</button></div>';
+}
+function totals(){return S.map(function(s,i){return sum(st.ans[i])})}
+function final(){
+  var tt=totals(), tot=sum(tt), pct=tot/400, g=lvG(tot);
+  var idx=tt.map(function(v,i){return i}).sort(function(a,b){return tt[a]-tt[b]});
+  var weak=idx.slice(0,2), strong=idx[idx.length-1];
+  var C=2*Math.PI*60, off=C*(1-pct);
+  var h='<h1>'+(st.name?esc(st.name.split(" ")[0])+', este é o seu Raio-X':'Seu Raio-X')+'</h1>'+
+  '<div class="card" style="text-align:center"><svg class="ring" viewBox="0 0 150 150" role="img" aria-label="'+Math.round(pct*100)+' por cento"><circle cx="75" cy="75" r="60" fill="none" stroke="var(--line)" stroke-width="14"/><circle cx="75" cy="75" r="60" fill="none" stroke="'+g.col+'" stroke-width="14" stroke-linecap="round" stroke-dasharray="'+C+'" stroke-dashoffset="'+off+'" transform="rotate(-90 75 75)"/><text x="75" y="84" text-anchor="middle" font-size="30" font-weight="700" fill="var(--ink)" font-family="Georgia,serif">'+Math.round(pct*100)+'%</text></svg>'+
+  '<p><b>'+tot+' de 400 pontos</b></p><span class="badge '+g.c+'">'+g.t+'</span>'+
+  '<p style="margin-top:14px">'+(g.k===1?'Você tem um ponto de partida claro e um destino possível. O que falta é um caminho com método, e é aí que a gente entra.':g.k===2?'Você já construiu uma base. Agora é hora de dar firmeza e ritmo.':'Você está muito bem encaminhada. Falta lapidar para ganhar fluidez.')+'</p></div>';
+  h+='<div class="card"><h2>Suas 8 áreas</h2>';
+  S.forEach(function(s,i){var l=lvS(tt[i]);h+='<div class="row"><span>'+cap(s.n)+'</span><b>'+tt[i]+'/50</b></div><div class="bar"><i style="width:'+tt[i]*2+'%;background:'+l.col+'"></i></div>';});
+  h+='</div><div class="card"><p><b>Sua maior força:</b> '+cap(S[strong].n)+'</p><p><b>Prioridades agora:</b> '+cap(S[weak[0]].n)+' e '+cap(S[weak[1]].n)+'</p></div>';
+  h+='<div class="card"><h2>Receber meu plano</h2><p class="mut">Toque no botão para abrir o WhatsApp com o seu relatório pronto. É só enviar e eu falo com você em seguida.</p>'+
+  '<button class="btn" id="wa">Enviar meu Raio-X pelo WhatsApp</button><button class="btn ghost" id="cp">Copiar relatório</button><p id="msg" class="mut" role="status"></p></div>';
+  return h;
+}
+function report(){
+  var tt=totals(), tot=sum(tt), g=lvG(tot);
+  var idx=tt.map(function(v,i){return i}).sort(function(a,b){return tt[a]-tt[b]});
+  var r="*RAIO-X ENGLISH MINDSET*\n";
+  r+="Nome: "+(st.name||"não informado")+"\nWhatsApp: "+(st.phone||"não informado")+"\n";
+  r+="Pontuação: "+tot+"/400 ("+(tot/4).toFixed(1).replace(".",",")+"%)\nDiagnóstico geral: *"+g.t+"*\n\n*Por sessão:*\n";
+  S.forEach(function(s,i){r+="• "+cap(s.n)+": "+tt[i]+"/50 - "+lvS(tt[i]).t+" (notas: "+st.ans[i].join("-")+")\n"});
+  r+="\n*Prioridades:* "+cap(S[idx[0]].n)+" e "+cap(S[idx[1]].n)+"\n*Maior força:* "+cap(S[idx[idx.length-1]].n);
+  return r;
+}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+
+app.addEventListener("click",function(e){
+  var b=e.target.closest("button"); if(!b) return;
+  if(b.id==="go"){
+    var n=document.getElementById("nm").value.trim(), p=document.getElementById("ph").value.trim();
+    if(!n){document.getElementById("nm").focus();return}
+    st.name=n; st.phone=p; st.step=0; render();
+  } else if(b.dataset.q){
+    st.ans[st.step][+b.dataset.q]=+b.dataset.v;
+    var y=window.scrollY; render(); window.scrollTo(0,y);
+  } else if(b.id==="next"){ st.showFb=true; render();
+  } else if(b.id==="back"){ st.step--; render();
+  } else if(b.id==="cont"){ st.showFb=false; st.step++; render();
+  } else if(b.id==="wa"){
+    var url="https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent(report());
+    window.open(url,"_blank");
+    document.getElementById("msg").textContent="Se o WhatsApp não abriu, use o botão Copiar relatório e me envie a mensagem.";
+  } else if(b.id==="cp"){
+    var m=document.getElementById("msg");
+    try{navigator.clipboard.writeText(report()).then(function(){m.textContent="Relatório copiado! Cole no WhatsApp."},function(){m.textContent="Não consegui copiar. Use o botão do WhatsApp."})}
+    catch(x){m.textContent="Não consegui copiar. Use o botão do WhatsApp."}
+  }
+});
+render();
+</script>
+</body>
+</html>
