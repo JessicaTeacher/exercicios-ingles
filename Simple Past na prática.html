@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Simple Past na prática</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:wght@600;800&display=swap">
+<style>
+:root{--bg:#EEF2F8;--sf:#fff;--ink:#14203A;--mu:#5B6784;--ac:#2B4BFF;--acs:#E3E9FF;--ok:#12805C;--oks:#DDF4EA;--bad:#C93A2E;--bads:#FDE6E3;--ln:#D5DCEA;--mk:#FFE27A;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1626;--sf:#182037;--ink:#EDF1FB;--mu:#9AA6C4;--ac:#8EA2FF;--acs:#25305A;--ok:#4CC9A0;--oks:#143B30;--bad:#FF8A7E;--bads:#4A2320;--ln:#2A3556;--mk:#5A4A0F;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F1626;--sf:#182037;--ink:#EDF1FB;--mu:#9AA6C4;--ac:#8EA2FF;--acs:#25305A;--ok:#4CC9A0;--oks:#143B30;--bad:#FF8A7E;--bads:#4A2320;--ln:#2A3556;--mk:#5A4A0F;color-scheme:dark}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*:before,*:after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 "Atkinson Hyperlegible",system-ui,sans-serif}
+main{max-width:860px;margin:0 auto;padding:20px 16px 48px}
+h1,h2{font-family:"Bricolage Grotesque",system-ui,sans-serif;line-height:1.1;margin:0}
+h1{font-size:clamp(30px,6vw,46px);font-weight:800;letter-spacing:-.02em}
+h2{font-size:24px;font-weight:600}
+.top{display:flex;gap:16px;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;margin-bottom:18px}
+.line{display:flex;gap:6px;margin-top:10px;font-size:15px;color:var(--mu)}
+.line span{padding:2px 10px;border-radius:99px;border:1px dashed var(--ln)}
+.line .on{background:var(--ac);color:#fff;border:1px solid var(--ac);font-weight:700}
+.sc{min-width:180px}
+.sc b{font-family:"Bricolage Grotesque",sans-serif;font-size:30px}
+.bar{height:8px;border-radius:9px;background:var(--ln);overflow:hidden;margin-top:4px}
+.bar i{display:block;height:100%;width:0;background:var(--ok);transition:width .4s}
+details{background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:10px 14px;margin-bottom:16px}
+summary{cursor:pointer;font-weight:700}
+details ul{margin:8px 0 2px;padding-left:20px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.tab{font:inherit;font-weight:700;background:var(--sf);color:var(--ink);border:2px solid var(--ln);border-radius:14px;padding:10px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.tab small{font-weight:400;color:var(--mu)}
+.tab[aria-selected="true"]{border-color:var(--ac);background:var(--acs)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.panel{background:var(--sf);border:1px solid var(--ln);border-radius:18px;padding:22px 20px}
+.panel[hidden]{display:none}
+.lead{color:var(--mu);margin:6px 0 16px}
+.story{font-size:19px;line-height:1.75;max-width:62ch;border-left:4px solid var(--ac);padding-left:16px;margin:0 0 10px}
+.v{font-weight:400}.hl .v{background:var(--mk);border-radius:4px;padding:0 3px}
+.sw{display:inline-flex;gap:8px;align-items:center;margin-bottom:16px;cursor:pointer;color:var(--mu)}
+.q{border-top:1px solid var(--ln);padding:16px 0}
+.q p{margin:0 0 10px;font-weight:700}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.o,.b{font:inherit;border:2px solid var(--ln);background:var(--sf);color:var(--ink);border-radius:10px;padding:8px 14px;cursor:pointer}
+.o:hover:not(:disabled),.b:hover{border-color:var(--ac)}
+.b{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:700}
+.b.g{background:var(--sf);color:var(--ink);border-color:var(--ln)}
+.o.ok{background:var(--oks);border-color:var(--ok)}.o.no{background:var(--bads);border-color:var(--bad)}
+.fb{min-height:1.4em;margin-top:8px;font-size:16px}.fb.ok{color:var(--ok)}.fb.no{color:var(--bad)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.gap{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0}
+input[type=text],textarea{font:inherit;color:var(--ink);background:var(--bg);border:2px solid var(--ln);border-radius:10px;padding:8px 12px}
+input[type=text]{width:170px}
+textarea{width:100%;min-height:120px;resize:vertical}
+.heard{font-style:italic;color:var(--mu)}
+.chip{display:inline-block;background:var(--oks);color:var(--ok);border-radius:99px;padding:1px 10px;margin:2px 4px 2px 0;font-weight:700}
+.chip.w{background:var(--bads);color:var(--bad)}
+.pt{color:var(--mu);font-size:15px;margin:2px 0 8px}
+.big{font-size:21px;font-weight:700;margin:0 0 4px}
+@media (max-width:520px){.tab small{display:none}input[type=text]{width:130px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+<div class="top">
+ <div>
+  <h1>Simple Past na prática</h1>
+  <div class="line" aria-hidden="true"><span>tomorrow</span><span>today</span><span class="on">yesterday</span></div>
+ </div>
+ <div class="sc" aria-live="polite"><b id="sc">0</b> / <span id="tt">19</span> pontos<div class="bar"><i id="pb"></i></div></div>
+</div>
+
+<details>
+ <summary>Revisão rápida das regras</summary>
+ <ul>
+  <li>Verbos regulares: acrescente <b>-ed</b> (watch → watched; study → studied).</li>
+  <li>Verbos irregulares mudam de forma (go → went; buy → bought; see → saw).</li>
+  <li>Negativa: <b>did not</b> + verbo base (She did not go).</li>
+  <li>Pergunta: <b>Did</b> + sujeito + verbo base (Did you see Tom?).</li>
+ </ul>
+</details>
+
+<div class="tabs" role="tablist" id="tabs"></div>
+<section class="panel" id="p-reading" role="tabpanel"></section>
+<section class="panel" id="p-listening" role="tabpanel" hidden></section>
+<section class="panel" id="p-speaking" role="tabpanel" hidden></section>
+<section class="panel" id="p-writing" role="tabpanel" hidden></section>
+</main>
+
+<script>
+var TOTAL=19,S={score:0,done:{}};
+var TABS=[["reading","Reading","Ler"],["listening","Listening","Ouvir"],["speaking","Speaking","Falar"],["writing","Writing","Escrever"]];
+var $=function(s,r){return (r||document).querySelector(s)};
+function award(k){if(S.done[k])return;S.done[k]=1;S.score++;upd()}
+function upd(){
+ $("#sc").textContent=S.score;$("#pb").style.width=(S.score/TOTAL*100)+"%";
+ TABS.forEach(function(t){var n=Object.keys(S.done).filter(function(k){return k.indexOf(t[0])===0}).length;$("#bd-"+t[0]).textContent=n?"✓ "+n:t[2]})
+}
+function norm(s){return s.toLowerCase().replace(/[’]/g,"'").replace(/didn't/g,"did not").replace(/\btelevision\b/g,"tv").replace(/[^a-z0-9' ]/g," ").replace(/\s+/g," ").trim()}
+
+/* Tabs */
+var tb=$("#tabs");
+TABS.forEach(function(t,i){
+ var b=document.createElement("button");b.className="tab";b.setAttribute("role","tab");b.id="tab-"+t[0];b.dataset.t=t[0];
+ b.setAttribute("aria-selected",i===0);b.innerHTML=t[1]+'<small id="bd-'+t[0]+'">'+t[2]+"</small>";tb.appendChild(b)});
+tb.addEventListener("click",function(e){var b=e.target.closest(".tab");if(!b)return;
+ TABS.forEach(function(t){var on=t[0]===b.dataset.t;$("#tab-"+t[0]).setAttribute("aria-selected",on);$("#p-"+t[0]).hidden=!on});
+ if(window.speechSynthesis)speechSynthesis.cancel()});
+
+/* Multiple choice helper */
+function mcq(pre,items,extra){
+ return items.map(function(it,i){
+  return '<div class="q" data-k="'+pre+i+'"><p>'+(i+1)+'. '+it.q+'</p>'+(extra?extra(it,i):"")+'<div class="opts">'+
+  it.o.map(function(o,j){return '<button class="o" data-i="'+j+'">'+o+"</button>"}).join("")+'</div><div class="fb" aria-live="polite"></div></div>'}).join("")}
+function wireMcq(panel,pre,items){
+ panel.addEventListener("click",function(e){
+  var o=e.target.closest(".o");if(!o)return;var q=o.closest(".q");if(!q||q.dataset.k.indexOf(pre)!==0)return;
+  var it=items[+q.dataset.k.slice(pre.length)],fb=$(".fb",q);
+  if(+o.dataset.i===it.a){o.classList.add("ok");fb.className="fb ok";fb.textContent="Correto! "+(it.ex||"");
+   q.querySelectorAll(".o").forEach(function(x){x.disabled=true});award(q.dataset.k)}
+  else{o.classList.add("no");o.disabled=true;fb.className="fb no";fb.textContent="Quase. Tente outra opção."}})}
+
+/* READING */
+var RD=[
+ {q:"What did Ana and her brother buy at the market?",o:["Fresh fruit","New shoes","A movie ticket"],a:0,ex:"They bought fresh fruit."},
+ {q:"Did Ana finish studying in the afternoon?",o:["Yes, she did.","No, she did not.","She did not start."],a:1,ex:"She studied, but she did not finish."},
+ {q:"Which verb in the text is irregular?",o:["walked","bought","cooked"],a:1,ex:"Buy → bought. Walked e cooked são regulares."},
+ {q:"What did the family do in the evening?",o:["They went to the market.","They cooked dinner and watched a movie.","They studied English."],a:1,ex:"Cooked dinner and watched a movie."}];
+$("#p-reading").innerHTML='<h2>Reading: o sábado da Ana</h2><p class="lead">Leia o texto e responda às perguntas.</p>'+
+'<label class="sw"><input type="checkbox" id="hl"> Destacar verbos no passado</label>'+
+'<p class="story" id="story">Last Saturday, Ana <b class="v">woke</b> up early. She <b class="v">ate</b> breakfast and <b class="v">walked</b> to the market with her brother. They <b class="v">bought</b> fresh fruit and <b class="v">met</b> an old friend there. In the afternoon, Ana <b class="v">studied</b> for her English test, but she <b class="v">did not finish</b>. In the evening, the family <b class="v">cooked</b> dinner together and <b class="v">watched</b> a movie. Ana <b class="v">went</b> to bed late.</p>'+mcq("reading",RD);
+$("#hl").addEventListener("change",function(e){$("#p-reading").classList.toggle("hl",e.target.checked)});
+wireMcq($("#p-reading"),"reading",RD);
+
+/* LISTENING */
+var LS=[
+ {t:"She went to Paris last year.",o:["She goes to Paris every year.","She went to Paris last year.","She will go to Paris next year."],a:1},
+ {t:"We watched a film last night.",o:["We watch a film every night.","We will watch a film tonight.","We watched a film last night."],a:2},
+ {t:"He did not eat breakfast.",o:["He does not eat breakfast.","He did not eat breakfast.","He will not eat breakfast."],a:1},
+ {t:"Did you call your mother yesterday?",o:["Do you call your mother every day?","Will you call your mother tomorrow?","Did you call your mother yesterday?"],a:2}];
+function say(t,r){if(!window.speechSynthesis){return false}speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="en-US";u.rate=r;speechSynthesis.speak(u);return true}
+$("#p-listening").innerHTML='<h2>Listening: qual frase você ouviu?</h2><p class="lead">Ouça o áudio quantas vezes quiser e escolha a frase correta. Atenção ao tempo verbal.</p>'+
+mcq("listening",LS,function(it,i){return '<div class="row" style="margin-bottom:10px"><button class="b" data-s="'+i+'" data-r="0.9">▶ Ouvir</button><button class="b g" data-s="'+i+'" data-r="0.55">Ouvir devagar</button></div>'})+
+'<p class="pt" id="lsn"></p>';
+$("#p-listening").addEventListener("click",function(e){var b=e.target.closest("[data-s]");if(!b)return;
+ if(!say(LS[+b.dataset.s].t,+b.dataset.r))$("#lsn").textContent="Seu navegador não tem síntese de voz. Tente no Chrome, Edge ou Safari."});
+wireMcq($("#p-listening"),"listening",LS);
+$("#p-listening").addEventListener("click",function(e){var o=e.target.closest(".o");if(!o||!o.classList.contains("ok"))return;
+ var q=o.closest(".q"),it=LS[+q.dataset.k.slice(9)];$(".fb",q).textContent="Correto! Transcrição: "+it.t});
+
+/* SPEAKING */
+var SP=[
+ {s:"Yesterday I ___ (go) to the beach.",t:"Yesterday I went to the beach.",pt:"Ontem eu fui à praia."},
+ {s:"She ___ (buy) a new bike last week.",t:"She bought a new bike last week.",pt:"Ela comprou uma bicicleta nova semana passada."},
+ {s:"We ___ (not / watch) TV last night.",t:"We did not watch TV last night.",pt:"Nós não assistimos TV ontem à noite."},
+ {s:"What time ___ you ___ (wake) up?",t:"What time did you wake up?",pt:"A que horas você acordou?"}];
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+$("#p-speaking").innerHTML='<h2>Speaking: complete e fale</h2><p class="lead">Complete a frase com o verbo no passado e diga a frase inteira em voz alta. '+(SR?"Clique em Falar e permita o microfone.":"Seu navegador não reconhece voz: fale em voz alta e marque como feito.")+"</p>"+
+SP.map(function(it,i){return '<div class="q" data-k="speaking'+i+'"><p class="big">'+it.s+'</p><p class="pt">'+it.pt+'</p><div class="row">'+
+ (SR?'<button class="b" data-a="rec" data-i="'+i+'">🎤 Falar</button>':"")+'<button class="b g" data-a="hear" data-i="'+i+'">Ouvir modelo</button><button class="b g" data-a="self" data-i="'+i+'"'+(SR?" hidden":"")+'>Falei em voz alta ✓</button></div><div class="fb" aria-live="polite"></div></div>'}).join("");
+$("#p-speaking").addEventListener("click",function(e){
+ var b=e.target.closest("[data-a]");if(!b)return;var i=+b.dataset.i,q=b.closest(".q"),fb=$(".fb",q),it=SP[i];
+ if(b.dataset.a==="hear"){say(it.t,.85);fb.className="fb";fb.textContent="Modelo: "+it.t;return}
+ if(b.dataset.a==="self"){fb.className="fb ok";fb.textContent="Muito bem! Frase: "+it.t;award("speaking"+i);return}
+ var r=new SR();r.lang="en-US";r.interimResults=false;r.maxAlternatives=3;fb.className="fb";fb.textContent="Ouvindo…";
+ r.onresult=function(ev){
+  var best=0,heard="";
+  for(var k=0;k<ev.results[0].length;k++){var h=norm(ev.results[0][k].transcript),tg=norm(it.t).split(" "),hs=h.split(" ");
+   var m=tg.filter(function(w){return hs.indexOf(w)>-1}).length/tg.length;if(m>=best){best=m;heard=ev.results[0][k].transcript}}
+  if(best>=.8){fb.className="fb ok";fb.innerHTML="Ótimo! Você disse: <span class='heard'>“"+heard+"”</span>";award("speaking"+i)}
+  else{fb.className="fb no";fb.innerHTML="Entendi: <span class='heard'>“"+heard+"”</span>. Modelo: "+it.t+" Tente de novo."}};
+ r.onerror=function(){fb.className="fb no";fb.textContent="Não consegui usar o microfone. Fale em voz alta e use o botão abaixo.";$("[data-a=self]",q).hidden=false};
+ r.onend=function(){if(fb.textContent==="Ouvindo…"){fb.className="fb no";fb.textContent="Não ouvi nada. Tente de novo.";$("[data-a=self]",q).hidden=false}};
+ try{r.start()}catch(x){$("[data-a=self]",q).hidden=false}});
+
+/* WRITING */
+var WR=[
+ {s:"Yesterday I [] (watch) a movie.",a:["watched"],h:"Verbo regular: +ed."},
+ {s:"She [] (go) to school by bus last week.",a:["went"],h:"Go é irregular."},
+ {s:"They [] (not / like) the food.",a:["did not like","didn't like","didnt like"],h:"did not + verbo base."},
+ {s:"We [] (study) English last night.",a:["studied"],h:"Consoante + y: troque y por -ied."},
+ {s:"[] you see Tom yesterday?",a:["did"],h:"Pergunta no passado começa com…"},
+ {s:"He [] (write) a long email this morning.",a:["wrote"],h:"Write é irregular."}];
+var IR={go:"went",eat:"ate",see:"saw",have:"had",buy:"bought",make:"made",take:"took",come:"came",get:"got",meet:"met",write:"wrote",run:"ran",sleep:"slept",give:"gave",say:"said",drink:"drank",swim:"swam",wake:"woke",tell:"told",find:"found",leave:"left",think:"thought",know:"knew",feel:"felt"};
+var PAST={was:1,were:1,did:1},NOTV={speed:1,indeed:1,hundred:1,breed:1,seed:1,feed:1,weed:1};
+Object.keys(IR).forEach(function(k){PAST[IR[k]]=1});
+$("#p-writing").innerHTML='<h2>Writing: escreva no passado</h2><p class="lead">Parte 1: complete as frases. Pressione Enter para verificar.</p>'+
+WR.map(function(it,i){var p=it.s.split("[]");return '<div class="q" data-k="writing'+i+'"><div class="gap"><span>'+(i+1)+'. '+p[0]+'</span><input type="text" data-i="'+i+'" aria-label="Resposta '+(i+1)+'" autocomplete="off" autocapitalize="off" spellcheck="false"><span>'+p[1]+'</span><button class="b" data-a="chk" data-i="'+i+'">Verificar</button></div><div class="fb" aria-live="polite"></div></div>'}).join("")+
+'<div class="q"><p>Parte 2: escreva 3 frases sobre o seu último fim de semana.</p><textarea id="free" placeholder="Last weekend I went to…" lang="en"></textarea><div class="row" style="margin-top:10px"><button class="b" data-a="an">Analisar texto</button></div><div class="fb" id="ffb" aria-live="polite"></div></div>';
+function chk(i){
+ var q=$('[data-k="writing'+i+'"]'),inp=$("input",q),fb=$(".fb",q),v=norm(inp.value);
+ if(!v){fb.className="fb";fb.textContent="Digite sua resposta.";return}
+ if(WR[i].a.indexOf(v)>-1){fb.className="fb ok";fb.textContent="Correto!";inp.disabled=true;award("writing"+i)}
+ else{fb.className="fb no";fb.textContent="Ainda não. Dica: "+WR[i].h}}
+$("#p-writing").addEventListener("click",function(e){var b=e.target.closest("[data-a]");if(!b)return;
+ if(b.dataset.a==="chk")chk(+b.dataset.i);
+ if(b.dataset.a==="an"){
+  var tx=$("#free").value,fb=$("#ffb"),w=norm(tx).split(" ").filter(Boolean);
+  if(w.length<8){fb.className="fb no";fb.textContent="Escreva um pouco mais: pelo menos 3 frases.";return}
+  var found=w.filter(function(x,i){return PAST[x]||(/^[a-z]{3,}ed$/.test(x)&&!NOTV[x])}),warn=[],tm=/yesterday|last|ago/.test(norm(tx));
+  w.forEach(function(x,i){if(tm&&IR[x]&&["i","we","you","they","he","she"].indexOf(w[i-1])>-1)warn.push(x)});
+  var h=found.map(function(x){return '<span class="chip">'+x+"</span>"}).join("")||"nenhum";
+  var wn=warn.map(function(x){return '<span class="chip w">'+x+" → "+IR[x]+"</span>"}).join("");
+  if(warn.length){fb.className="fb no";fb.innerHTML="Verbos no passado encontrados: "+h+"<br>Revise estes verbos: "+wn}
+  else if(found.length>=3){fb.className="fb ok";fb.innerHTML="Excelente! Verbos no passado: "+h;award("writing-free")}
+  else{fb.className="fb no";fb.innerHTML="Encontrei só "+found.length+" verbo(s) no passado: "+h+"<br>Use pelo menos 3."}}});
+$("#p-writing").addEventListener("keydown",function(e){if(e.key==="Enter"&&e.target.matches("input")){chk(+e.target.dataset.i)}});
+upd();
+</script>
+</body>
+</html>
