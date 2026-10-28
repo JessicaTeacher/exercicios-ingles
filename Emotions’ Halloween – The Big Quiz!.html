@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Emotions’ Halloween – The Big Quiz!</title>
+<style>
+:root{--navy:#1b1850;--purple:#6b2fb3;--orange:#ff8a1f;--yellow:#ffd23f;--green:#4cc76a;--red:#ef4b4b;--white:#fff}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;background:#0f0d33;overflow:hidden;font-family:"Trebuchet MS","Comic Sans MS",Verdana,sans-serif;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+#stage{position:absolute;left:50%;top:50%;width:1600px;height:900px;transform-origin:center;background:radial-gradient(circle at 50% 0,#4a2a9a,var(--navy) 70%);border-radius:24px;overflow:hidden;color:#fff}
+.moon{position:absolute;right:120px;top:20px;width:110px;height:110px;border-radius:50%;background:var(--yellow);box-shadow:0 0 60px #ffd23f88;opacity:.9}
+.screen{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.screen.on{display:flex}
+h1{font-size:96px;color:var(--yellow);text-shadow:0 6px 0 var(--purple);line-height:1}
+.sub{font-size:40px;color:var(--orange);font-weight:bold;margin:14px 0 30px}
+.btn{font:inherit;font-weight:bold;font-size:48px;border:0;border-radius:60px;padding:20px 70px;background:var(--orange);color:var(--navy);box-shadow:0 10px 0 #b85c00;cursor:pointer;transition:transform .1s}
+.btn:hover{transform:scale(1.06)}.btn:active{transform:translateY(6px);box-shadow:0 4px 0 #b85c00}
+.char{position:absolute;pointer-events:none}
+.bob{animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-18px)}}
+#top{position:absolute;left:60px;right:60px;top:28px;display:flex;align-items:center;gap:30px}
+#sec{background:var(--purple);border:4px solid var(--yellow);border-radius:40px;padding:8px 30px;font-size:32px;font-weight:bold;white-space:nowrap}
+#bar{flex:1;height:30px;background:#ffffff26;border-radius:20px;overflow:hidden}
+#fill{height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--yellow));border-radius:20px;transition:width .5s}
+#qn{font-size:30px;font-weight:bold;width:150px}
+#score{background:var(--yellow);color:var(--navy);border-radius:40px;padding:8px 30px;font-size:36px;font-weight:bold;white-space:nowrap}
+#game{justify-content:flex-start;padding-top:120px}
+#q{width:1160px;min-height:170px;background:#fff;color:var(--navy);border-radius:36px;border:8px solid var(--orange);font-size:50px;font-weight:bold;display:flex;align-items:center;justify-content:center;padding:20px 40px;margin-bottom:34px}
+#ans{display:grid;grid-template-columns:1fr 1fr;gap:24px;width:1160px}
+.opt{font:inherit;font-size:40px;font-weight:bold;text-align:left;display:flex;align-items:center;gap:20px;min-height:100px;padding:10px 24px;border:5px solid #fff;border-radius:28px;background:var(--purple);color:#fff;cursor:pointer;transition:transform .12s}
+.opt:hover:not(:disabled){transform:scale(1.03);background:#8442d6}
+.opt b{flex:none;width:68px;height:68px;border-radius:50%;background:var(--yellow);color:var(--navy);display:grid;place-items:center;font-size:40px}
+.opt.right{background:var(--green);color:var(--navy);border-color:#fff;animation:pop .6s}
+.opt.wrong{background:var(--red);animation:shake .5s}
+.opt:disabled{cursor:default}
+@keyframes pop{40%{transform:scale(1.08)}}
+@keyframes shake{25%{transform:translateX(-14px)}75%{transform:translateX(14px)}}
+#fb{height:70px;margin-top:22px;display:flex;align-items:center;gap:30px;font-size:38px;font-weight:bold;color:var(--yellow)}
+#next{display:none;font-size:34px;padding:10px 40px;box-shadow:0 6px 0 #b85c00}
+.big{font-size:150px;font-weight:bold;color:var(--yellow);text-shadow:0 6px 0 var(--purple)}
+.conf{position:absolute;top:-30px;width:16px;height:24px;z-index:9;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(980px) rotate(720deg);opacity:.8}}
+</style></head><body>
+<div id="stage">
+<div class="moon"></div>
+<div id="chars"></div>
+
+<div class="screen on" id="start">
+<h1>Quiz Time!</h1>
+<div class="sub">Emotions’ Halloween – The Big Quiz!</div>
+<button class="btn" id="go">Let’s Play!</button>
+<div style="margin-top:34px;font-size:30px">20 questions · 4 sections · 200 points</div>
+</div>
+
+<div class="screen" id="game">
+<div id="top"><div id="sec"></div><div id="bar"><div id="fill"></div></div><div id="qn"></div><div id="score"></div></div>
+<div id="q"></div><div id="ans"></div>
+<div id="fb"><span id="msg"></span><button class="btn" id="next">Next Question ▶</button></div>
+</div>
+
+<div class="screen" id="end">
+<div class="sub" style="margin:0">🎉 Celebration Time! 🎉</div>
+<div class="big" id="final"></div>
+<div style="font-size:44px;font-weight:bold;margin:10px 0 6px" id="stars"></div>
+<div style="font-size:40px;max-width:1100px;margin-bottom:34px" id="endmsg"></div>
+<button class="btn" id="again">Play Again</button>
+</div>
+</div>
+
+<script>
+var S=[["Origins",0],["Halloween in America",5],["Halloween Today",7],["Inside Out Emotions",16]];
+var Q=[
+["What did people in Europe celebrate long ago?",["The end of the harvest","The start of school","A birthday party","A sports competition"],0],
+["What does ‘harvest’ mean?",["A costume","Collecting crops","A pumpkin lantern","A celebration song"],1],
+["Which season was connected to these old celebrations?",["Spring","Summer","Autumn","Winter"],2],
+["What did people sometimes wear during old celebrations?",["School uniforms","Swimming suits","Sports jerseys","Masks and costumes"],3],
+["What happened to these traditions over time?",["They changed and developed","They stayed exactly the same","They disappeared everywhere","They became school subjects"],0],
+["Who helped bring Halloween traditions to the United States?",["European immigrants","American astronauts","Movie directors","Professional athletes"],0],
+["What happened when traditions met new customs in America?",["People stopped celebrating","New traditions developed","Every tradition became identical","Costumes were banned"],1],
+["What date is Halloween celebrated?",["October 1","October 15","October 31","November 30"],2],
+["What do children often wear on Halloween?",["Uniforms","Costumes","Raincoats","Pajamas"],1],
+["What do families often put outside their houses?",["Decorations and pumpkins","School desks","Birthday cakes","Beach umbrellas"],0],
+["What is a jack-o’-lantern?",["A Halloween song","A costume","A carved pumpkin lantern","A candy bag"],2],
+["What do children say when asking for candy?",["Good afternoon!","See you tomorrow!","Happy New Year!","Trick or treat!"],3],
+["Where do children usually go trick-or-treating?",["To participating houses","To the airport","To the library only","To the swimming pool"],0],
+["What do children often receive when trick-or-treating?",["Books","Candy","Flowers","Pencils"],1],
+["Which activity is common at a Halloween party?",["Decorating pumpkins","Taking an exam","Packing a suitcase","Washing a car"],0],
+["What does ‘costume’ mean?",["A sweet snack","A decoration","Special clothes for dressing up","A carved vegetable"],2],
+["Joy gets her favorite candy. How does she feel?",["Angry","Happy","Sad","Scared"],1],
+["Fear sees a spooky ghost decoration. How does he feel?",["Excited","Sleepy","Scared","Hungry"],2],
+["Anger loses his Halloween candy. How does he feel?",["Angry","Relaxed","Proud","Sleepy"],0],
+["What is a positive message about Halloween celebrations?",["Everyone must wear a scary costume","Only one emotion is allowed","All children must like the same things","We can have fun and respect different feelings"],3]];
+var good=["Great job! 🌟","Awesome! 🎃","You got it! 🎉","Fantastic! 👻","Super smart! 🍬","Hooray! ⭐"];
+var bad=["Nice try! Keep going! 💪","So close! You’ve got this! 🌈","Good effort! Learn and move on! 🍂"];
+
+function face(c,mood,hat,w){
+ var m={happy:'<path d="M38 66q22 22 44 0" fill="#fff" stroke="#222" stroke-width="4"/>',scared:'<ellipse cx="60" cy="74" rx="11" ry="14" fill="#222"/>',angry:'<path d="M42 76q18-14 36 0" fill="none" stroke="#222" stroke-width="5"/><path d="M34 40l22 10M86 40l-22 10" stroke="#222" stroke-width="6"/>'}[mood];
+ var h=hat=='witch'?'<path d="M30 28l30-48 30 48z" fill="#2b1b5e"/><rect x="20" y="24" width="80" height="10" rx="5" fill="#2b1b5e"/><rect x="42" y="14" width="36" height="7" fill="#ff8a1f"/>':'<path d="M34 24q26-24 52 0z" fill="#ff8a1f"/><circle cx="60" cy="0" r="6" fill="#4cc76a"/>';
+ return '<svg width="'+w+'" viewBox="0 -24 120 150"><ellipse cx="60" cy="68" rx="48" ry="52" fill="'+c+'" stroke="#fff" stroke-width="4"/>'+h+'<circle cx="42" cy="56" r="9" fill="#fff"/><circle cx="78" cy="56" r="9" fill="#fff"/><circle cx="44" cy="58" r="4.5" fill="#222"/><circle cx="76" cy="58" r="4.5" fill="#222"/>'+m+'</svg>';
+}
+var pump='<svg width="150" viewBox="0 0 120 110"><ellipse cx="60" cy="64" rx="52" ry="40" fill="#ff8a1f" stroke="#c25e00" stroke-width="4"/><path d="M60 24q4-16 16-18" stroke="#4cc76a" stroke-width="8" fill="none"/><path d="M34 52l14 12-28 0zM86 52l14 12-28 0z" fill="#ffd23f" transform="translate(0,-4) scale(.8) translate(14,12)"/><path d="M36 78q24 20 48 0" stroke="#ffd23f" stroke-width="6" fill="none"/></svg>';
+var ghost='<svg width="140" viewBox="0 0 120 130"><path d="M10 120V55a50 50 0 0 1 100 0v65l-17-14-16 14-17-14-16 14-17-14z" fill="#fff"/><circle cx="44" cy="55" r="8" fill="#1b1850"/><circle cx="76" cy="55" r="8" fill="#1b1850"/><path d="M42 76q18 16 36 0" stroke="#1b1850" stroke-width="5" fill="none"/><circle cx="30" cy="70" r="6" fill="#ffb3c6"/><circle cx="90" cy="70" r="6" fill="#ffb3c6"/></svg>';
+var candy='<svg width="120" viewBox="0 0 120 60"><path d="M4 12l24 18L4 48zM116 12L92 30l24 18z" fill="#4cc76a"/><rect x="26" y="8" width="68" height="44" rx="22" fill="#ff5fa2" stroke="#fff" stroke-width="4"/><path d="M44 10l-12 40M64 8l-12 44M84 10l-12 40" stroke="#fff" stroke-width="5"/></svg>';
+var C=[[30,150,face("#ffd23f","happy","witch",190),1.2],[1380,640,face("#ef4b4b","angry","pumpkin",180),0],[40,660,face("#a47be8","scared","witch",180),.6],[1400,110,ghost,.3],[1420,380,pump,.9],[20,420,candy,1.5],[230,720,ghost,1.1]];
+var ch=document.getElementById("chars");
+C.forEach(function(c){var d=document.createElement("div");d.className="char bob";d.style.cssText="left:"+c[0]+"px;top:"+c[1]+"px;animation-delay:"+c[3]+"s";d.innerHTML=c[2];ch.appendChild(d)});
+// the layout keeps characters mostly outside the 1160px-wide question area
+var $=function(i){return document.getElementById(i)},i=0,sc=0,done=false;
+function show(id){["start","game","end"].forEach(function(s){$(s).classList.toggle("on",s==id)});ch.style.display=id=="game"?"none":"block";ch.style.display="block"}
+function confetti(n){var col=["#ffd23f","#ff8a1f","#4cc76a","#a47be8","#fff"];for(var k=0;k<n;k++){var e=document.createElement("div");e.className="conf";e.style.left=Math.random()*1600+"px";e.style.background=col[k%5];e.style.animationDuration=(1.8+Math.random()*2)+"s";e.style.animationDelay=Math.random()*.6+"s";$("stage").appendChild(e);setTimeout(function(x){x.remove()},4500,e)}}
+function load(){
+ done=false;var q=Q[i],s=0;S.forEach(function(x,k){if(i>=x[1])s=k});
+ $("sec").textContent=(s+1)+"/4 · "+S[s][0];$("qn").textContent="Question "+(i+1)+"/20";
+ $("score").textContent="⭐ "+sc+" pts";$("fill").style.width=(i/20*100)+"%";
+ $("q").textContent=q[0];$("msg").textContent="Pick an answer!";$("next").style.display="none";
+ $("ans").innerHTML="";
+ q[1].forEach(function(t,k){var b=document.createElement("button");b.className="opt";b.innerHTML="<b>"+"ABCD"[k]+"</b><span>"+t+"</span>";b.onclick=function(){pick(k)};$("ans").appendChild(b)});
+}
+function pick(k){
+ if(done)return;done=true;var q=Q[i],bs=$("ans").children;
+ for(var j=0;j<4;j++)bs[j].disabled=true;
+ bs[q[2]].classList.add("right");
+ if(k==q[2]){sc+=10;$("msg").textContent=good[i%good.length]+" +10 points";confetti(60)}
+ else{bs[k].classList.add("wrong");$("msg").textContent=bad[i%bad.length]+" Answer: "+"ABCD"[q[2]]}
+ $("score").textContent="⭐ "+sc+" pts";$("fill").style.width=((i+1)/20*100)+"%";
+ $("next").style.display="inline-block";$("next").textContent=i==19?"See My Score 🎃":"Next Question ▶";
+}
+$("go").onclick=function(){i=0;sc=0;show("game");load()};
+$("next").onclick=function(){i++;if(i>=20)finish();else load()};
+$("again").onclick=function(){i=0;sc=0;show("game");load()};
+function finish(){
+ show("end");$("final").textContent=sc+" / 200";
+ var st=sc>=180?5:sc>=140?4:sc>=100?3:sc>=60?2:1;$("stars").textContent="⭐".repeat(st)+"☆".repeat(5-st);
+ $("endmsg").textContent=sc>=180?"Spooktacular! You’re a Halloween superstar!":sc>=120?"Great work! You know a lot about Halloween!":"Well done! Every try helps you learn. Play again and collect more points!";
+ confetti(160);
+}
+function fit(){var s=Math.min(innerWidth/1600,innerHeight/900);$("stage").style.transform="translate(-50%,-50%) scale("+s+")"}
+addEventListener("resize",fit);fit();
+</script></body></html>
