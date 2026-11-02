@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>My Feelings – Game</title>
+<style>
+:root{--bg:#fff7e6;--card:#ffffff;--ink:#2b2350;--mut:#6b6490;--p:#7c4dff;--ok:#1fb86b;--no:#ff5a6e;--y:#ffc233;--ln:#e8dcc4;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171332;--card:#241f4a;--ink:#f4f0ff;--mut:#b5acdf;--p:#a58bff;--ln:#3a3370}}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Baloo 2","Trebuchet MS","Segoe UI",sans-serif;min-height:100vh}
+main{max-width:520px;margin:0 auto;padding:16px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+h1{font-size:26px;margin:0}
+.xp{background:var(--y);color:#2b2350;border-radius:99px;padding:6px 14px;font-weight:800}
+.bar{height:12px;background:var(--ln);border-radius:9px;margin:10px 0 18px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--ok);transition:width .4s}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.w{background:var(--card);border:3px solid var(--ln);border-radius:20px;padding:16px 10px;text-align:center;font:inherit;color:inherit;cursor:pointer}
+.w:active{transform:scale(.97)}
+.w b{display:block;font-size:18px}.w span{font-size:38px;display:block}
+.w small{color:var(--mut)}
+.w.done{border-color:var(--ok)}
+.q{background:var(--card);border:3px solid var(--ln);border-radius:22px;padding:18px;margin-top:12px}
+.q h2{margin:0 0 12px;font-size:21px}
+.say{font-size:24px;font-weight:800;margin:10px 0}
+button{font:inherit;color:inherit}
+.btn{background:var(--p);color:#fff;border:0;border-radius:16px;padding:12px 20px;font-weight:800;font-size:17px;cursor:pointer;width:100%;margin-top:10px;box-shadow:0 4px 0 rgba(0,0,0,.25)}
+.btn.ghost{background:transparent;color:var(--ink);border:3px solid var(--ln);box-shadow:none}
+.opt{display:block;width:100%;text-align:left;background:var(--bg);border:3px solid var(--ln);border-radius:16px;padding:14px;margin:8px 0;font-size:19px;font-weight:700;cursor:pointer}
+.opt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 20%,var(--bg))}
+.opt.no{border-color:var(--no);animation:sh .3s}
+@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.chips{display:flex;flex-wrap:wrap;gap:8px;min-height:48px;padding:8px;border-radius:14px;margin:8px 0}
+.ans{border:3px dashed var(--ln)}
+.chip{background:var(--y);color:#2b2350;border:0;border-radius:12px;padding:8px 14px;font-weight:800;font-size:18px;cursor:pointer}
+.fb{min-height:28px;font-weight:800;font-size:18px;margin-top:8px}
+.fb.ok{color:var(--ok)}.fb.no{color:var(--no)}
+.dots{display:flex;gap:6px;margin-bottom:8px}.dots i{width:100%;height:8px;border-radius:5px;background:var(--ln)}.dots i.on{background:var(--p)}
+.big{font-size:64px;text-align:center}
+.back{background:none;border:0;font-weight:800;color:var(--mut);cursor:pointer;padding:8px 0}
+:focus-visible{outline:3px solid var(--p);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+<div class="top"><h1>😊 My Feelings</h1><div class="xp" id="xp">⭐ 0 XP</div></div>
+<div class="bar"><i id="pb"></i></div>
+<div id="app"></div>
+</main>
+<script>
+const Q={
+listening:{t:"Listening",e:"🎧",d:"Escute e escolha",items:[
+{say:"I’m excited today!",o:["😃 excited","😴 sleepy","😢 sad"],a:0},
+{say:"I didn’t sleep well.",o:["🎂 birthday","😴 tired","😠 angry"],a:1},
+{say:"Happy birthday, Ben!",o:["🎉 birthday","😨 afraid","🍎 food"],a:0},
+{say:"Are you sad? No, I’m not.",o:["😢 sad","🙂 not sad","😨 afraid"],a:1}]},
+speaking:{t:"Speaking",e:"🎤",d:"Ouça e repita",items:[
+"Hi, Ben! How are you today?","I’m a little tired.","Because it’s my birthday!","I love birthday parties!"]},
+reading:{t:"Reading",e:"📖",d:"True or False",items:[
+["Ben is happy.",1],["Anna is angry.",0],["Anna didn’t sleep well.",1],["Ben is sad today.",0],["It’s Anna’s birthday.",0],["Anna loves birthday parties.",1]]},
+writing:{t:"Writing",e:"✏️",d:"Monte a frase",items:[
+["I’m","happy","today."],["Are","you","sad?"],["I’m","tired","because","I","didn’t","sleep","well."],["I’m","excited","because","it’s","my","birthday."]]}
+};
+const S={xp:0,done:{}};let SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+const $=id=>document.getElementById(id),app=$("app");
+const norm=s=>s.toLowerCase().replace(/’/g,"'").replace(/[^a-z' ]/g,"").trim();
+function say(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace(/’/g,"'"));u.lang="en-US";u.rate=.85;speechSynthesis.speak(u)}catch(e){}}
+function head(){$("xp").textContent="⭐ "+S.xp+" XP";const n=Object.keys(S.done).length;$("pb").style.width=n*25+"%"}
+function home(){head();const all=Object.keys(S.done).length===4;
+app.innerHTML=(all?'<div class="q"><div class="big">🏆</div><h2 style="text-align:center">Parabéns! Você completou as 4 missões!</h2></div>':'')+
+'<p>Escolha uma missão e ganhe estrelas:</p><div class="grid">'+Object.keys(Q).map(k=>`<button class="w ${S.done[k]?"done":""}" data-k="${k}"><span>${Q[k].e}</span><b>${Q[k].t}</b><small>${S.done[k]?"✅ "+S.done[k]+" ⭐":Q[k].d}</small></button>`).join("")+'</div>';
+app.querySelectorAll(".w").forEach(b=>b.onclick=()=>play(b.dataset.k));}
+function play(k){let i=0,stars=0;const L=Q[k].items;
+function next(){if(i>=L.length)return end();draw()}
+function frame(inner){app.innerHTML=`<button class="back" id="bk">← Voltar</button><div class="dots">${L.map((_,j)=>`<i class="${j<=i?"on":""}"></i>`).join("")}</div><div class="q"><h2>${Q[k].e} ${Q[k].d}</h2>${inner}<div class="fb" id="fb"></div><button class="btn" id="nx" hidden>Próxima ➜</button></div>`;
+$("bk").onclick=home;$("nx").onclick=()=>{i++;next()}}
+function good(first){$("fb").className="fb ok";$("fb").textContent=first?"🎉 Great! +10 XP":"✅ Correct!";if(first){S.xp+=10;stars++;head()}$("nx").hidden=false;$("nx").focus()}
+function draw(){const it=L[i];let first=true;
+if(k==="listening"){frame(`<div class="big">🔊</div><button class="btn ghost" id="pl">▶ Ouvir de novo</button>`+it.o.map((o,j)=>`<button class="opt" data-j="${j}">${o}</button>`).join(""));
+say(it.say);$("pl").onclick=()=>say(it.say);
+app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{if(+b.dataset.j===it.a){b.classList.add("ok");good(first);app.querySelectorAll(".opt").forEach(x=>x.disabled=true)}else{b.classList.add("no");first=false;$("fb").className="fb no";$("fb").textContent="Try again!"}})}
+else if(k==="speaking"){frame(`<div class="say">“${it}”</div><button class="btn ghost" id="pl">🔊 Ouvir</button>`+(SR?`<button class="btn" id="mic">🎤 Falar</button>`:"")+`<button class="btn ghost" id="sk">${SR?"Não consigo falar agora":"✅ Eu falei!"}</button>`);
+$("pl").onclick=()=>say(it);
+$("sk").onclick=()=>{$("fb").className="fb ok";$("fb").textContent="👍 Good try! +5 XP";S.xp+=5;stars++;head();$("sk").hidden=true;$("nx").hidden=false};
+if(SR)$("mic").onclick=()=>{const r=new SR();r.lang="en-US";$("fb").className="fb";$("fb").textContent="🎧 Ouvindo…";
+r.onresult=e=>{const h=norm(e.results[0][0].transcript),w=norm(it).split(" "),hit=w.filter(x=>h.includes(x)).length/w.length;
+if(hit>=.6){$("sk").hidden=true;$("mic").hidden=true;good(true)}else{$("fb").className="fb no";$("fb").textContent="Ouvi: “"+h+"”. Try again!"}};
+r.onerror=()=>{$("fb").className="fb no";$("fb").textContent="Microfone indisponível. Use o botão abaixo."};r.start()}}
+else if(k==="reading"){frame(`<div class="say">${it[0]}</div><button class="opt" data-j="1">👍 True</button><button class="opt" data-j="0">👎 False</button>`);
+app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{if(+b.dataset.j===it[1]){b.classList.add("ok");good(first);app.querySelectorAll(".opt").forEach(x=>x.disabled=true)}else{b.classList.add("no");first=false;$("fb").className="fb no";$("fb").textContent="Try again!"}})}
+else{const pool=[...it].sort(()=>Math.random()-.5);let got=[];
+frame(`<div class="chips ans" id="an"></div><div class="chips" id="pl2"></div><button class="btn ghost" id="rs">↺ Recomeçar</button>`);
+const rd=()=>{$("an").innerHTML=got.map(w=>`<span class="chip">${w}</span>`).join("");$("pl2").innerHTML="";pool.forEach((w,j)=>{if(got.includes(j+"|"+w))return;});
+const used=got.map(x=>x);$("an").innerHTML=got.map(g=>`<span class="chip">${g.split("|")[1]}</span>`).join("");
+pool.forEach((w,j)=>{const id=j+"|"+w;if(got.includes(id))return;const b=document.createElement("button");b.className="chip";b.textContent=w;b.onclick=()=>{got.push(id);rd();if(got.length===pool.length){const s=got.map(g=>g.split("|")[1]).join(" ");if(s===it.join(" ")){$("pl2").innerHTML="";good(first)}else{first=false;$("fb").className="fb no";$("fb").textContent="Quase! Tente outra ordem.";got=[];setTimeout(rd,700)}}};$("pl2").appendChild(b)})};
+$("rs").onclick=()=>{got=[];rd()};rd()}}
+function end(){S.done[k]=Math.max(S.done[k]||0,stars);head();
+app.innerHTML=`<div class="q"><div class="big">${stars>=L.length-1?"🏅":"💪"}</div><h2 style="text-align:center">Missão completa!</h2><p style="text-align:center;font-size:22px">${"⭐".repeat(stars)||"Continue praticando!"}</p><button class="btn" id="hm">Voltar ao painel</button></div>`;$("hm").onclick=home}
+next()}
+home();
+</script>
+</body>
+</html>
