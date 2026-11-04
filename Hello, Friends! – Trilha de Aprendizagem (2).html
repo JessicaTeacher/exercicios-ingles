@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap">
+<title>Hello, Friends! – Trilha de Aprendizagem</title>
+<style>
+:root{--bg:#fbf7ee;--card:#fff;--ink:#14213d;--mut:#5b6478;--navy:#14213d;--gold:#fcbf49;--line:#e6dfcf;--ok:#2e9e5b;--bad:#d64545;--c1:#4f8cff;--c2:#9b6bff;--c3:#ff7a8a;--c4:#2fbf8f;--okbg:#e4f6ea;--badbg:#fde6e6;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1526;--card:#18223a;--ink:#f2f0e8;--mut:#a3adc4;--navy:#0a1020;--line:#2a3654;--okbg:#17382a;--badbg:#44202a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1526;--card:#18223a;--ink:#f2f0e8;--mut:#a3adc4;--navy:#0a1020;--line:#2a3654;--okbg:#17382a;--badbg:#44202a;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Trebuchet MS",system-ui,-apple-system,Segoe UI,sans-serif}
+.wrap{max-width:920px;margin:0 auto;padding:16px}
+header{background:var(--navy);color:#fff;border-radius:20px;padding:20px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+header h1{margin:0;font-size:1.5rem}header p{margin:2px 0 0;color:#c9d2e6;font-size:.9rem}
+.grow{flex:1;min-width:200px}
+.xp{background:rgba(255,255,255,.1);border-radius:14px;padding:8px 14px;text-align:center}
+.xp b{font-size:1.4rem;color:var(--gold);display:block}
+.bar{height:10px;background:rgba(255,255,255,.2);border-radius:9px;margin-top:10px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--gold);width:0;transition:width .4s}
+.path{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0;position:relative}
+.node{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:12px 8px;text-align:center;cursor:pointer;font:inherit;color:inherit;transition:transform .15s}
+.node:hover{transform:translateY(-3px)}.node .ic{font-size:1.8rem;display:block}.node b{display:block}
+.node small{color:var(--mut)}.node.on{border-color:var(--c);box-shadow:0 0 0 3px var(--c)}
+.node.done::after{content:"✓";display:block;color:var(--ok);font-weight:700}
+.stage{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px}
+.stage h2{margin:0 0 4px}.sub{color:var(--mut);margin:0 0 14px}
+h3{margin:18px 0 8px}
+.bubbles{display:grid;gap:8px}
+.bub{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:8px 12px;cursor:pointer;text-align:left;font:inherit;color:inherit}
+.bub:hover{border-color:var(--gold)}.bub em{font-style:normal;font-weight:700;color:var(--c1)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer;font:inherit;color:inherit}
+.chip:hover{border-color:var(--gold)}
+.q{border-top:1px solid var(--line);padding:12px 0}
+.q p{margin:0 0 8px;font-weight:700}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.btn{background:var(--navy);color:#fff;border:0;border-radius:12px;padding:9px 15px;font:inherit;cursor:pointer}
+.btn.alt{background:var(--bg);color:var(--ink);border:1px solid var(--line)}
+.btn.gold{background:var(--gold);color:#14213d;font-weight:700}
+.btn:disabled{opacity:.6;cursor:default}
+.opt{background:var(--bg);color:var(--ink);border:2px solid var(--line);border-radius:12px;padding:8px 14px;font:inherit;cursor:pointer}
+.opt.ok{background:var(--okbg);border-color:var(--ok)}.opt.bad{background:var(--badbg);border-color:var(--bad)}
+input[type=text],input[type=number]{font:inherit;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:6px 10px;width:130px}
+input.ok{border-color:var(--ok);background:var(--okbg)}input.bad{border-color:var(--bad);background:var(--badbg)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0}
+.res{margin-top:12px;padding:12px;border-radius:14px;background:var(--bg);border:1px dashed var(--gold)}
+.line{border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin:8px 0}
+.line.done{border-color:var(--ok);background:var(--okbg)}.line p{margin:0 0 6px;font-weight:700}
+.note{font-size:.85rem;color:var(--mut)}
+.reset{background:none;border:0;color:var(--mut);text-decoration:underline;cursor:pointer;font:inherit;margin-top:14px}
+@media(max-width:560px){.path{grid-template-columns:repeat(2,1fr)}}
+:root{--bg:#fff8e7;--sky:#cfeeff;--dot:#ffffffaa;--c1:#4f8cff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sky:#12203f;--dot:#ffffff12}}
+:root[data-theme="dark"]{--sky:#12203f;--dot:#ffffff12}
+body{font-family:"Fredoka","Baloo 2","Comic Sans MS","Chalkboard SE","Trebuchet MS",sans-serif;font-size:17px;background:var(--sky) radial-gradient(var(--dot) 3px,transparent 3px) 0 0/34px 34px;min-height:100vh}
+.wrap{position:relative}
+header{background:linear-gradient(135deg,#ff7a8a,#ffb347 55%,#fcd34d);color:#14213d;border:4px solid #14213d;border-radius:32px;box-shadow:0 8px 0 #14213d;position:relative;overflow:hidden}
+header h1{font-size:2rem;letter-spacing:.5px;text-shadow:2px 2px 0 #fff}
+header p{color:#3a2f1a;font-weight:500}
+header .mas{font-size:2.6rem;animation:bob 2s ease-in-out infinite}
+.bar{background:#fff;border:3px solid #14213d;height:18px;border-radius:12px}
+.bar i{background:repeating-linear-gradient(45deg,#2fbf8f 0 12px,#27a67b 12px 24px);border-radius:10px}
+.xp{background:#fff;border:3px solid #14213d;border-radius:20px;color:#14213d;font-weight:600}
+.xp b{color:#ff7a8a;font-size:1.7rem}
+.path{gap:14px;margin:22px 0}
+.node{border:4px solid var(--c);border-radius:28px;background:color-mix(in srgb,var(--c) 16%,var(--card));box-shadow:0 6px 0 var(--c);font-weight:600;padding:14px 8px}
+.node:hover{transform:translateY(-5px) rotate(-2deg)}
+.node:active{transform:translateY(3px);box-shadow:0 2px 0 var(--c)}
+.node .ic{font-size:2.6rem;animation:bob 2.2s ease-in-out infinite}
+.node:nth-child(2) .ic{animation-delay:.3s}.node:nth-child(3) .ic{animation-delay:.6s}.node:nth-child(4) .ic{animation-delay:.9s}
+.node.on{box-shadow:0 6px 0 var(--c),0 0 0 6px #fcd34d;transform:scale(1.04)}
+.node.done::after{content:"⭐ Completo!";color:#e08a00;font-size:.9rem}
+.stage{border:4px solid #14213d;border-radius:32px;box-shadow:0 8px 0 #14213d;padding:24px;background:var(--card)}
+.stage h2{font-size:1.9rem;color:var(--c1)}
+h3{display:inline-block;background:#fcd34d;color:#14213d;border-radius:999px;padding:3px 16px;border:3px solid #14213d;font-size:1.05rem}
+.btn{border-radius:999px;padding:10px 20px;border:3px solid #14213d;background:#4f8cff;color:#fff;font-weight:600;box-shadow:0 4px 0 #14213d;transition:transform .1s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #14213d}
+.btn.alt{background:#fff;color:#14213d}.btn.gold{background:#fcd34d;color:#14213d}
+.bub,.chip{border:3px solid var(--line);border-radius:22px;background:var(--bg)}
+.bub:nth-child(odd){margin-right:12%;border-color:#ff7a8a}.bub:nth-child(even){margin-left:12%;border-color:#4f8cff;text-align:right}
+.bub{font-size:1.05rem;transition:transform .15s}.bub:hover,.chip:hover{transform:scale(1.04)}
+.chip{font-size:1.05rem;padding:8px 14px}
+.q{border-top:3px dotted var(--line)}
+.opt{border:3px solid var(--line);border-radius:999px;padding:10px 18px;font-weight:500;box-shadow:0 4px 0 var(--line);transition:transform .15s}
+.opt:hover:not(:disabled){transform:scale(1.06)}
+.opt.ok{box-shadow:0 4px 0 var(--ok)}.opt.ok::after{content:" 🎉"}.opt.bad::after{content:" 🙈"}
+input[type=text],input[type=number]{border:3px solid var(--line);border-radius:16px;font:inherit}
+.res{border:3px dashed #fcd34d;border-radius:22px;background:color-mix(in srgb,#fcd34d 16%,var(--card))}
+.line{border:3px solid var(--line);border-radius:22px}
+.line.done{border-color:var(--ok)}.line.done p::before{content:"⭐ "}
+.reset{display:block;margin:16px auto 0;color:var(--mut)}
+.conf{position:fixed;top:-30px;font-size:1.8rem;pointer-events:none;z-index:99;animation:fall 2.4s ease-in forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.9}}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-6px) rotate(4deg)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<div class="grow"><h1><span class="mas">👧</span> Hello, Friends! <span class="mas">👦</span></h1><p>Trilha de aprendizagem · Aula 1 · Reading, Listening, Writing &amp; Speaking</p><div class="bar"><i id="pbar"></i></div></div>
+<div class="xp"><b id="xp">0</b>XP</div>
+<div class="xp"><b id="pct">0%</b>trilha</div>
+</header>
+<nav class="path" id="path"></nav>
+<section class="stage" id="stage"></section>
+<button class="reset" onclick="resetAll()">Reiniciar progresso</button>
+</div>
+<script>
+var ST={xp:0,done:{},name:"",age:"",mood:""};
+try{var raw=localStorage.getItem("hf1");if(raw)ST=Object.assign(ST,JSON.parse(raw))}catch(e){}
+function save(){try{localStorage.setItem("hf1",JSON.stringify(ST))}catch(e){}}
+var SK=[{k:"r",n:"Reading",ic:"📖",c:"#4f8cff",s:"Leia e entenda"},{k:"l",n:"Listening",ic:"🎧",c:"#9b6bff",s:"Ouça e escolha"},{k:"w",n:"Writing",ic:"✍️",c:"#ff7a8a",s:"Complete e escreva"},{k:"s",n:"Speaking",ic:"🎤",c:"#2fbf8f",s:"Fale em voz alta"}];
+var cur="r",$=function(i){return document.getElementById(i)};
+function speak(t,r){try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="en-US";u.rate=r||.85;speechSynthesis.speak(u)}catch(e){}}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
+function render(){
+ var n=0;$("path").innerHTML=SK.map(function(s){var d=ST.done[s.k];if(d)n++;return '<button class="node'+(cur==s.k?" on":"")+(d?" done":"")+'" style="--c:'+s.c+'" onclick="go(\''+s.k+'\')"><span class="ic">'+s.ic+'</span><b>'+s.n+'</b><small>'+s.s+'</small></button>'}).join("");
+ var p=Math.round(n/4*100);$("pbar").style.width=p+"%";$("pct").textContent=p+"%";$("xp").textContent=ST.xp;
+}
+function go(k){cur=k;render();({r:reading,l:listening,w:writing,s:speaking})[k]();window.scrollTo({top:0,behavior:"smooth"})}
+function confetti(){var e=["⭐","🎉","🎈","✨","🌈","💛"];for(var i=0;i<28;i++){var s=document.createElement("span");s.className="conf";s.textContent=e[i%e.length];s.style.left=Math.random()*96+"vw";s.style.animationDelay=Math.random()*.8+"s";document.body.appendChild(s);setTimeout(function(x){x.remove()},3500,s)}}
+function complete(k,pts){if(!ST.done[k]){ST.done[k]=1;ST.xp+=pts;save();render();confetti();return true}return false}
+function head(t,s){return '<h2>'+t+'</h2><p class="sub">'+s+'</p>'}
+
+/* READING */
+var DLG=[["Emma","Hello! My name is Emma. What’s your name?"],["Leo","Hi, Emma! I’m Leo. Nice to meet you!"],["Emma","Nice to meet you, too! How are you?"],["Leo","I’m great, thanks! And you?"],["Emma","I’m happy!"],["Emma","See you later!"],["Leo","Bye, Emma!"]];
+var MOODS=["I’m great!","I’m good!","I’m fine!","I’m excited!","I’m okay.","I’m tired.","I’m sad.","I’m angry.","I’m nervous."];
+var EMO=["😄","🙂","😌","🤩","😐","😴","😢","😠","😰"];
+var TF=[["Emma says, “Hello!”",1],["Leo says his name is Jack.",0],["Emma and Leo are meeting each other.",1],["Leo says, “I’m sad.”",0],["Emma says, “I’m happy!”",1],["Leo says, “Nice to meet you!”",1],["Emma asks, “How old are you?”",0],["Leo says, “I’m great, thanks!”",1],["Emma says, “Good night!”",0],["Leo says, “Bye, Emma!”",1]];
+var tf={};
+function reading(){
+ $("stage").innerHTML=head("📖 Reading","Leia o diálogo (toque numa fala para ouvir) e responda True or False.")+
+ '<h3>A Friendly Dialogue</h3><div class="bubbles">'+DLG.map(function(d,i){return '<button class="bub" onclick="speak(DLG['+i+'][1])"><em>'+d[0]+':</em> '+d[1]+' 🔊</button>'}).join("")+'</div>'+
+ '<h3>How are you? Different ways to answer</h3><div class="chips">'+MOODS.map(function(m,i){return '<button class="chip" onclick="speak(MOODS['+i+'])">'+EMO[i]+' '+m+'</button>'}).join("")+'</div>'+
+ '<p class="note">Você também pode dizer: Not so good. | A little tired. | A bit busy. | Pretty good!</p>'+
+ '<h3>True or False?</h3>'+TF.map(function(t,i){return '<div class="q"><p>'+(i+1)+'. '+t[0]+'</p><div class="opts"><button class="opt" id="tf'+i+'1" onclick="tfA('+i+',1)">True</button><button class="opt" id="tf'+i+'0" onclick="tfA('+i+',0)">False</button></div></div>'}).join("")+'<div id="tfres"></div>';
+ Object.keys(tf).forEach(function(i){paintTF(+i)});
+}
+function paintTF(i){var v=tf[i],ok=v==TF[i][1];$("tf"+i+v).classList.add(ok?"ok":"bad");if(!ok)$("tf"+i+TF[i][1]).classList.add("ok");$("tf"+i+"1").disabled=$("tf"+i+"0").disabled=true;chkTF()}
+function tfA(i,v){if(i in tf)return;tf[i]=v;paintTF(i)}
+function chkTF(){if(Object.keys(tf).length<TF.length)return;var c=0;TF.forEach(function(t,i){if(tf[i]==t[1])c++});
+ var first=complete("r",c*10);$("tfres").innerHTML='<div class="res"><b>Resultado: '+c+'/'+TF.length+'</b> '+(c>=8?"🌟 Excellent!":c>=5?"👍 Good job!":"💪 Releia o diálogo e tente de novo!")+(first?" +"+c*10+" XP":"")+'</div><button class="btn alt" style="margin-top:8px" onclick="tf={};reading()">Refazer</button>'}
+
+/* LISTENING */
+var LI=[["What’s your name?",["I’m happy.","Goodbye!","My name is Leo."],2],["How are you?",["I’m fine, thanks!","My name is Emma.","Bye!"],0],["Nice to meet you!",["I’m seven.","Nice to meet you, too!","Good morning!"],1],["See you later!",["Hello!","What’s your name?","Bye!"],2],["I’m tired.",["😄 Excited","😢 Sad","😴 Tired"],2],["I’m nervous.",["😰 Nervous","😠 Angry","🙂 Okay"],0]];
+var li={};
+function listening(){
+ $("stage").innerHTML=head("🎧 Listening","Ouça a frase e escolha a resposta ou a emoção correta. Você pode ouvir quantas vezes quiser.")+
+ LI.map(function(q,i){return '<div class="q"><div class="row"><button class="btn" onclick="speak(LI['+i+'][0])">🔊 Ouvir</button><button class="btn alt" onclick="speak(LI['+i+'][0],.55)">🐢 Devagar</button><b>'+(i+1)+'</b></div><div class="opts">'+q[1].map(function(o,j){return '<button class="opt" id="li'+i+'_'+j+'" onclick="liA('+i+','+j+')">'+o+'</button>'}).join("")+'</div></div>'}).join("")+'<div id="lires"></div>';
+ Object.keys(li).forEach(function(i){paintLI(+i)});
+}
+function paintLI(i){var v=li[i],a=LI[i][2];$("li"+i+"_"+v).classList.add(v==a?"ok":"bad");$("li"+i+"_"+a).classList.add("ok");for(var j=0;j<3;j++)$("li"+i+"_"+j).disabled=true;chkLI()}
+function liA(i,j){if(i in li)return;li[i]=j;paintLI(i)}
+function chkLI(){if(Object.keys(li).length<LI.length)return;var c=0;LI.forEach(function(q,i){if(li[i]==q[2])c++});
+ var f=complete("l",c*10);$("lires").innerHTML='<div class="res"><b>Resultado: '+c+'/'+LI.length+'</b> '+(c>=5?"🌟 Great ears!":"🎧 Ouça de novo e tente outra vez!")+(f?" +"+c*10+" XP":"")+'</div><button class="btn alt" style="margin-top:8px" onclick="li={};listening()">Refazer</button>'}
+
+/* WRITING */
+var WR=[["Hello! My "," is Emma.",["name"]],["Nice to "," you!",["meet"]],["I’m "," , thanks! (great / good / fine)",["great","good","fine"]],["See you "," !",["later"]],["What’s your "," ?",["name"]]];
+function writing(){
+ $("stage").innerHTML=head("✍️ Writing","Complete as frases do diálogo e depois escreva sobre você.")+
+ '<h3>Complete the dialogue</h3>'+WR.map(function(w,i){return '<div class="row"><span>'+w[0]+'</span><input type="text" id="wr'+i+'" autocomplete="off" autocapitalize="none"><span>'+w[1]+'</span></div>'}).join("")+
+ '<div class="row"><button class="btn gold" onclick="chkWR()">Check answers ✅</button></div><div id="wrres"></div>'+
+ '<h3>About me</h3><div class="row">Hello! My name is <input type="text" id="pn" value="'+esc(ST.name)+'" oninput="prof()"></div><div class="row">I’m <input type="number" id="pa" min="1" max="120" style="width:80px" value="'+esc(ST.age)+'" oninput="prof()"> years old.</div><div class="row">I’m <input type="text" id="pm" value="'+esc(ST.mood)+'" placeholder="happy, tired..." oninput="prof()"> today!</div><div class="res" id="card"></div>';
+ prof();
+}
+function chkWR(){var c=0;WR.forEach(function(w,i){var e=$("wr"+i),v=e.value.trim().toLowerCase(),ok=w[2].indexOf(v)>-1;e.className=ok?"ok":"bad";if(ok)c++});
+ var f=complete("w",c*10);$("wrres").innerHTML='<div class="res"><b>'+c+'/'+WR.length+'</b> '+(c==WR.length?"🌟 Perfect!":"Revise os campos em vermelho.")+(f?" +"+c*10+" XP":"")+'</div>'}
+function me(){return "Hello! My name is "+(ST.name||"____")+". I’m "+(ST.age||"__")+" years old. I’m "+(ST.mood||"____")+" today! Nice to meet you!"}
+function prof(){ST.name=$("pn").value.trim();ST.age=$("pa").value.trim();ST.mood=$("pm").value.trim();save();$("card").innerHTML='<b>Seu texto:</b><br>'+esc(me())+'<br><button class="btn alt" style="margin-top:8px" onclick="speak(me())">🔊 Ouvir meu texto</button>'}
+
+/* SPEAKING */
+var SP=["Hello! My name is ","I’m "," years old.","I’m "," today!","Nice to meet you!","Goodbye!"];
+function spLines(){return ["Hello! My name is "+(ST.name||"Emma")+".","I’m "+(ST.age||"seven")+" years old.","I’m "+(ST.mood||"happy")+" today!","Nice to meet you!","Goodbye!"]}
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition,sdone={};
+function speaking(){
+ var L=spLines();
+ $("stage").innerHTML=head("🎤 Speaking Challenge","Ouça o modelo, depois fale em voz alta. Seus dados da aba Writing são usados nas frases.")+
+ (SR?'':'<p class="note">Seu navegador não reconhece voz. Fale em voz alta e use “Eu falei!”.</p>')+
+ L.map(function(t,i){return '<div class="line'+(sdone[i]?" done":"")+'" id="sl'+i+'"><p>'+(i+1)+'. '+esc(t)+'</p><div class="row"><button class="btn alt" onclick="speak(spLines()['+i+'])">🔊 Modelo</button>'+(SR?'<button class="btn" onclick="rec('+i+')">🎙️ Falar</button>':'')+'<button class="btn alt" onclick="mark('+i+')">✅ Eu falei!</button><span id="sr'+i+'" class="note"></span></div></div>'}).join("")+'<div id="spres"></div>';
+ chkSP();
+}
+function norm(s){return s.toLowerCase().replace(/[^a-z0-9 ]/g,"").split(/\s+/).filter(Boolean)}
+function rec(i){var t=norm(spLines()[i]),r=new SR();r.lang="en-US";$("sr"+i).textContent="Ouvindo... 👂";
+ r.onresult=function(e){var h=norm(e.results[0][0].transcript),m=t.filter(function(w){return h.indexOf(w)>-1}).length,p=Math.round(m/t.length*100);$("sr"+i).textContent="Ouvi: “"+e.results[0][0].transcript+"” · "+p+"%";if(p>=60)mark(i,1)};
+ r.onerror=function(){$("sr"+i).textContent="Não consegui ouvir. Use “Eu falei!”."};try{r.start()}catch(e){$("sr"+i).textContent="Microfone indisponível."}}
+function mark(i,keep){sdone[i]=1;var l=$("sl"+i);if(l)l.classList.add("done");chkSP()}
+function chkSP(){if(Object.keys(sdone).length<5)return;var f=complete("s",50);$("spres").innerHTML='<div class="res"><b>🎉 Speaking Challenge completo!</b>'+(f?" +50 XP":"")+'<br>Parabéns, você completou a trilha da Aula 1!</div>'}
+
+function resetAll(){ST={xp:0,done:{},name:"",age:"",mood:""};save();tf={};li={};sdone={};go("r")}
+go(cur);
+</script>
+</body>
+</html>
