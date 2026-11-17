@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>English Board Game</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e3f2f4;--surface:#fff;--ink:#10262e;--muted:#4d6670;--tile:#fff;--line:#b9d6db;--accent:#e0457b;--ok:#2f9e72;--bad:#d9534f;--gold:#ffc93c;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1c21;--surface:#16303a;--ink:#eaf5f7;--muted:#9bb8c0;--tile:#1b3a45;--line:#2c5260}}
+:root[data-theme="dark"]{--bg:#0e1c21;--surface:#16303a;--ink:#eaf5f7;--muted:#9bb8c0;--tile:#1b3a45;--line:#2c5260}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Nunito",system-ui,sans-serif;font-size:16px;line-height:1.5}
+h1,h2,.num,button{font-family:"Fredoka","Nunito",system-ui,sans-serif}
+.wrap{max-width:960px;margin:0 auto;padding:16px}
+h1{font-size:clamp(1.8rem,5vw,2.8rem);margin:8px 0 4px;font-weight:600}
+p.sub{margin:0 0 16px;color:var(--muted)}
+button{cursor:pointer;border:0;border-radius:14px;padding:12px 20px;font-size:1.05rem;font-weight:500;background:var(--ink);color:var(--bg)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+button:disabled{opacity:.5;cursor:default}
+.panel{background:var(--surface);border-radius:20px;padding:20px;border:1px solid var(--line)}
+#setup label{display:block;margin:10px 0 4px;font-weight:700}
+#setup input{width:100%;max-width:340px;padding:10px 12px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink);font:inherit}
+.counts{display:flex;gap:8px;margin:8px 0 4px}
+.counts button{background:var(--bg);color:var(--ink);border:2px solid var(--line);padding:8px 16px}
+.counts button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+#game{display:none;grid-template-columns:minmax(0,1fr) 260px;gap:16px;align-items:start}
+@media(max-width:760px){#game{grid-template-columns:1fr}}
+#board{display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(6,1fr);gap:6px}
+.tile{position:relative;background:var(--tile);border:2px solid var(--line);border-radius:14px;min-height:72px;padding:4px 6px;display:flex;flex-direction:column;justify-content:space-between;font-size:.72rem;line-height:1.15;color:var(--muted)}
+.tile .num{font-size:1.1rem;font-weight:600;color:var(--ink)}
+.tile.start{background:var(--gold);color:#10262e;border-color:var(--gold)}
+.tile.start .num{color:#10262e}
+.tile.fin{background:var(--accent);border-color:var(--accent);color:#fff}
+.tile.fin .num{color:#fff}
+.tile.cur{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent)}
+.toks{display:flex;gap:3px;flex-wrap:wrap}
+.tok{width:20px;height:20px;border-radius:50%;border:2px solid #fff;display:grid;place-items:center;font-size:.65rem;font-weight:700;color:#fff;font-family:"Fredoka",sans-serif}
+.side h2{margin:0 0 8px;font-size:1.2rem}
+#turn{font-size:1.2rem;font-weight:700;margin-bottom:12px}
+#die{width:84px;height:84px;margin:0 auto 12px;border-radius:18px;background:var(--gold);color:#10262e;display:grid;place-items:center;font-family:"Fredoka",sans-serif;font-size:2.8rem;font-weight:600}
+#roll{width:100%}
+.score{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:6px}
+.score li{display:flex;align-items:center;gap:8px}
+.score li.me{font-weight:700}
+.modal{position:fixed;inset:0;background:rgba(8,20,24,.6);display:none;place-items:center;padding:16px;z-index:20}
+.modal.open{display:grid}
+.card{background:var(--surface);color:var(--ink);border-radius:24px;padding:24px;max-width:520px;width:100%}
+.card .tag{display:inline-block;background:var(--gold);color:#10262e;border-radius:999px;padding:2px 12px;font-weight:700;font-size:.85rem}
+.card h2{font-size:1.7rem;margin:12px 0 4px;line-height:1.25}
+.card p{color:var(--muted);margin:0 0 16px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row button{flex:1;min-width:140px}
+.ok{background:var(--ok);color:#fff}.bad{background:var(--bad);color:#fff}
+.card.win{text-align:center}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>English Board Game</h1>
+<p class="sub">Jogue com seus colegas: caia numa casa, cumpra a tarefa em inglês e chegue primeiro ao fim.</p>
+
+<section id="setup" class="panel">
+<strong>Quantos jogadores?</strong>
+<div class="counts" id="counts"></div>
+<div id="names"></div>
+<p style="color:var(--muted)">Quem erra volta 1 casa. Os colegas decidem se a resposta está certa.</p>
+<button id="start">Começar o jogo</button>
+</section>
+
+<section id="game">
+<div id="board" aria-label="Tabuleiro"></div>
+<aside class="panel side">
+<div id="turn"></div>
+<div id="die" aria-live="polite">–</div>
+<button id="roll">Jogar o dado</button>
+<ul class="score" id="score"></ul>
+<button id="reset" style="margin-top:16px;background:var(--bg);color:var(--ink);border:2px solid var(--line);width:100%">Reiniciar</button>
+</aside>
+</section>
+</div>
+
+<div class="modal" id="modal"><div class="card" id="card" role="dialog" aria-modal="true"></div></div>
+
+<script>
+var TASKS=[
+["Verb to be","Say what your name is and where you’re from."],
+["Verb to be","Ask where these people are from: Taylor Swift / Justin Bieber."],
+["Verb to be","Complete: My classmates are __________."],
+["Alphabet","Spell your surname."],
+["Vocabulary","Say 4 objects you have in your bag."],
+["Vocabulary","Say your favorite food and your favorite TV series."],
+["Negative / questions","Make these negative and interrogative: She is Carla’s friend. / They are Tim’s brothers."],
+["Have","Say what you have for breakfast."],
+["Present simple","Say 4 things you do on a typical day."],
+["Adverbs of frequency","Say 3 things you always do on weekends."],
+["Adverbs of frequency","Say 2 things you never do at school or work."],
+["Questions","Ask your partner two questions: Where…? When…? Who…with? How often…?"],
+["Present simple","Make these negative and interrogative: She writes emails at work. / They go to work by bus."],
+["Can","Say 4 things you can do with your phone."],
+["Can","Ask: Can you play a musical instrument? Do a sport? Dance?"],
+["Can’t","Say 3 things you can’t do on a plane."],
+["Present continuous","Say what 2 people in the class are wearing today."],
+["Present continuous","Say what you think people in your family are doing now."],
+["Weather","What’s the weather like today? What was the weather like yesterday?"],
+["Was / were","Where were you yesterday at 8 a.m., 1:30 p.m. and 7:15 p.m.?"],
+["Past simple","Say 3 things you did yesterday."],
+["Past simple","Say 3 things about your last birthday."],
+["Past questions","Ask a partner questions about their last holidays."],
+["Future plans","What are you doing after this class? And next weekend?"],
+["Going to","Where are you going to go on your next holiday?"]
+];
+var COLORS=["#e0457b","#2f9e72","#3b82f6","#f59e0b"];
+var N=25, count=2, players=[], turn=0, busy=false, FIN=N;
+
+var $=function(id){return document.getElementById(id)};
+
+function drawSetup(){
+  var c=$("counts");c.innerHTML="";
+  [2,3,4].forEach(function(n){
+    var b=document.createElement("button");b.textContent=n+" jogadores";
+    b.className=n===count?"on":"";b.onclick=function(){count=n;drawSetup()};c.appendChild(b);
+  });
+  var old=[].map.call(document.querySelectorAll("#names input"),function(i){return i.value});
+  var h="";
+  for(var i=0;i<count;i++){h+='<label for="p'+i+'">Jogador '+(i+1)+'</label><input id="p'+i+'" maxlength="14" value="'+(old[i]||"")+'" placeholder="Nome">'}
+  $("names").innerHTML=h;
+}
+
+function pos(i){ // tile index 0..25 → grid cell. 0 = start, 1..25 tasks
+  var idx=i-1, r=Math.floor(idx/5), c=idx%5;
+  if(r%2===1)c=4-c;
+  return {row:6-r,col:c+1};
+}
+
+function buildBoard(){
+  var b=$("board");b.innerHTML="";
+  var s=document.createElement("div");s.className="tile start";s.id="t0";
+  s.style.gridRow=6+"";s.style.gridColumn="1";
+  b.appendChild(s);
+  // Start sits in its own row 6 col1; tasks occupy rows 1..5
+  for(var i=1;i<=N;i++){
+    var t=document.createElement("div");t.className="tile"+(i===N?" fin":"");t.id="t"+i;
+    var idx=i-1,r=Math.floor(idx/5),c=idx%5;if(r%2===1)c=4-c;
+    t.style.gridRow=(5-r)+"";t.style.gridColumn=(c+1)+"";
+    t.innerHTML='<span class="num">'+i+'</span><span>'+TASKS[i-1][0]+'</span><span class="toks"></span>';
+    b.appendChild(t);
+  }
+  s.innerHTML='<span class="num">Start</span><span>Largada</span><span class="toks"></span>';
+  s.style.gridRow="6";s.style.gridColumn="1 / 3";
+}
+
+function drawTokens(){
+  document.querySelectorAll(".toks").forEach(function(e){e.innerHTML=""});
+  document.querySelectorAll(".tile").forEach(function(e){e.classList.remove("cur")});
+  players.forEach(function(p,i){
+    var t=document.querySelector("#t"+p.pos+" .toks");
+    var d=document.createElement("span");d.className="tok";d.style.background=p.color;
+    d.textContent=p.name.charAt(0).toUpperCase();d.title=p.name;t.appendChild(d);
+  });
+  $("t"+players[turn].pos).classList.add("cur");
+  $("turn").textContent="Vez de "+players[turn].name;
+  $("turn").style.color=players[turn].color;
+  $("score").innerHTML=players.map(function(p,i){
+    return '<li class="'+(i===turn?"me":"")+'"><span class="tok" style="background:'+p.color+'">'+p.name.charAt(0).toUpperCase()+'</span>'+p.name+' <span style="margin-left:auto;color:var(--muted)">casa '+p.pos+'</span></li>';
+  }).join("");
+}
+
+function startGame(){
+  players=[];
+  for(var i=0;i<count;i++){
+    var v=$("p"+i).value.trim()||("Jogador "+(i+1));
+    players.push({name:v,pos:0,color:COLORS[i]});
+  }
+  turn=0;busy=false;
+  $("setup").style.display="none";$("game").style.display="grid";
+  buildBoard();drawTokens();$("die").textContent="–";$("roll").disabled=false;
+}
+
+function roll(){
+  if(busy)return;busy=true;$("roll").disabled=true;
+  var n=0,final=1+Math.floor(Math.random()*6);
+  var iv=setInterval(function(){
+    $("die").textContent=1+Math.floor(Math.random()*6);
+    if(++n>8){clearInterval(iv);$("die").textContent=final;move(final)}
+  },70);
+}
+
+function move(steps){
+  var p=players[turn],target=Math.min(FIN,p.pos+steps);
+  var iv=setInterval(function(){
+    p.pos++;drawTokens();
+    if(p.pos>=target){clearInterval(iv);setTimeout(showCard,300)}
+  },200);
+}
+
+function showCard(){
+  var p=players[turn],t=TASKS[p.pos-1];
+  $("card").className="card";
+  $("card").innerHTML='<span class="tag">Casa '+p.pos+' · '+t[0]+'</span><h2>'+t[1]+'</h2><p>'+p.name+', responda em inglês. Os colegas julgam a resposta.</p>'+
+  '<div class="row"><button class="ok" id="yes">Acertou</button><button class="bad" id="no">Errou, volta 1 casa</button></div>';
+  $("modal").classList.add("open");
+  $("yes").focus();
+  $("yes").onclick=function(){answer(true)};
+  $("no").onclick=function(){answer(false)};
+}
+
+function answer(ok){
+  var p=players[turn];
+  $("modal").classList.remove("open");
+  if(ok&&p.pos===FIN){return win(p)}
+  if(!ok)p.pos=Math.max(0,p.pos-1);
+  turn=(turn+1)%players.length;busy=false;
+  drawTokens();$("roll").disabled=false;
+}
+
+function win(p){
+  $("card").className="card win";
+  $("card").innerHTML='<h2>'+p.name+' venceu!</h2><p>Chegou ao final do tabuleiro. Parabéns!</p><button id="again" class="ok">Jogar de novo</button>';
+  $("modal").classList.add("open");
+  $("again").focus();
+  $("again").onclick=function(){$("modal").classList.remove("open");$("game").style.display="none";$("setup").style.display="block"};
+}
+
+$("start").onclick=startGame;
+$("roll").onclick=roll;
+$("reset").onclick=function(){$("modal").classList.remove("open");$("game").style.display="none";$("setup").style.display="block"};
+drawSetup();
+</script>
+</body>
+</html>
